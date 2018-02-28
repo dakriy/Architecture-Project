@@ -1,0 +1,117 @@
+\documentclass[a4paper]{article}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Notes}
+\author{Jacob Priddy, Andrew Glencross, Charles Oroko, Seth Ballance}
+
+\begin{document}
+\maketitle
+
+\section{Processor}
+
+\begin{itemize}
+\item No Pipelining
+\item No floating point
+\item Registers only, no memory
+\item Puts result of operation in the first operand
+\item 4 bit opcode for 13 insturctions
+\item 7 usable registers 1 PC register
+\item 128 words of instruction memory or 128 instructions
+\item Address registers are 3 bits: 000 for the PC or 001 for r1 so on and so forth
+\item Words are 16 bits
+\item All numbers are two's compliment
+\end{itemize}
+
+\section{Instruction Set}
+\begin{itemize}
+\item add
+\item addi
+\item shift left arithmetic
+\item shift left logical
+\item shift right
+\item or
+\item ori
+\item and
+\item andi
+\item negate
+\item jump zero
+\item unconditional jump
+\item load immediate
+\item move
+\end{itemize}
+
+\section{R-Type Instructions}
+
+\begin{itemize}
+\item 4 bit opcode
+\item 3 bits for operand 1
+\item 3 bits for operand 2
+\end{itemize}
+
+
+\begin{center}
+\begin{tabular}{| c | c | c | c |}
+\hline
+Instruction & description & opcode & parameters \\ \hline
+add & Add two registers & 0000 & 2 reg \\ \hline
+and & And two registers & 0001 & 2 reg \\ \hline
+or & Or two registers & 0010 & 2 reg \\ \hline
+mov & Moves first register to second register & 0011 & 2 reg \\ \hline
+\end{tabular}
+\end{center}
+
+\section{I-Type Instructions}
+\begin{itemize}
+\item 4 bit opcode
+\item 3 bits for reg 1
+\item 9 bits for immedate value
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{| c | c | c | c |}
+\hline
+Instruction & description & opcode & parameters \\ \hline
+sll & shift left logical & 0100 & 1 reg 1 immediate \\ \hline
+sla & shift left arithmetic & 0101 & 1 reg 1 immediate \\ \hline
+sr & shift right arithmetic & 0110 & 1 reg 1 immediate \\ \hline
+neg & Negate 1 register & 0111 & 1 reg \\ \hline
+andi & Does the and operation on a register and an immedate & 1000 & 1 reg 1 immediate \\ \hline
+addi & Add an immediate value to a register & 1001 & 1 reg 1 immediate \\ \hline
+ori & Does the or operation on a register and an immedate & 1010 & 1 reg 1 immediate \\ \hline
+loadi & Loads an immedate value into a register & 1011 & 1 reg 1 immedate \\ \hline
+\end{tabular}
+\end{center}
+
+\section{J-Type}
+
+\begin{itemize}
+\item 4 bit opcode
+\item 3 bits for jump address
+\item 9 bits for immedate value
+\end{itemize}
+
+
+\begin{center}
+\begin{tabular}{| c | c | c | c |}
+\hline
+Instruction & description & opcode & parameters \\ \hline
+j & Jump unconditionally & 1100 & immediate \\ \hline
+jz & Jump to an offset if a register is zero & 1101 & 1 reg 1 imm \\ \hline
+\end{tabular}
+\end{center}
+
+\end{document}
+

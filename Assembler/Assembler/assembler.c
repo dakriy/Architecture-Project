@@ -9,6 +9,7 @@ char* instructionToMachineCode(char* instruction)
 	{
 		if (instruction[instructionPos] == ' ')
 			break;
+		// Looking for breaks in instructions. "Spaces"
 	}
 
 	// TODO: Actually parse instructions
@@ -99,8 +100,7 @@ char* getNextLine(char* str, const char* start, const char* found_pos)
 
 char* assemble(char* assembly)
 {
-	// TODO: Determine how big this is gonna be and allocate it
-	char * machineCode = NULL;
+	char * machineCode = (char *)malloc(INSTRUCTION_LENGTH*MAX_INSTRUCTIONS);
 
 	/*
 	 * The general idea here is to trim the whitespace

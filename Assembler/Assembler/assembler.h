@@ -31,12 +31,12 @@
 #define NEG 0x07
 #define ANDI 0x08
 #define ADDI 0x09
-#define ORI 0x10
-#define LOADI 0x11
+#define ORI 0xA
+#define LOADI 0xB
 
 // J-type
-#define J 0x12
-#define JZ 0x13
+#define J 0xC
+#define JZ 0xD
 
 #define TRUE 1
 #define FALSE 0
@@ -47,6 +47,8 @@ const short REGISTER_ADDRESS_LENGTH = 3;
 const short IMMEDIATE_VALUE_LENGTH = 9;
 const short MAXIMUM_IMMEDATE_VALUE = 255;
 const short MINIMUM_IMMEDATE_VALUE = -255;
+const int MAX_INSTRUCTIONS = 128;
+const short INSTRUCTION_LENGTH = 2;
 
 // Takes a null terminated string and turns it into a byte string of machine code
 char* instructionToMachineCode(char *);

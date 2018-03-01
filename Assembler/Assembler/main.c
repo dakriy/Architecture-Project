@@ -9,10 +9,6 @@
 #define strdup _strdup
 #endif
 
-#ifdef _WIN64
-#define strdup _strdup
-#endif
-
 char * getFileContents(char * file)
 {
 	char * buffer = 0;
@@ -83,7 +79,7 @@ int main(int argc, const char* argv[])
 		exit(EXIT_FAILURE);
 	}
 
-
+	// TODO: Actually send the file to the parser
 
 	free(file);
 	free(inputFile);

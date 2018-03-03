@@ -5,52 +5,72 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-// Register definitions
-#define PC 0x0
-#define R1 0x1
-#define R2 0x2
-#define R3 0x3
-#define R4 0x4
-#define R5 0x5
-#define R7 0x7
-
-// Instruction opcode definitions
-
-// R-type
-#define ADD 0x00
-#define AND 0x01
-#define OR 0x02
-#define MOV 0x03
-
-
-// I-type
-#define SLL 0x04
-#define SLA 0x05
-#define SR 0x06
-#define NEG 0x07
-#define ANDI 0x08
-#define ADDI 0x09
-#define ORI 0xA
-#define LOADI 0xB
-
-// J-type
-#define J 0xC
-#define JZ 0xD
-
+// I like my bools
 #define TRUE 1
 #define FALSE 0
 typedef int bool;
 
-const short OPCODE_LENGTH = 4;
-const short REGISTER_ADDRESS_LENGTH = 3;
-const short IMMEDIATE_VALUE_LENGTH = 9;
-const short MAXIMUM_IMMEDATE_VALUE = 255;
-const short MINIMUM_IMMEDATE_VALUE = -255;
-const int MAX_INSTRUCTIONS = 128;
-const short INSTRUCTION_LENGTH = 2;
+#define OPCODE_LENGTH 4
+#define REGISTER_ADDRESS_LENGTH 4
+#define IMMEDIATE_VALUE_LENGTH 8
+#define MAXIMUM_IMMEDATE_VALUE 127
+#define MINIMUM_IMMEDATE_VALUE -127
+#define MAX_INSTRUCTIONS 128
+#define INSTRUCTION_LENGTH 2
 
-// Takes a null terminated string and turns it into a byte string of machine code
+
+// Register definitions
+enum REGISTERS
+{
+	PC = 0x0,
+	R1 = 0x1,
+	R2 = 0x2,
+	R3 = 0x3,
+	R4 = 0x4,
+	R5 = 0x5,
+	R7 = 0x7,
+	R8 = 0x8,
+	R9 = 0x9,
+	R10 = 0xA,
+	R11 = 0xB,
+	R12 = 0xC,
+	R13 = 0xD,
+	R14 = 0xE,
+	R15 = 0xF,
+};
+
+// Instruction opcode definitions
+enum OPCODES
+{
+	// R-type
+	ADD = 0x00,
+	AND = 0x01,
+	OR = 0x02,
+	MOV = 0x03,
+
+	// I-type
+	SLL = 0x04,
+	SLA = 0x05,
+	SR = 0x06,
+	NEG = 0x07,
+	ANDI = 0x08,
+	ADDI = 0x09,
+	ORI = 0xA,
+	LOADI = 0xB,
+
+	// J-type
+	J = 0xC,
+	JZ = 0xD,
+
+	// Other
+	NOP = 0xF
+};
+
+/*
+ * Takes a null terminated string and turns it into a byte string of machine code
+ */
 char* instructionToMachineCode(char *);
 
 /*
@@ -70,8 +90,8 @@ char* assemble(char* assembly);
 
 /*
  * Puts a null terminater behind comments
- * returns a 0 if a whole line is a comment
- * returns 1 otherwise
+ * returns a 0 if a whole line is a comment and no further processing is needed
+ * returns 1 if it needs to be parsed as an instruction
  */
 bool trimComments(char * str);
 
@@ -79,7 +99,6 @@ bool trimComments(char * str);
 * Gets the next line in a giant c string.
 * The returned string does need to be free'd
 */
-char * getNextLine(char * str, const char * start,const char* found_pos);
-
+char * getNextLine(char * str, const char * start,const char** found_pos);
 
 #endif // ASSEMBLER_H_

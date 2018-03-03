@@ -28,9 +28,9 @@
 \item Registers only, no memory
 \item Puts result of operation in the first operand
 \item 4 bit opcode for 13 insturctions
-\item 7 usable registers 1 PC register
+\item 15 usable registers 1 PC register
 \item 128 words of instruction memory or 128 instructions
-\item Address registers are 3 bits: 000 for the PC or 001 for r1 so on and so forth
+\item Address registers are 4 bits: 0000 for the PC or 0001 for r1 so on and so forth
 \item Words are 16 bits
 \item All numbers are two's compliment
 \end{itemize}
@@ -51,15 +51,17 @@
 \item unconditional jump
 \item load immediate
 \item move
+\item nop
 \end{itemize}
 
 \section{R-Type Instructions}
 
 \begin{itemize}
 \item 4 bit opcode
-\item 3 bits for operand 1
-\item 3 bits for operand 2
+\item 4 bits for operand 1
+\item 4 bits for operand 2
 \end{itemize}
+
 
 
 \begin{center}
@@ -76,8 +78,8 @@ mov & Moves first register to second register & 0011 & 2 reg \\ \hline
 \section{I-Type Instructions}
 \begin{itemize}
 \item 4 bit opcode
-\item 3 bits for reg 1
-\item 9 bits for immedate value
+\item 4 bits for reg 1
+\item 8 bits for immediate value
 \end{itemize}
 
 \begin{center}
@@ -99,10 +101,9 @@ loadi & Loads an immedate value into a register & 1011 & 1 reg 1 immedate \\ \hl
 
 \begin{itemize}
 \item 4 bit opcode
-\item 3 bits for jump address
-\item 9 bits for immedate value
+\item 4 bits for comparison register
+\item 8 bits for jump address
 \end{itemize}
-
 
 \begin{center}
 \begin{tabular}{| c | c | c | c |}
@@ -110,6 +111,19 @@ loadi & Loads an immedate value into a register & 1011 & 1 reg 1 immedate \\ \hl
 Instruction & description & opcode & parameters \\ \hline
 j & Jump unconditionally & 1100 & immediate \\ \hline
 jz & Jump to an offset if a register is zero & 1101 & 1 reg 1 imm \\ \hline
+\end{tabular}
+\end{center}
+
+
+\section{Other}
+Special instructions such as pseudo instructions.
+
+
+\begin{center}
+\begin{tabular}{| c | c | c | c |}
+\hline
+Instruction & description & opcode & parameters \\ \hline
+nop & No operation & 1111 & no parameters, all zeros\\ \hline
 \end{tabular}
 \end{center}
 

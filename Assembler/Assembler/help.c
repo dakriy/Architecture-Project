@@ -15,3 +15,12 @@ void printHelp(const char * name)
 	printOption("-o", "Specifies the output file.");
 	printOption("-i", "Specifies the input file.");
 }
+
+void checkPtr(void* ptr)
+{
+	if (ptr == NULL)
+	{
+		printf("There was an error allocating some memory. This is an extremely rare occurrence now days.\n");
+		exit(EXIT_FAILURE);
+	}
+}

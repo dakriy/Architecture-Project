@@ -1,4 +1,5 @@
 #include "assembler.h"
+#include "help.h"
 
 
 char* instructionToMachineCode(char* instruction)
@@ -56,6 +57,8 @@ bool trimComments(char * str)
 	// No comments in the line
 	if (pos == end) return TRUE;
 
+	pos--;
+
 	// Trim trailing whitespace
 	while (pos > str && isspace((unsigned char)*pos)) pos--;
 
@@ -68,10 +71,10 @@ bool trimComments(char * str)
 	return TRUE;
 }
 
-char* getNextLine(char* str, const char* start, const char* found_pos)
+char* getNextLine(char* str, const char* start, const char** found_pos)
 {
 	// If we are at the end of the string, return a null as there are no more lines.
-	if (start == str + strlen(str) - 1) return NULL;
+	if (start >= str + strlen(str) - 1) return NULL;
 	
 	// If the next line is a new line we don't even wanna care about it so we skip the first char and move on.
 	while (start[0] == '\n') start++;
@@ -80,20 +83,17 @@ char* getNextLine(char* str, const char* start, const char* found_pos)
 
 	// Get next line
 	while (pos < str + strlen(str) && *pos != '\n') pos++;
-	found_pos = pos;
+	*found_pos = pos;
 
 	// Plus 1 because 0 index
-	char * line = (char *)malloc(sizeof(char) * (pos - start + 1));
+	char * line = (char *)malloc(sizeof(char) * (pos - start) + 1);
+	checkPtr(line);
 
 	// Copy over the line to the new string
-	int cpy_pos;
-	for (cpy_pos = 0; cpy_pos < (pos - start); cpy_pos++)
-	{
-		line[cpy_pos] = start[cpy_pos];
-	}
+	memcpy(line, start, pos - start);
 
 	// Null terminate the c-string
-	line[cpy_pos + 1] = '\0';
+	line[pos - start] = '\0';
 
 	return line;
 }
@@ -101,28 +101,46 @@ char* getNextLine(char* str, const char* start, const char* found_pos)
 char* assemble(char* assembly)
 {
 	char * machineCode = (char *)malloc(INSTRUCTION_LENGTH*MAX_INSTRUCTIONS);
+	checkPtr(machineCode);
+	char * machineCodePos = machineCode;
 
+	
 	/*
 	 * The general idea here is to trim the whitespace
-	 * then trim the comments, then pass them to
-	 * instructionToMachine, one line at a time
+	 * then trim the comments, then labels,
+	 * then pass them to instructionToMachine,
+	 * one line at a time
 	 */
 	char * found_pos = assembly;
 	int instruction_count = 0;
-	// TODO: Error out if the dudes program is more than 128 instructions
-	for (char * line = assembly; line != NULL; line = getNextLine(assembly, found_pos, found_pos))
+	for (char * line = getNextLine(assembly, found_pos, &found_pos); line != NULL; line = getNextLine(assembly, found_pos, &found_pos))
 	{
+		// TODO: Labels aren't parsed yet. Probably parse them here as they are at the beginning of lines. So just check the line for a colon in it, save the instruction count in like a struct, so that we can run a pass after this replacing all label symbols with their code position
 		char * trimmed = trimWhiteSpace(line);
 		if(trimComments(trimmed))
 		{
-			instruction_count++;
-			// TODO: Add the machine code into the machineCode variable
-			char * newMachineCode = instructionToMachineCode(trimmed);
-		}
 
+			instruction_count++;
+
+			if (instruction_count > MAX_INSTRUCTIONS)
+			{
+				printf("Too many instructions!\n");
+				exit(EXIT_FAILURE);
+			}
+
+			char * newMachineCode = instructionToMachineCode(trimmed);
+
+			if(newMachineCode != NULL)
+			{
+				memcpy(machineCodePos, newMachineCode, INSTRUCTION_LENGTH);
+
+				machineCodePos += INSTRUCTION_LENGTH;
+
+				free(newMachineCode);
+			}
+		}
 		free(line);
 	}
-
 
 	return machineCode;
 }

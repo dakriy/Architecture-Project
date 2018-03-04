@@ -86,7 +86,7 @@ char* getNextLine(char* str, const char* start, const char** found_pos)
 	*found_pos = pos;
 
 	// Plus 1 because 0 index
-	char * line = (char *)malloc(sizeof(char) * (pos - start) + 1);
+	char * line = (char *)malloc(sizeof(char) * (pos - start + 1));
 	checkPtr(line);
 
 	// Copy over the line to the new string
@@ -108,14 +108,20 @@ char* parseLabelsInLine(char* line, unsigned char line_index)
 	{
 		Label * label = (Label*)malloc(sizeof(Label));
 
-		// Not sure about these lengths yet. Don't trust this is right
-		label->label = (char*)malloc(sizeof(char*) * (pos - line));
+		label->label = (char*)malloc(sizeof(char*) * (pos - line + 1));
 
 		checkPtr(label->label);
 
+		memcpy(label->label, line, pos - line);
+
+		label->label[pos - line] = '\0';
+
 		label->location = line_index;
 
-		// Not sure about these lengths yet. Don't trust this is right
+		pos++;
+
+		while(pos < line + strlen(line) && isspace(pos)) pos++;
+
 		newLine = malloc(sizeof(char) * (line + strlen(line) - pos));
 
 		checkPtr(newLine);
@@ -153,9 +159,15 @@ instruction* assemble(char* assembly)
 		if(trimComments(trimmed))
 		{
 
+			char * lineWithNoLabels = parseLabelInLine(trimmed, instruction_count);
+			if (lineWithNoLabels != NULL)
+			{
+				trimmed = lineWithNoLabels;
+			}
 
 			instruction newMachineCode = instructionToMachineCode(trimmed);
 
+			// Change this if we decide NOP to be all 0's
 			if((void *)newMachineCode != NULL)
 			{
 				*machineCodePos = newMachineCode;
@@ -170,9 +182,12 @@ instruction* assemble(char* assembly)
 				printf("Too many instructions!\n");
 				exit(EXIT_FAILURE);
 			}
+
+			free(lineWithNoLabels);
 		}
 		free(line);
 	}
+
 
 	return machineCode;
 }

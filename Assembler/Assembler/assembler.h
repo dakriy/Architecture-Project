@@ -6,19 +6,26 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <limits.h>
+#include "list.h"
+
+#ifdef _WIN32
+#define strdup _strdup
+#endif
 
 // I like my bools
 #define TRUE 1
 #define FALSE 0
 typedef int bool;
 
+typedef short instruction;
+
 #define OPCODE_LENGTH 4
 #define REGISTER_ADDRESS_LENGTH 4
-#define IMMEDIATE_VALUE_LENGTH 8
-#define MAXIMUM_IMMEDATE_VALUE 127
-#define MINIMUM_IMMEDATE_VALUE -127
+#define IMMEDIATE_VALUE_LENGTH CHAR_BIT
+#define MAXIMUM_IMMEDATE_VALUE SCHAR_MAX
+#define MINIMUM_IMMEDATE_VALUE SCHAR_MIN
 #define MAX_INSTRUCTIONS 128
-#define INSTRUCTION_LENGTH 2
 
 
 // Register definitions
@@ -68,10 +75,21 @@ enum OPCODES
 	NOP = 0xF
 };
 
+typedef struct Label
+{
+	unsigned char location;
+	char * label = NULL;
+	
+} Label;
+
+node* labelListHead = NULL;
+
+
+
 /*
  * Takes a null terminated string and turns it into a byte string of machine code
  */
-char* instructionToMachineCode(char *);
+instruction instructionToMachineCode(char *);
 
 /*
  * Note: This function returns a pointer to a substring of the original string.
@@ -85,7 +103,7 @@ char* trimWhiteSpace(char*);
 /*
  * Takes a whole assembly c string and returns the machine code
  */
-char* assemble(char* assembly);
+instruction* assemble(char* assembly);
 
 
 /*
@@ -100,5 +118,13 @@ bool trimComments(char * str);
 * The returned string does need to be free'd
 */
 char * getNextLine(char * str, const char * start,const char** found_pos);
+
+/*
+ * Parses labels off of lines.
+ * The returned string needs to be free'd
+ * Returns NULL if there were no labels
+ */
+char* parseLabelsInLine(char * line, unsigned char line_index);
+
 
 #endif // ASSEMBLER_H_

@@ -2,7 +2,7 @@
 #include "help.h"
 
 
-char* instructionToMachineCode(char* instruction)
+instruction instructionToMachineCode(char* instruction)
 {
 	short instructionPos = 0;
 
@@ -98,11 +98,44 @@ char* getNextLine(char* str, const char* start, const char** found_pos)
 	return line;
 }
 
-char* assemble(char* assembly)
+char* parseLabelsInLine(char* line, unsigned char line_index)
 {
-	char * machineCode = (char *)malloc(INSTRUCTION_LENGTH*MAX_INSTRUCTIONS);
+	char * newLine = NULL;
+	char * pos = line;
+	while (pos < line + strlen(line) && *pos != ':') pos++;
+	
+	if (*pos == ':')
+	{
+		Label * label = (Label*)malloc(sizeof(Label));
+
+		// Not sure about these lengths yet. Don't trust this is right
+		label->label = (char*)malloc(sizeof(char*) * (pos - line));
+
+		checkPtr(label->label);
+
+		label->location = line_index;
+
+		// Not sure about these lengths yet. Don't trust this is right
+		newLine = malloc(sizeof(char) * (line + strlen(line) - pos));
+
+		checkPtr(newLine);
+
+		memcpy(newLine, pos, (line + strlen(line) - pos));
+		
+		if (labelListHead == NULL)
+			labelListHead = create(label, NULL);
+		else
+			append(label, labelListHead);
+	}
+
+	return newLine;
+}
+
+instruction* assemble(char* assembly)
+{
+	instruction * machineCode = (instruction *)malloc(sizeof(instruction)*MAX_INSTRUCTIONS);
 	checkPtr(machineCode);
-	char * machineCodePos = machineCode;
+	instruction * machineCodePos = machineCode;
 
 	
 	/*
@@ -120,23 +153,22 @@ char* assemble(char* assembly)
 		if(trimComments(trimmed))
 		{
 
+
+			instruction newMachineCode = instructionToMachineCode(trimmed);
+
+			if((void *)newMachineCode != NULL)
+			{
+				*machineCodePos = newMachineCode;
+
+				machineCodePos += sizeof(instruction);
+			}
+
 			instruction_count++;
 
 			if (instruction_count > MAX_INSTRUCTIONS)
 			{
 				printf("Too many instructions!\n");
 				exit(EXIT_FAILURE);
-			}
-
-			char * newMachineCode = instructionToMachineCode(trimmed);
-
-			if(newMachineCode != NULL)
-			{
-				memcpy(machineCodePos, newMachineCode, INSTRUCTION_LENGTH);
-
-				machineCodePos += INSTRUCTION_LENGTH;
-
-				free(newMachineCode);
 			}
 		}
 		free(line);

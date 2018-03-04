@@ -6,10 +6,6 @@
 #include "assembler.h"
 #include <errno.h>
 
-#ifdef _WIN32
-#define strdup _strdup
-#endif
-
 char * getFileContents(char * file)
 {
 	char * buffer = NULL;
@@ -40,7 +36,7 @@ char * getFileContents(char * file)
 	return buffer;
 }
 
-void outputToFile(char * fileName, char * data)
+void outputToFile(char * fileName, instruction * data)
 {
 	FILE * f = fopen(fileName, "wb");
 	if (f)
@@ -48,7 +44,7 @@ void outputToFile(char * fileName, char * data)
 		// TODO: Make sure to test the output of these next 3 functions so I can have robust code :)
 		fseek(f, 0, SEEK_SET);
 
-		fwrite(data, INSTRUCTION_LENGTH, MAX_INSTRUCTIONS, f);
+		fwrite(data, sizeof(instruction), MAX_INSTRUCTIONS, f);
 		fclose(f);
 	}
 	else
@@ -129,7 +125,7 @@ int main(int argc, const char* argv[])
 	outputFile = setOutputFileName(outputFile, inputFile);
 
 	// Assemble it
-	char * machineCode = assemble(file);
+	instruction * machineCode = assemble(file);
 
 	// Write to the output file.
 	outputToFile(outputFile, machineCode);

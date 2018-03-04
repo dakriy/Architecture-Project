@@ -7,6 +7,19 @@ node* create(Label * data, node* next)
 
 	new_node->data = data;
 	new_node->next = next;
+	new_node->mention = NULL;
+
+	return new_node;
+}
+
+node* create_m(LabelMention* data, node* next)
+{
+	node* new_node = (node*)malloc(sizeof(node));
+	checkPtr(new_node);
+
+	new_node->mention = data;
+	new_node->next = next;
+	new_node->data = NULL;
 
 	return new_node;
 }
@@ -18,7 +31,30 @@ node* prepend(node* head, Label * data)
 	return head;
 }
 
+node* prepend_m(node* head, LabelMention* data)
+{
+	node* new_node = create(data, head);
+	head = new_node;
+	return head;
+}
+
 node* append(node* head, Label * data)
+{
+	if (head == NULL)
+		return NULL;
+	/* go to the last node */
+	node *cursor = head;
+	while (cursor->next != NULL)
+		cursor = cursor->next;
+
+	/* create a new node */
+	node* new_node = create(data, NULL);
+	cursor->next = new_node;
+
+	return head;
+}
+
+node* append_m(node* head, LabelMention* data)
 {
 	if (head == NULL)
 		return NULL;
@@ -202,8 +238,12 @@ void dispose(node *head)
 		while (cursor != NULL)
 		{
 			tmp = cursor->next;
+			if (cursor->mention != NULL)
+				free(cursor->mention->label);
+			if (cursor->data != NULL)
+				free(cursor->data->label);
 
-			free(cursor->data->label);
+			free(cursor->mention);
 			free(cursor->data);
 			free(cursor);
 			cursor = tmp;

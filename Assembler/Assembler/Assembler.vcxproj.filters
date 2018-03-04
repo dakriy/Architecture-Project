@@ -24,6 +24,9 @@
     <ClCompile Include="assembler.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="list.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="help.h">
@@ -32,5 +35,16 @@
     <ClInclude Include="assembler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="list.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="code.asm">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

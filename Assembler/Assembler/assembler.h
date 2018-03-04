@@ -9,17 +9,6 @@
 #include <limits.h>
 #include "list.h"
 
-#ifdef _WIN32
-#define strdup _strdup
-#endif
-
-// I like my bools
-#define TRUE 1
-#define FALSE 0
-typedef int bool;
-
-typedef short instruction;
-
 #define OPCODE_LENGTH 4
 #define REGISTER_ADDRESS_LENGTH 4
 #define IMMEDIATE_VALUE_LENGTH CHAR_BIT
@@ -75,15 +64,8 @@ enum OPCODES
 	NOP = 0xF
 };
 
-typedef struct Label
-{
-	unsigned char location;
-	char * label = NULL;
-	
-} Label;
-
-node* labelListHead = NULL;
-
+node* labelListHead;
+node* mentionLabelListHead;
 
 
 /*
@@ -103,7 +85,7 @@ char* trimWhiteSpace(char*);
 /*
  * Takes a whole assembly c string and returns the machine code
  */
-instruction* assemble(char* assembly);
+instruction* assemble(char* assembly, unsigned char * instructionCount);
 
 
 /*
@@ -112,6 +94,13 @@ instruction* assemble(char* assembly);
  * returns 1 if it needs to be parsed as an instruction
  */
 bool trimComments(char * str);
+
+/*
+ * Exit program because of a syntax error of some sort.
+ * Will not return after this gets called.
+ * THIS WILL EXIT THE PROGRAM RIGHT THEN AND THERE!
+ */
+void syntaxError(char * message, char * line);
 
 /*
 * Gets the next line in a giant c string.

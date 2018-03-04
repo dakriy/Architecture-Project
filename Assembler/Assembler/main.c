@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include "help.h"
 #include "assembler.h"
-#include <errno.h>
 
 char * getFileContents(char * file)
 {
@@ -36,7 +34,7 @@ char * getFileContents(char * file)
 	return buffer;
 }
 
-void outputToFile(char * fileName, instruction * data)
+void outputToFile(char * fileName, instruction * data, unsigned char instructionCount)
 {
 	FILE * f = fopen(fileName, "wb");
 	if (f)
@@ -44,7 +42,7 @@ void outputToFile(char * fileName, instruction * data)
 		// TODO: Make sure to test the output of these next 3 functions so I can have robust code :)
 		fseek(f, 0, SEEK_SET);
 
-		fwrite(data, sizeof(instruction), MAX_INSTRUCTIONS, f);
+		fwrite(data, sizeof(instruction), instructionCount, f);
 		fclose(f);
 	}
 	else
@@ -124,11 +122,13 @@ int main(int argc, const char* argv[])
 
 	outputFile = setOutputFileName(outputFile, inputFile);
 
+	unsigned char instructionCount;
+
 	// Assemble it
-	instruction * machineCode = assemble(file);
+	instruction * machineCode = assemble(file, &instructionCount);
 
 	// Write to the output file.
-	outputToFile(outputFile, machineCode);
+	outputToFile(outputFile, machineCode, instructionCount);
 
 	free(machineCode);
 	free(file);

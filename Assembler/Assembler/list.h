@@ -4,14 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "help.h"
-#include "assembler.h"
-
-typedef struct node {
-	Label * data = NULL;
-	struct node* next = NULL;
-} node;
-
-typedef void(*callback)(node* data);
+#include "structs.h"
 
 /*
  * create a new node
@@ -20,16 +13,19 @@ typedef void(*callback)(node* data);
  * return the newly created node
  */
 node* create(Label * data, node* next);
+node* create_m(LabelMention * data, node* next);
 
 /*
  * add a new node at the beginning of the list
  */
 node* prepend(node* head, Label * data);
+node* prepend_m(node* head, LabelMention * data);
 
 /*
  * add a new node at the end of the list
  */
 node* append(node* head, Label * data);
+node* append_m(node* head, LabelMention * data);
 
 /*
  * insert a new node after the prev node

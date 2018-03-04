@@ -118,11 +118,17 @@
   <ItemGroup>
     <ClCompile Include="assembler.c" />
     <ClCompile Include="help.c" />
+    <ClCompile Include="list.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assembler.h" />
     <ClInclude Include="help.h" />
+    <ClInclude Include="list.h" />
+    <ClInclude Include="structs.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="code.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

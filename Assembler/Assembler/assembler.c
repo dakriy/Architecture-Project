@@ -1,6 +1,8 @@
 #include "assembler.h"
 #include "help.h"
 
+node* labelListHead = NULL;
+node* mentionLabelListHead = NULL;
 
 instruction instructionToMachineCode(char* instruction)
 {
@@ -13,7 +15,7 @@ instruction instructionToMachineCode(char* instruction)
 		// Looking for breaks in instructions. "Spaces"
 	}
 
-	// TODO: Actually parse instructions
+	// TODO: Actually parse instructions, on jumps, when you come to a label, just add it to the mention tree
 
 	return NULL;
 }
@@ -71,6 +73,12 @@ bool trimComments(char * str)
 	return TRUE;
 }
 
+void syntaxError(char* message, char* line)
+{
+	printf("INVALID SYNTAX ERROR!\n%s\n%s", message, line);
+	exit(EXIT_FAILURE);
+}
+
 char* getNextLine(char* str, const char* start, const char** found_pos)
 {
 	// If we are at the end of the string, return a null as there are no more lines.
@@ -106,6 +114,18 @@ char* parseLabelsInLine(char* line, unsigned char line_index)
 	
 	if (*pos == ':')
 	{
+		char * backCheck = pos;
+
+		while (backCheck > line)
+		{
+			if(isspace(*backCheck))
+			{
+				syntaxError("Invalid label syntax!", line);
+			}
+			backCheck--;
+		}
+
+
 		Label * label = (Label*)malloc(sizeof(Label));
 
 		label->label = (char*)malloc(sizeof(char*) * (pos - line + 1));
@@ -118,26 +138,28 @@ char* parseLabelsInLine(char* line, unsigned char line_index)
 
 		label->location = line_index;
 
+		label->mentionChain = NULL;
+
 		pos++;
 
-		while(pos < line + strlen(line) && isspace(pos)) pos++;
+		while(pos < line + strlen(line) && isspace(*pos)) pos++;
 
-		newLine = malloc(sizeof(char) * (line + strlen(line) - pos));
+		newLine = malloc(sizeof(char) * (line + strlen(line) - pos + 1));
 
 		checkPtr(newLine);
 
-		memcpy(newLine, pos, (line + strlen(line) - pos));
+		memcpy(newLine, pos, (line + strlen(line) - pos + 1));
 		
 		if (labelListHead == NULL)
 			labelListHead = create(label, NULL);
 		else
-			append(label, labelListHead);
+			append(labelListHead, label);
 	}
 
 	return newLine;
 }
 
-instruction* assemble(char* assembly)
+instruction* assemble(char* assembly, unsigned char * instructionCount)
 {
 	instruction * machineCode = (instruction *)malloc(sizeof(instruction)*MAX_INSTRUCTIONS);
 	checkPtr(machineCode);
@@ -154,18 +176,27 @@ instruction* assemble(char* assembly)
 	int instruction_count = 0;
 	for (char * line = getNextLine(assembly, found_pos, &found_pos); line != NULL; line = getNextLine(assembly, found_pos, &found_pos))
 	{
-		// TODO: Labels aren't parsed yet. Probably parse them here as they are at the beginning of lines. So just check the line for a colon in it, save the instruction count in like a struct, so that we can run a pass after this replacing all label symbols with their code position
 		char * trimmed = trimWhiteSpace(line);
 		if(trimComments(trimmed))
 		{
-
-			char * lineWithNoLabels = parseLabelInLine(trimmed, instruction_count);
-			if (lineWithNoLabels != NULL)
+			// Parse labels
+			char * lineWithNoLabels = parseLabelsInLine(trimmed, instruction_count);
+			if(lineWithNoLabels != NULL)
 			{
-				trimmed = lineWithNoLabels;
+				char * sanitized = trimWhiteSpace(lineWithNoLabels);
+				if (strcmp(sanitized, "") == 0)
+				{
+					free(lineWithNoLabels);
+					continue;
+				}
+
+				trimmed = sanitized;
 			}
 
+			// Parse instruction, instructions at this point should have no sorrounding spaces or anything like that, just pure instructions
 			instruction newMachineCode = instructionToMachineCode(trimmed);
+
+			// Increase instruction count
 
 			// Change this if we decide NOP to be all 0's
 			if((void *)newMachineCode != NULL)
@@ -188,6 +219,10 @@ instruction* assemble(char* assembly)
 		free(line);
 	}
 
+	// TODO: run through code again replacing all label symbols with their actual value.
+	dispose(labelListHead);
+
+	*instructionCount = instruction_count;
 
 	return machineCode;
 }

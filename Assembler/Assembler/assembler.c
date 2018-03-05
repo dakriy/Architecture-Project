@@ -26,11 +26,32 @@ const char * instructionIdentifiers[] = {
 	"nop"
 };
 
+const char * regsiterIdentifiers[] = {
+	"pc"
+	"r0"
+	"r1"
+	"r2"
+	"r3"
+	"r4"
+	"r5"
+	"r6"
+	"r7"
+	"r8"
+	"r9"
+	"r10"
+	"r11"
+	"r12"
+	"r13"
+	"r14"
+	"r15"
+};
+
 instruction instructionToMachineCode(char* line, unsigned char lineNum)
 {
 	char * iterator1 = line;
 	char * iterator2 = line;
 
+	unsigned short lineLength = strlen(line);
 	instruction inst;
 	inst.O = 0;
 
@@ -39,11 +60,11 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 
 	// Reset the iterator
 	iterator1 = line;
-	
-	// Get the instruction identifier
-	while (iterator2 < line + strlen(line) && !isspace(*iterator2)) iterator2++;
 
-	if (iterator2 < line + strlen(line))
+	// Get the instruction identifier
+	while (iterator2 < line + lineLength && !isspace(*iterator2)) iterator2++;
+
+	if (iterator2 < line + lineLength)
 	{
 		*iterator2 = '\0';
 		iterator2++;
@@ -62,16 +83,54 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 
 	if (instruction_index < ITYPE_INDEX) // Instruction is a R type
 	{
-		IType instruc;
-		instruc.opcode = (OPCODES)instruction_index;
-		// TODO: PARSE THE REST OF I TYPE INSTRUCTIONS
-		inst.I = instruc;
-	} else if (instruction_index < JTYPE_INDEX || instruction_index == JZ) // instruction is a I type or a JZ which has the same signature as an I type
-	{
 		RType instruc;
 		instruc.opcode = (OPCODES)instruction_index;
-		// TODO: PARSE THE REST OF THE R TYPE INSTRUCTIONS
+
+		// Getting first operand
+		iterator1 = iterator2;
+		while (*iterator2 && *iterator2 != ',') iterator2++;
+		if (! *iterator2) syntaxError("Invalid Operand", lineNum);
+		else {
+			*iterator2 = NULL;
+				if(iterator2 < line + lineLength)
+					iterator2++;
+				else syntaxError("Second Operand Not Found", lineNum);
+		}
+
+
+		// Looking for the operand in registry
+		iterator1 = trimWhiteSpace(iterator1);
+		unsigned char register_index;
+		for(register_index = 0; register_index < NUMBER_OF_REGISTERS; register_index++)
+			if(strcmp(iterator1, regsiterIdentifiers[register_index]) == 0)
+				break;
+
+		// Throw error for unknown input
+		if(register_index == NUMBER_OF_REGISTERS)
+	 		syntaxError("Unknown Register Identifier", lineNum);
+
+		// Store first operand
+		instruc.reg1 = (REGISTERS)register_index;
+
+		iterator1 = iterator2;
+		iterator1 = trimWhiteSpace(iterator1);
+		for(register_index = 0; register_index < NUMBER_OF_REGISTERS; register_index++)
+			if(strcmp(iterator1, registerIdentifiers[register_index]) == 0)
+				break;
+		// Throw error for unknown input
+		if(register_index == NUMBER_OF_REGISTERS)
+			syntaxError("Unknown Register Identifier", lineNum);
+
+		// Store second operand
+		instruc.reg2 = (REGISERS)regster_index;
+
 		inst.R = instruc;
+	} else if (instruction_index < JTYPE_INDEX || instruction_index == JZ) // instruction is a I type or a JZ which has the same signature as an I type
+	{
+		IType instruc;
+		instruc.opcode = (OPCODES)instruction_index;
+		// TODO: PARSE THE REST OF THE R TYPE INSTRUCTIONS
+		inst.I = instruc;
 	} else if(instruction_index < OTYPE_INDEX) // Instruction is a J type
 	{
 		JType instruc;
@@ -145,7 +204,7 @@ bool trimComments(char * str)
 
 void syntaxError(char* message, unsigned char line)
 {
-	printf("INVALID SYNTAX!\n%s\n%u", message, line);
+	printf("INVALID SYNTAX!\n%s\nOn line: %u", message, line);
 	exit(EXIT_FAILURE);
 }
 
@@ -153,7 +212,7 @@ char* getNextLine(char* str, const char* start, const char** found_pos)
 {
 	// If we are at the end of the string, return a null as there are no more lines.
 	if (start >= str + strlen(str) - 1) return NULL;
-	
+
 	// If the next line is a new line we don't even wanna care about it so we skip the first char and move on.
 	while (start[0] == '\n') start++;
 
@@ -181,7 +240,7 @@ char* parseLabelsInLine(char* line, unsigned char line_index)
 	char * newLine = NULL;
 	char * pos = line;
 	while (pos < line + strlen(line) && *pos != ':') pos++;
-	
+
 	if (*pos == ':')
 	{
 		char * backCheck = pos;
@@ -207,7 +266,7 @@ char* parseLabelsInLine(char* line, unsigned char line_index)
 		label->label[pos - line] = '\0';
 
 		label->location = line_index;
-		
+
 		pos++;
 
 		while(pos < line + strlen(line) && isspace(*pos)) pos++;
@@ -217,7 +276,7 @@ char* parseLabelsInLine(char* line, unsigned char line_index)
 		checkPtr(newLine);
 
 		memcpy(newLine, pos, (line + strlen(line) - pos + 1));
-		
+
 		if (labelListHead == NULL)
 			labelListHead = create(label, NULL);
 		else
@@ -233,7 +292,7 @@ instruction* assemble(char* assembly, unsigned char * instructionCount)
 	checkPtr(machineCode);
 	instruction * machineCodePos = machineCode;
 
-	
+
 	/*
 	 * The general idea here is to trim the whitespace
 	 * then trim the comments, then labels,

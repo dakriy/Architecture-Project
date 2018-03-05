@@ -10,6 +10,7 @@
 #include "list.h"
 
 extern const char * instructionIdentifiers[];
+extern const char * registerIdentifiers[];
 extern node* labelListHead;
 extern node* mentionLabelListHead;
 
@@ -21,6 +22,7 @@ extern node* mentionLabelListHead;
 #define MINIMUM_IMMEDATE_VALUE SCHAR_MIN
 #define MAX_INSTRUCTIONS 128
 #define NUMBER_OF_INSTRUCTIONS (sizeof(instructionIdentifiers) / sizeof(char *))
+#define NUMBER_OF_REGISTERS (sizeof(registerIdentifiers) / sizeof(char *))
 #define RTYPE_INDEX 0
 #define ITYPE_INDEX 4
 #define JTYPE_INDEX 13

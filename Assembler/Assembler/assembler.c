@@ -26,7 +26,7 @@ const char * instructionIdentifiers[] = {
 	"nop"
 };
 
-const char * regsiterIdentifiers[] = {
+const char * registerIdentifiers[] = {
 	"pc"
 	"r0"
 	"r1"
@@ -90,19 +90,18 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		iterator1 = iterator2;
 		while (*iterator2 && *iterator2 != ',') iterator2++;
 		if (! *iterator2) syntaxError("Invalid Operand", lineNum);
-		else {
-			*iterator2 = NULL;
-				if(iterator2 < line + lineLength)
-					iterator2++;
-				else syntaxError("Second Operand Not Found", lineNum);
-		}
+
+		*iterator2 = '\0';
+		if(iterator2 < line + lineLength)
+			iterator2++;
+		else syntaxError("Second Operand Not Found", lineNum);
 
 
 		// Looking for the operand in registry
 		iterator1 = trimWhiteSpace(iterator1);
 		unsigned char register_index;
 		for(register_index = 0; register_index < NUMBER_OF_REGISTERS; register_index++)
-			if(strcmp(iterator1, regsiterIdentifiers[register_index]) == 0)
+			if(strcmp(iterator1, registerIdentifiers[register_index]) == 0)
 				break;
 
 		// Throw error for unknown input
@@ -122,7 +121,7 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 			syntaxError("Unknown Register Identifier", lineNum);
 
 		// Store second operand
-		instruc.reg2 = (REGISERS)regster_index;
+		instruc.reg2 = (REGISTERS)register_index;
 
 		inst.R = instruc;
 	} else if (instruction_index < JTYPE_INDEX || instruction_index == JZ) // instruction is a I type or a JZ which has the same signature as an I type

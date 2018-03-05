@@ -4,20 +4,90 @@
 node* labelListHead = NULL;
 node* mentionLabelListHead = NULL;
 
-instruction instructionToMachineCode(char* instruction)
-{
-	short instructionPos = 0;
+const char * instructionIdentifiers[] = {
+	"add",
+	"and",
+	"or",
+	"mov",
 
-	for (instructionPos = 0; instructionPos < strlen(instruction); instructionPos++)
+	"sll",
+	"sla",
+	"sr",
+	"neg",
+	"andi",
+	"addi",
+	"ori",
+	"loadi",
+	"jz",
+
+	"j",
+
+	"", // Empty so that opcodes match up to the instruction
+	"nop"
+};
+
+instruction instructionToMachineCode(char* line, unsigned char lineNum)
+{
+	char * iterator1 = line;
+	char * iterator2 = line;
+
+	instruction inst;
+	inst.O = 0;
+
+	// Make the whole thing lowercase
+	for (; *iterator1; ++iterator1) *iterator1 = tolower(*iterator1);
+
+	// Reset the iterator
+	iterator1 = line;
+	
+	// Get the instruction identifier
+	while (iterator2 < line + strlen(line) && !isspace(*iterator2)) iterator2++;
+
+	if (iterator2 < line + strlen(line))
 	{
-		if (instruction[instructionPos] == ' ')
-			break;
-		// Looking for breaks in instructions. "Spaces"
+		*iterator2 = '\0';
+		iterator2++;
 	}
+
+	if(strcmp("", line) == 0)
+	{
+		syntaxError("Unknown syntax error.", lineNum);
+	}
+
+
+	unsigned char instruction_index = UCHAR_MAX;
+	for (instruction_index = 0; instruction_index < NUMBER_OF_INSTRUCTIONS; instruction_index++)
+		if (strcmp(iterator1, instructionIdentifiers[instruction_index]) == 0)
+			break;
+
+	if (instruction_index < ITYPE_INDEX) // Instruction is a R type
+	{
+		IType instruc;
+		instruc.opcode = (OPCODES)instruction_index;
+		// TODO: PARSE THE REST OF I TYPE INSTRUCTIONS
+		inst.I = instruc;
+	} else if (instruction_index < JTYPE_INDEX || instruction_index == JZ) // instruction is a I type or a JZ which has the same signature as an I type
+	{
+		RType instruc;
+		instruc.opcode = (OPCODES)instruction_index;
+		// TODO: PARSE THE REST OF THE R TYPE INSTRUCTIONS
+		inst.R = instruc;
+	} else if(instruction_index < OTYPE_INDEX) // Instruction is a J type
+	{
+		JType instruc;
+		instruc.opcode = (OPCODES)instruction_index;
+		// TODO: PARSE THE REST OF THE J TYPE INSTRUCTIONS
+		inst.J = instruc;
+	} else if (instruction_index == OTYPE_INDEX) // Instruction is in the other category which is a NOP at this point
+	{
+		// NOP is the only option here, so...
+		inst.O = 0;
+	} else // Instruction not found
+		syntaxError("Unknown instruction!", lineNum);
 
 	// TODO: Actually parse instructions, on jumps, when you come to a label, just add it to the mention tree
 
-	return NULL;
+	return inst;
 }
 
 char* trimWhiteSpace(char* str)
@@ -73,9 +143,9 @@ bool trimComments(char * str)
 	return TRUE;
 }
 
-void syntaxError(char* message, char* line)
+void syntaxError(char* message, unsigned char line)
 {
-	printf("INVALID SYNTAX ERROR!\n%s\n%s", message, line);
+	printf("INVALID SYNTAX!\n%s\n%u", message, line);
 	exit(EXIT_FAILURE);
 }
 
@@ -137,9 +207,7 @@ char* parseLabelsInLine(char* line, unsigned char line_index)
 		label->label[pos - line] = '\0';
 
 		label->location = line_index;
-
-		label->mentionChain = NULL;
-
+		
 		pos++;
 
 		while(pos < line + strlen(line) && isspace(*pos)) pos++;
@@ -173,7 +241,7 @@ instruction* assemble(char* assembly, unsigned char * instructionCount)
 	 * one line at a time
 	 */
 	char * found_pos = assembly;
-	int instruction_count = 0;
+	unsigned char instruction_count = 0;
 	for (char * line = getNextLine(assembly, found_pos, &found_pos); line != NULL; line = getNextLine(assembly, found_pos, &found_pos))
 	{
 		char * trimmed = trimWhiteSpace(line);
@@ -193,19 +261,14 @@ instruction* assemble(char* assembly, unsigned char * instructionCount)
 				trimmed = sanitized;
 			}
 
-			// Parse instruction, instructions at this point should have no sorrounding spaces or anything like that, just pure instructions
-			instruction newMachineCode = instructionToMachineCode(trimmed);
+			// Parse instruction, instructions at this point should have no sorrounding spaces or anything like that, just pure, clean, instruction goodness
+			instruction newMachineCode = instructionToMachineCode(trimmed, instruction_count);
+
+			// Append instruction onto the instruction stack
+			*machineCodePos = newMachineCode;
 
 			// Increase instruction count
-
-			// Change this if we decide NOP to be all 0's
-			if((void *)newMachineCode != NULL)
-			{
-				*machineCodePos = newMachineCode;
-
-				machineCodePos += sizeof(instruction);
-			}
-
+			machineCodePos += sizeof(instruction);
 			instruction_count++;
 
 			if (instruction_count > MAX_INSTRUCTIONS)

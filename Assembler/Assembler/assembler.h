@@ -9,69 +9,28 @@
 #include <limits.h>
 #include "list.h"
 
+extern const char * instructionIdentifiers[];
+extern node* labelListHead;
+extern node* mentionLabelListHead;
+
+
 #define OPCODE_LENGTH 4
 #define REGISTER_ADDRESS_LENGTH 4
 #define IMMEDIATE_VALUE_LENGTH CHAR_BIT
 #define MAXIMUM_IMMEDATE_VALUE SCHAR_MAX
 #define MINIMUM_IMMEDATE_VALUE SCHAR_MIN
 #define MAX_INSTRUCTIONS 128
-
-
-// Register definitions
-enum REGISTERS
-{
-	PC = 0x0,
-	R1 = 0x1,
-	R2 = 0x2,
-	R3 = 0x3,
-	R4 = 0x4,
-	R5 = 0x5,
-	R7 = 0x7,
-	R8 = 0x8,
-	R9 = 0x9,
-	R10 = 0xA,
-	R11 = 0xB,
-	R12 = 0xC,
-	R13 = 0xD,
-	R14 = 0xE,
-	R15 = 0xF,
-};
-
-// Instruction opcode definitions
-enum OPCODES
-{
-	// R-type
-	ADD = 0x00,
-	AND = 0x01,
-	OR = 0x02,
-	MOV = 0x03,
-
-	// I-type
-	SLL = 0x04,
-	SLA = 0x05,
-	SR = 0x06,
-	NEG = 0x07,
-	ANDI = 0x08,
-	ADDI = 0x09,
-	ORI = 0xA,
-	LOADI = 0xB,
-
-	// J-type
-	J = 0xC,
-	JZ = 0xD,
-
-	// Other
-	NOP = 0xF
-};
-
-node* labelListHead;
-node* mentionLabelListHead;
+#define NUMBER_OF_INSTRUCTIONS (sizeof(instructionIdentifiers) / sizeof(char *))
+#define RTYPE_INDEX 0
+#define ITYPE_INDEX 4
+#define JTYPE_INDEX 13
+#define OTYPE_INDEX 15
 
 
 /*
  * Takes a null terminated string and turns it into a byte string of machine code
  */
-instruction instructionToMachineCode(char *);
+instruction instructionToMachineCode(char *, unsigned char lineNum);
 
 /*
  * Note: This function returns a pointer to a substring of the original string.
@@ -87,7 +46,6 @@ char* trimWhiteSpace(char*);
  */
 instruction* assemble(char* assembly, unsigned char * instructionCount);
 
-
 /*
  * Puts a null terminater behind comments
  * returns a 0 if a whole line is a comment and no further processing is needed
@@ -100,7 +58,7 @@ bool trimComments(char * str);
  * Will not return after this gets called.
  * THIS WILL EXIT THE PROGRAM RIGHT THEN AND THERE!
  */
-void syntaxError(char * message, char * line);
+void syntaxError(char * message, unsigned char line);
 
 /*
 * Gets the next line in a giant c string.

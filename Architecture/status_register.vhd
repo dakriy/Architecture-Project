@@ -29,19 +29,19 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity register16 is
+entity statusRegister is
 	port	(	clk	: in std_logic;
 	
-		d		: in	std_logic_vector( 15 downto 0 );
-		we 	: in	std_logic_vector(  1 downto 0 );
-		
-		q		: out	std_logic_vector( 15 downto 0 ));
-end register16;
+				d		: in	std_logic_vector( 15 downto 0 );
+				we 	: in	std_logic_vector(  1 downto 0 );
+				
+				q		: out	std_logic_vector( 15 downto 0 ));
+end statusRegister;
 
-architecture Behavioral of register16 is
+architecture Behavioral of statusRegister is
 	signal L			: in std_logic_vector( 15 downto 0 ) := X"7777";
 	begin
-	
+
 		process( clk )
 		begin
 			if (rising_edge(clk)) then
@@ -57,7 +57,3 @@ architecture Behavioral of register16 is
 		q	<= L;
 		
 end Behavioral;
-
-
-
-

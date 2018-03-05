@@ -1,20 +1,20 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    18:22:41 02/28/2018 
+-- Company:
+-- Engineer:
+--
+-- Create Date:    18:22:41 02/28/2018
 -- Design Name: 
--- Module Name:    register - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Module Name:    register_16 - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
 --
--- Dependencies: 
+-- Dependencies:
 --
--- Revision: 
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -29,19 +29,19 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity register16 is
+entity register_16 is
 	port	(	clk	: in std_logic;
-	
+
 		d		: in	std_logic_vector( 15 downto 0 );
 		we 	: in	std_logic_vector(  1 downto 0 );
-		
-		q		: out	std_logic_vector( 15 downto 0 ));
-end register16;
 
-architecture Behavioral of register16 is
+		q		: out	std_logic_vector( 15 downto 0 ));
+end register_16;
+
+architecture Behavioral of register_16 is
 	signal L			: in std_logic_vector( 15 downto 0 ) := X"7777";
 	begin
-	
+
 		process( clk )
 		begin
 			if (rising_edge(clk)) then
@@ -53,11 +53,7 @@ architecture Behavioral of register16 is
 				end if;
 			end if;
 		end process;
-		
+
 		q	<= L;
-		
+
 end Behavioral;
-
-
-
-

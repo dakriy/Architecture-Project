@@ -6,15 +6,15 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 use work.common.all;
 
 entity opcode_decoder is
-	port(	i_clk	: in std_logic;
+	port(	i_clk  : in std_logic;
 
-	      i_opc     : in	std_logic_vector( 15 downto 0 );
-        i_pc      : in	std_logic_vector( 15 downto 0 );
-        i_t0      : out	std_logic;
+	        i_opc  : in  std_logic_vector( 15 downto 0 );
+                i_pc   : in  std_logic_vector( 15 downto 0 );
+                i_t0   : out std_logic;
 
         q_alu_op  : out std_logic_vector(  1 downto 0 );
-        q_dddd      : out std_logic_vector(  3 downto 0 ); --destination register
-        q_rrrr      : out std_logic_vector(  3 downto 0 ); --temp register
+        q_ssss    : out std_logic_vector(  3 downto 0 ); --Rs
+        q_tttt    : out std_logic_vector(  3 downto 0 ); --Rt
         q_imm     : out std_logic_vector(  7 downto 0 ); --immediate value
         q_jadr    : out std_logic_vector(  7 downto 0 ); --branch/jump address
         q_opc     : out std_logic_vector( 15 downto 0 ); --opcode to be decoded
@@ -36,8 +36,8 @@ begin
     if (rising_edge(i_clk)) then
       --set the most common settings
       q_alu_op  <= alu_d_mv_q;
-      q_dddd    <= i_opc(11 downto 8); --destination in bits 11-8
-      q_rrrr    <= i_opc(7 downto 4); --temp register in bits 7-4
+      q_ssss    <= i_opc(11 downto 8); --Rs in bits 11-8
+      q_tttt    <= i_opc(7 downto 4); --Rt register in bits 7-4
       q_imm     <= i_opc(7 downto 0); --immediate value in bits 7-0
       q_jadr    <= i_opc(7 downto 0); --jump address in bits 7-0
       q_opc     <= i_opc; --opcode

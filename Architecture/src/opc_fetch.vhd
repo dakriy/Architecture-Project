@@ -1,3 +1,8 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use IEEE.STD_LOGIC_ARITH.all;
+use IEEE.STD_LOGIC_UNSIGNED.all;
+
 signal l_pc : std_logic_vector( 15 downto 0 );
 
 lpc: process( i_clk )

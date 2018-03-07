@@ -1,3 +1,8 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use IEEE.STD_LOGIC_ARITH.all;
+use IEEE.STD_LOGIC_UNSIGNED.all;
+
 entity program_mememory is
     port( i_clk     : in std_logic;
 

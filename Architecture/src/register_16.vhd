@@ -29,6 +29,11 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use IEEE.STD_LOGIC_ARITH.all;
+use IEEE.STD_LOGIC_UNSIGNED.all;
+
 entity register_16 is
 	port	(	i_clk	: in std_logic;
 
@@ -39,7 +44,7 @@ entity register_16 is
 end register_16;
 
 architecture Behavioral of register_16 is
-	signal l			: in std_logic_vector( 15 downto 0 ) := X"7777";
+	signal l			: in std_logic_vector( 15 downto 0 ) := x"0000";
 	begin
 
 		process( i_clk )

@@ -26,9 +26,9 @@
 -------------------------------------------------------------------------------
 --
 library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_ARITH.ALL;
-use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use IEEE.STD_LOGIC_1164.all;
+use IEEE.STD_LOGIC_ARITH.all;
+use IEEE.STD_LOGIC_UNSIGNED.all;
 
 entity cpu_core is
     port(
@@ -40,7 +40,7 @@ entity cpu_core is
           q_opc     : out std_logic_vector( 15 downto 0 ); --current opcode
           q_pc      : out std_logic_vector( 15 downto 0 ); --current program counter
           q_dout    : out std_logic_vector(  7 downto 0 ); --output data
-          --q_adr_io  : out std_logic_vector(  5 downto 0 ); --address of i/o register (32 8-bit registers)
+          q_adr_io  : out std_logic_vector(  5 downto 0 ); --address of i/o register (32 8-bit registers)
           q_rd_io   : out std_logic; --select register to read
           q_we_io   : out std_logic --select register to write
     );
@@ -55,7 +55,7 @@ component opc_fetch
         i_intvec  : in std_logic_vector( 15 downto 0 );
         i_new_pc  : in std_logic_vector( 15 downto 0 );
         i_load_pc : in std_logic;
-        i_pm_addr : in 
+        i_pm_addr : in
   );
 
 

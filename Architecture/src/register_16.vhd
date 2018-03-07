@@ -3,7 +3,7 @@
 -- Engineer:
 --
 -- Create Date:    18:22:41 02/28/2018
--- Design Name: 
+-- Design Name:
 -- Module Name:    register_16 - Behavioral
 -- Project Name:
 -- Target Devices:
@@ -30,30 +30,30 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity register_16 is
-	port	(	clk	: in std_logic;
+	port	(	i_clk	: in std_logic;
 
-		d		: in	std_logic_vector( 15 downto 0 );
-		we 	: in	std_logic_vector(  1 downto 0 );
+		i_d		: in	std_logic_vector( 15 downto 0 );
+		i_we 	: in	std_logic_vector(  1 downto 0 );
 
-		q		: out	std_logic_vector( 15 downto 0 ));
+		q			: out	std_logic_vector( 15 downto 0 ));
 end register_16;
 
 architecture Behavioral of register_16 is
-	signal L			: in std_logic_vector( 15 downto 0 ) := X"7777";
+	signal l			: in std_logic_vector( 15 downto 0 ) := X"7777";
 	begin
 
-		process( clk )
+		process( i_clk )
 		begin
 			if (rising_edge(clk)) then
-				if (we(1) = '1') then
-					L( 15 downto 8 )	<= d( 15 downto 8 );
+				if (i_we(1) = '1') then
+					l( 15 downto 8 )	<= i_d( 15 downto 8 );
 				end if;
-				if (we(0) = '1') then
-					L(  7 downto 0 )	<= d(  7 downto 0 );
+				if (i_we(0) = '1') then
+					l(  7 downto 0 )	<= i_d(  7 downto 0 );
 				end if;
 			end if;
 		end process;
 
-		q	<= L;
+		q	<= l;
 
 end Behavioral;

@@ -8,9 +8,6 @@
 <!-- Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.    -->
 
 <messages>
-<msg type="info" file="ProjectMgmt" num="1061" ><arg fmt="%s" index="1">Parsing VHDL file &quot;/home/seth.ballance/Desktop/Architecture-Project/Architecture/src/common.vhd&quot; into library work</arg>
-</msg>
-
 <msg type="info" file="ProjectMgmt" num="1061" ><arg fmt="%s" index="1">Parsing VHDL file &quot;/home/seth.ballance/Desktop/Architecture-Project/Architecture/src/cpu_core.vhd&quot; into library work</arg>
 </msg>
 
@@ -26,10 +23,7 @@
 <msg type="info" file="ProjectMgmt" num="1061" ><arg fmt="%s" index="1">Parsing VHDL file &quot;/home/seth.ballance/Desktop/Architecture-Project/Architecture/src/opcode_decoder.vhd&quot; into library work</arg>
 </msg>
 
-<msg type="error" file="ProjectMgmt" num="849" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/src/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">100</arg>. <arg fmt="%s" index="3">Unexpected EOF.</arg>
-</msg>
-
-<msg type="info" file="ProjectMgmt" num="1061" ><arg fmt="%s" index="1">Parsing VHDL file &quot;/home/seth.ballance/Desktop/Architecture-Project/Architecture/src/program_memory.vhd&quot; into library work</arg>
+<msg type="error" file="ProjectMgmt" num="806" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/src/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">27</arg>. <arg fmt="%s" index="3">Syntax error near &quot;)&quot;.</arg>
 </msg>
 
 <msg type="info" file="ProjectMgmt" num="1061" ><arg fmt="%s" index="1">Parsing VHDL file &quot;/home/seth.ballance/Desktop/Architecture-Project/Architecture/src/register_16.vhd&quot; into library work</arg>

@@ -16,15 +16,14 @@ entity opcode_decoder is
         q_ssss    : out std_logic_vector(  3 downto 0 ); --Rs
         q_tttt    : out std_logic_vector(  3 downto 0 ); --Rt
         q_imm     : out std_logic_vector(  7 downto 0 ); --immediate value (offset from PC for jumps)
-        q_jadr    : out std_logic_vector( 11 downto 0 ); --branch/jump address (byte addressed) 
+        q_jadr    : out std_logic_vector( 11 downto 0 ); --branch/jump address (byte addressed)
         q_opc     : out std_logic_vector( 15 downto 0 ); --opcode to be decoded
         q_pc      : out std_logic_vector( 15 downto 0 ); --program counter for current opcode
         q_pc_op   : out std_logic_vector( 15 downto 0 ); --operation to be performed on pc
         q_rsel    : out std_logic_vector(  7 downto 0 ); --register select
 
         q_we_d    : out std_logic_vector(  1 downto 0); --set when Rs is to be written
-        q_we_m    : out std_logic_vector(  1 downto 0); --set when memory is to be written
-  );
+        q_we_m    : out std_logic_vector(  1 downto 0)); --set when memory is to be written
 end opcode_decoder;
 
 architecture Behavioral of opcode_decoder is
@@ -43,7 +42,7 @@ begin
       q_pc_op   <= pc_next; --next pc
       q_rsel    <= rs_reg; -- Choose what type of data to send to the ALU
       q_we_d    <= "00";	-- For writing to register
-      q_we_m    <= "00";	-- For writing to memory 
+      q_we_m    <= "00";	-- For writing to memory
 
       case i_opc(15 downto 14) is
 			when "00" =>		--R-type commands
@@ -112,41 +111,41 @@ begin
 
 					when others =>		--NOOP
 				end case;
-			
+
 			when "10" =>		--second half of I-type commands
 				--10xx ssss iiii iiii
 				--$s will be changed
 				q_we_d   <= "11";
-				
+
 				case i_opc(13 downto 12) is
 					when "00" =>		--ANDI
 						--and a register with an immediate
 						--1000 ssss iiii iiii
 						--$s = $s and i
 						q_alu_op <= alu_andi;
-						
+
 					when "01" =>		--ADDI
 						--add a register with an immediate
 						--1001 ssss iiii iiii
 						--$s = $s + i
 						q_alu_op <= alu_addi;
-						
+
 					when "10" =>		--ORI
 						--or a register with an immediate
 						--1010 ssss iiii iiii
 						--$s = $s or i
-						q_alu_op <= alu_ori;						
-			
+						q_alu_op <= alu_ori;
+
 					when "11" =>		--LOADI
 						--load an immediate into a register
 						--1011 ssss iiii iiii
 						--$s = i
 						q_alu_op <= alu_loadi;
-						
+
 					when others =>		--NOOP
 				end case;
-				
+
 			when "11" =>		--J-type instructions
 				--11xx ssss iiii iiii
-				
+
 				case

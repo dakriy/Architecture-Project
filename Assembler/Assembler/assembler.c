@@ -28,7 +28,6 @@ const char * instructionIdentifiers[] = {
 
 const char * registerIdentifiers[] = {
 	"pc"
-	"r0"
 	"r1"
 	"r2"
 	"r3"
@@ -124,12 +123,55 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		instruc.reg2 = (REGISTERS)register_index;
 
 		inst.R = instruc;
+
 	} else if (instruction_index < JTYPE_INDEX || instruction_index == JZ) // instruction is a I type or a JZ which has the same signature as an I type
 	{
 		IType instruc;
 		instruc.opcode = (OPCODES)instruction_index;
-		// TODO: PARSE THE REST OF THE R TYPE INSTRUCTIONS
+
+		// Getting first operand
+		iterator1 = iterator2;
+		while (*iterator2 && *iterator2 != ',') iterator2++;
+		if (! *iterator2) syntaxError("Invalid Operand", lineNum);
+
+		*iterator2 = '\0';
+		if(iterator2 < line + lineLength)
+			iterator2++;
+		else syntaxError("Second Operand Not Found", lineNum);
+
+
+		// Looking for the operand in registry
+		iterator1 = trimWhiteSpace(iterator1);
+		unsigned char register_index;
+		for(register_index = 0; register_index < NUMBER_OF_REGISTERS; register_index++)
+			if(strcmp(iterator1, registerIdentifiers[register_index]) == 0)
+				break;
+
+		// Throw error for unknown input
+		if(register_index == NUMBER_OF_REGISTERS)
+	 		syntaxError("Unknown Register Identifier", lineNum);
+
+		// Store operand
+		instruc.reg1 = (REGISTERS)register_index;
+
+		iterator1 = iterator2;
+		iterator1 = trimWhiteSpace(iterator1);
+		// Check if the entered immediate is a number
+		for(int i=0; i<strlen(iterator1); i++){
+			if(i==0 && iterator[i] == '-')continue;
+				if(!isdigit(iterator1[i]));
+					syntaxError("Uknown Character Entered: Only Enter Numbers",lineNum);
+		}
+		// Grab immediate value as a string and convert to int
+		int immediate = atoi(iterator1);
+		// Check if immediate value is within the bounds of -127 and 127
+		if(immediate > 127 || immediate < -127);
+		 	syntaxError("Immediate Value Out Of Bounds: -127 to 127", lineNum);
+		// Store immediate value
+		instruc.immediate = immediate;
+
 		inst.I = instruc;
+
 	} else if(instruction_index < OTYPE_INDEX) // Instruction is a J type
 	{
 		JType instruc;
@@ -224,7 +266,7 @@ char* getNextLine(char* str, const char* start, const char** found_pos)
 	// Plus 1 because 0 index
 	char * line = (char *)malloc(sizeof(char) * (pos - start + 1));
 	checkPtr(line);
-
+	
 	// Copy over the line to the new string
 	memcpy(line, start, pos - start);
 

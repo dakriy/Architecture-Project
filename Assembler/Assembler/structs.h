@@ -85,13 +85,14 @@ typedef struct RType {
 	OPCODES opcode : 4;
 	REGISTERS reg1 : 4;
 	REGISTERS reg2 : 4;
-	unsigned short padding : 4;
-} RType ;
+	char addressMode : 2;
+	char padding : 2;
+} RType;
 
 typedef struct IType {
 	OPCODES opcode : 4;
 	REGISTERS reg : 4;
-	unsigned short immediate : 8;
+	char immediate;
 } IType;
 
 typedef struct JType {

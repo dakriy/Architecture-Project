@@ -12,7 +12,7 @@ package common is
   constant alu_sll   : std_logic_vector(3 downto 0) := "0100";
   constant alu_sla   : std_logic_vector(3 downto 0) := "0101";
   constant alu_sr    : std_logic_vector(3 downto 0) := "0110";
-  constant alu_neg   : std_logic_vector(3 downto 0) := "0111";
+  constant alu_flip  : std_logic_vector(3 downto 0) := "0111";
   constant alu_andi  : std_logic_vector(3 downto 0) := "1000";
   constant alu_addi  : std_logic_vector(3 downto 0) := "1001";
   constant alu_ori   : std_logic_vector(3 downto 0) := "1010";

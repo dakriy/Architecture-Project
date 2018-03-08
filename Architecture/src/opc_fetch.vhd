@@ -14,9 +14,8 @@ begin
 end process;
 
 l_next_pc <= x"0000"  when (i_clr     = '1') --reset pc at power on and RST
-else         l_pc     when (l_wait    = '1') --stall pc on multi-cycle instructions
-else         l_new_pc when (l_load_pc = '1') --load new pc value on jump
---else  l_pc + x"0002"  when (l_long_op = '1') --increment pc by 2 on
+else         l_new_pc + x"0001" when (l_jmp_c = '1') --load new pc value on conditional jump
+else         l_new_pc when (l_jmp_uc = '1') --load new pc value on unconditional jump
 else         l_pc + x"0001"; --increment pc
 
 l_invalidate  <= i_clr or i_skip; --interupt (nop) if clr or skip are set

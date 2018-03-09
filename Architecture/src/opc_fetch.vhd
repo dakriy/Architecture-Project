@@ -13,12 +13,12 @@ begin
     end if;
 end process;
 
-l_next_pc <= x"0000"  when (i_clr     = '1') --reset pc at power on and RST
+l_next_pc <= x"0000"  when (i_reset = '1') --reset pc at power on and RST
 else         l_new_pc + x"0001" when (l_jmp_c = '1') --load new pc value on conditional jump
 else         l_new_pc when (l_jmp_uc = '1') --load new pc value on unconditional jump
 else         l_pc + x"0001"; --increment pc
 
-l_invalidate  <= i_clr or i_skip; --interupt (nop) if clr or skip are set
+l_invalidate  <= i_reset or i_skip; --interupt (nop) if reset or skip are set
 
 q_opc <= x"11111111" when (l_invalidate = '1') --
 else     p_opc       when (i_intvec(5)  = '0')

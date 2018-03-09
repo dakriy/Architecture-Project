@@ -32,7 +32,7 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 
 entity cpu_core is
   port( i_clk     : in  std_logic; --global clock
-        i_clr     : in  std_logic;
+        i_reset   : in  std_logic;
         --i_intvec  : in  std_logic_vector(  5 downto 0 ); --interupt vector input
         i_din     : in  std_logic_vector(  7 downto 0 ); --input data (pmem or i/o)
 
@@ -49,7 +49,7 @@ component opc_fetch
   port(
         i_clk     : in std_logic;
 
-        i_clr     : in std_logic_vector(  5 downto 0 );
+        i_reset   : in std_logic_vector(  5 downto 0 );
         i_intvec  : in std_logic_vector( 15 downto 0 );
         i_new_pc  : in std_logic_vector( 15 downto 0 );
         i_load_pc : in std_logic;

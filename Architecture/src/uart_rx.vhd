@@ -5,7 +5,7 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 
 entity uart_rx is
   port( i_clk     : in  std_logic; --global clock
-        i_clr     : in  std_logic; --reset signal
+        i_reset   : in  std_logic; --reset signal
         i_baud_16 : in  std_logic; --16 times baud rate
         i_rx      : in  std_logic; --serial input line
 
@@ -24,10 +24,10 @@ begin
   -- When receiving, at start bit enabled, we read the input after 52ns
   -- After that, the input is read every 104ns in order to read the middle
   -- of the bit
-  process( i_clk, i_clr )
+  process(i_clk, i_reset)
   begin
     if (rising_edge(i_clk)) then
-      if (i_clr = '1') then
+      if (i_reset = '1') then
         l_serial <= '1';
         l_serial_bit <= '1';
       else
@@ -48,7 +48,7 @@ begin
   stop_position := stop_bit and l_position(3 downto 2) = "11"; -- stop position at end of clock cycle
 
     if (rising_edge(i_clk)) then
-      if (i_clr = '1') then --if reset set at rising edge, initialise everything
+      if (i_reset = '1') then --if reset set at rising edge, initialise everything
         l_flag <= '0';
         l_position <= x"00"; --uart idle
         l_buffer <= "1111111111";

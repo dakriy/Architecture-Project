@@ -14,56 +14,135 @@
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
-\title{Notes}
+\title{Project Documentation}
 \author{Jacob Priddy, Andrew Glencross, Charles Oroko, Seth Ballance}
 
 \begin{document}
 \maketitle
 
-\section{Processor}
+\section{Introduction}
+\paragraph{}
+Our processor implementation and instruction set are very lightweight meant to be flashed to and run an FPGA. This is an experimental project for a class and is not recommended for use in military or medical applications.
 
-\begin{itemize}
-\item No Pipelining
-\item No floating point
-\item Registers only, no memory
-\item Puts result of operation in the first operand
-\item 4 bit opcode for 13 insturctions
-\item 15 usable registers 1 PC register
-\item 128 words of instruction memory or 128 instructions
-\item Address registers are 4 bits: 0000 for the PC or 0001 for r1 so on and so forth
-\item Words are 16 bits
-\item All numbers are two's compliment
-\end{itemize}
+\section{Processor}
+\paragraph{}
+The processor does not have any floating point capabilities. There are 16 registers (including the program counter). It has 4KB of data memory and 64KB of program memory. It is pipelined, with 4 stages. All numbers are treated as two's compliment by the processor. Word size is 16 bits or 2 bytes stored big endian. 
 
 \section{Instruction Set}
+\paragraph{}
+All instructions are 1 word. Registers are addressed with 4 bits. 0000 would reference the PC while 0001 references R1. If there are 2 operands, the result gets put into the first operand. Opcode is 4 bits. All immediate values are interpreted to be decimal values.
+
+
+\paragraph{}
+Here is the complete instruction list. 
+
 \begin{itemize}
-\item add
-\item addi
-\item shift left arithmetic
-\item shift left logical
-\item shift right
-\item or
-\item ori
-\item and
-\item andi
-\item negate
-\item jump zero
-\item unconditional jump
-\item load immediate
-\item move
-\item nop
+\item R - R type instruction
+\item I - I type instruction
+\item J - J type instruction
+\item P - Pseudo instruction
 \end{itemize}
 
+\subsection{Instruction List}
+
+\begin{center}
+\begin{tabular}{|c | c | c |}
+\hline
+Instruction Description & Instruction & Type\\ \hline
+add two registers& 					add & R\\ \hline
+add an immediate to a register& 	addi& I\\ \hline
+shift a register right arithmetic& 	sra & I\\ \hline
+shift a register right logical&		srl & I\\ \hline
+shift a register left&				sl  & I\\ \hline
+bitwise or two registers&			or  & R\\ \hline
+bitwise or a register and immediate&ori & I\\ \hline
+bitwise and two registers&			and & R\\ \hline
+bitwise and a register and immediate&andi&I\\ \hline
+invert bits in a register&			not& I\\ \hline
+jump on register zero&				jz 	& J\\ \hline
+unconditional jump&					j	& J\\ \hline
+load immediate into a register&		loadi&I\\ \hline
+move words from or to memory, or other registers&mov&R\\ \hline
+No operation&						nop	& P\\ \hline
+
+\end{tabular}
+\end{center}
+
+\subsection{Register List}
+\begin{center}
+\begin{tabular}{| c | c | c |}
+\hline
+Register Name & Use & Binary Representation\\ \hline
+R0 & General purpose register & 0000\\ \hline
+R1 & General purpose register & 0001\\ \hline
+R2 & General purpose register & 0010\\ \hline
+R3 & General purpose register & 0011\\ \hline
+R4 & General purpose register & 0100\\ \hline
+R5 & General purpose register & 0101\\ \hline
+R6 & General purpose register & 0110\\ \hline
+R7 & General purpose register & 0111\\ \hline
+R8 & General purpose register & 1000\\ \hline
+R9 & General purpose register & 1001\\ \hline
+R10 & General purpose register& 1010\\ \hline
+R11 & General purpose register& 1011\\ \hline
+R12 & General purpose register& 1100\\ \hline
+R13 & General purpose register& 1101\\ \hline
+R14 & General purpose register& 1110\\ \hline
+R15 & General purpose register& 1111\\ \hline
+\end{tabular}
+\end{center}
+
+\section{Nomenclature}
+Bit key:
+\begin{center}
+\begin{tabular}{| c | c |}
+\hline
+Bit & Definition\\ \hline
+o & opcode bit\\ \hline
+s & source/destination register bit \\ \hline
+t & temporary register bit\\ \hline
+i & immediate value\\ \hline
+m & address mode bit\\ \hline
+x & unused/reserved bit \\ \hline
+\end{tabular}
+\end{center}
+
+\section{Syntax}
+\subsection{General Syntax}
+\paragraph{}
+Instruction identifiers are to be followed by their arguments. If there are two arguments, they are to be separated by a comma. Only 1 instruction per line is allowed.
+
+\subsection{Comments}
+\paragraph{}
+Comments start with a semicolon ';'. Anything after a semicolon to the end of the line is ignored by the assembler no matter where it is on a line.
+
+\subsection{Labels}
+\paragraph{}
+Labels are to be followed by a colon ':', and may not contain spaces. Labels must come first in the line. They may be on a line by themselves or on a line with an instruction.
+
+
 \section{R-Type Instructions}
+
+\subsection{Description}
 
 \begin{itemize}
 \item 4 bit opcode
 \item 4 bits for operand 1
 \item 4 bits for operand 2
+\item 2 bits to select address mode (only used for mov instructions)
+\item 2 unused bits
 \end{itemize}
 
+\subsection{Bit Field}
 
+\begin{center}
+\begin{tabular}{| c | c | c | c | c | c | c | c | c | c | c | c | c | c | c | c |}
+\hline
+o&o&o&o&s&s&s&s&t&t&t&t&m&m&x&x\\ \hline
+\end{tabular}
+\end{center}
 
+\subsection{List}
 \begin{center}
 \begin{tabular}{| c | c | c | c |}
 \hline
@@ -75,21 +154,62 @@ mov & Moves first register to second register & 0011 & 2 reg \\ \hline
 \end{tabular}
 \end{center}
 
+\subsection{Comments}
+\subsection{add}
+\paragraph{} Adds the first register and the second register, and stores the result into the first register. Treats numbers as two's compliment. 
+\paragraph{Example:} 
+\subparagraph{add r1, r2} r1 = r1 + r2
+\subparagraph{add PC, r15} PC = PC + r15
+
+\subsection{and}
+\paragraph{} Does a bitwise AND operation on the bits in s and t, and store the results in s. 
+\paragraph{Example:} 
+\subparagraph{and r1, r2} r1 = r1 \& r2
+
+\subsection{or}
+\paragraph{} Does a bitwise OR operation on the bits in s and t, and store the results in s. 
+\paragraph{Example:}
+\subparagraph{or r1, r2} r1 = r1 | r2
+
+\subsubsection{mov}
+\paragraph{} The mov instruction is what is used to retrieve and write to memory. If you surround the register identifier in parentheses, the processor will treat the number in the register as a memory address, and read/write to/from said address.\\
+
+\paragraph{Example:}
+\subparagraph{mov r2, (r3)} r2 = address(r3)
+
+will copy the word at the address stored in r3 into r2
+
+\subparagraph{mov (r14), (r15)} address(r14) = address(r15)
+
+will copy the word at the address stored in r15 into the word pointed to by the address stored in r14.
+
+
 \section{I-Type Instructions}
+\subsection{Description}
 \begin{itemize}
 \item 4 bit opcode
 \item 4 bits for reg 1
 \item 8 bits for immediate value
 \end{itemize}
 
+\subsection{Bit Field}
+\begin{center}
+\begin{tabular}{| c | c | c | c | c | c | c | c | c | c | c | c | c | c | c | c |}
+\hline
+o&o&o&o&s&s&s&s&i&i&i&i&i&i&i&i\\ \hline
+\end{tabular}
+\end{center}
+
+
+\subsection{List}
 \begin{center}
 \begin{tabular}{| c | c | c | c |}
 \hline
 Instruction & description & opcode & parameters \\ \hline
-sll & shift left logical & 0100 & 1 reg 1 immediate \\ \hline
-sla & shift left arithmetic & 0101 & 1 reg 1 immediate \\ \hline
-sr & shift right arithmetic & 0110 & 1 reg 1 immediate \\ \hline
-neg & Negate 1 register & 0111 & 1 reg \\ \hline
+srl & shift right logical & 0100 & 1 reg 1 immediate \\ \hline
+sra & shift right arithmetic & 0101 & 1 reg 1 immediate \\ \hline
+sl & shift left arithmetic & 0110 & 1 reg 1 immediate \\ \hline
+not & flip bits in a register & 0111 & 1 reg 1 immediate \\ \hline
 andi & Does the and operation on a register and an immedate & 1000 & 1 reg 1 immediate \\ \hline
 addi & Add an immediate value to a register & 1001 & 1 reg 1 immediate \\ \hline
 ori & Does the or operation on a register and an immedate & 1010 & 1 reg 1 immediate \\ \hline
@@ -97,27 +217,101 @@ loadi & Loads an immedate value into a register & 1011 & 1 reg 1 immedate \\ \hl
 \end{tabular}
 \end{center}
 
-\section{J-Type}
+\subsection{Comments}
+\subsubsection{srl}
+\paragraph{} Shifts the number in the register to the right <immediate> number of times. Makes the incoming bit 0. Will not accept values > 16
+\paragraph{Example:} 
+\subparagraph{srl r1, 10} r1 = r1 >> 10
 
+\subsubsection{sra}
+\paragraph{} Shifts the number in the register to the right <immediate> number of times. Keeps the sign of the number. Will not accept values > 16
+\paragraph{Example:}
+\subparagraph{sra r1, 11} r1 = r1 >> 11
+
+\subsubsection{sl}
+\paragraph{} Shifts the number in the register to the left <immediate> number of times. Makes the incoming bit 0. Will not accept values > 16
+\paragraph{Example:} 
+\subparagraph{sl r1, 3} r1 = r1 << 3
+
+\subsubsection{not}
+\paragraph{} Inverts the bits in a register up to <immediate> starting from the least significant bits. If no immediate value is provided, whole register will be flipped.
+\paragraph{Example:}
+\subparagraph{not r1} r1 = \~r1
+\subparagraph{not r1, 2} r1 = r1 except last 2 bits (least significant) will be inverted
+
+\subsubsection{andi}
+\paragraph{} Ands an immediate with a register, and stores the result into the register. Can only and values from -127 to 127. If larger values are needed, see the R type instruction.
+\paragraph{Example:}
+\subparagraph{andi r1, 123} r1 = r1 \& 0x7B
+
+\subsubsection{addi}
+\paragraph{} Adds an immediate with a register, and stores the result into the register. Can only add an immediate value from -127 to 127. If larger values are needed, see the R type instruction.
+\paragraph{Example:}
+\subparagraph{addi r1, 123} r1 = r1 + 0x7B
+
+\subsubsection{ori}
+\paragraph{} Bitwise or's  an immediate with a register, and stores the result into the register. Can only or values from -127 to 127. If larger values are needed, see the R type instruction.
+\paragraph{Example:}
+\subparagraph{ori r1, 123} r1 = r1 | 0x7B
+
+\subsubsection{loadi}
+\paragraph{} Stores the immediate value into the specified register. Can only load in values from -127 to 127.
+\paragraph{Example:}
+\subparagraph{loadi r5, 23} r1 = r1 \& 0x17
+
+\section{J-Type}
+\subsection{Description}
 \begin{itemize}
 \item 4 bit opcode
 \item 4 bits for comparison register
 \item 8 bits for jump address
 \end{itemize}
 
+\subsection{List}
 \begin{center}
 \begin{tabular}{| c | c | c | c |}
 \hline
 Instruction & description & opcode & parameters \\ \hline
-j & Jump unconditionally & 1100 & immediate \\ \hline
-jz & Jump to an offset if a register is zero & 1101 & 1 reg 1 imm \\ \hline
+jz & Jump to an offset if a register is zero & 1100 & 1 reg 1 imm \\ \hline
+j & Jump unconditionally & 1101 & immediate \\ \hline
 \end{tabular}
 \end{center}
+
+\subsection{Comments}
+\subsubsection{General}
+\paragraph{Warning:} it is possible to get the processor stuck by jumping a jump instruction.
+
+\subsubsection{jz}
+\paragraph{} Jumps to a label. Stores the offset, so it can only be used to jump to an instruction $\pm 127$ instructions away. If you need to go further, use the j instruction.
+
+\paragraph{Bit Field}
+\begin{center}
+\begin{tabular}{| c | c | c | c | c | c | c | c | c | c | c | c | c | c | c | c |}
+\hline
+o&o&o&o&s&s&s&s&i&i&i&i&i&i&i&i\\ \hline
+\end{tabular}
+\end{center}
+
+\paragraph{Example:}
+\subparagraph{jz r1, label} jumps to label if the register is 0
+
+
+\subsubsection{j}
+\paragraph{} Jumps to that position in memory via a label.
+\paragraph{Bit Field}
+\begin{center}
+\begin{tabular}{| c | c | c | c | c | c | c | c | c | c | c | c | c | c | c | c |}
+\hline
+o&o&o&o&i&i&i&i&i&i&i&i&i&i&i&i\\ \hline
+\end{tabular}
+\end{center}
+
+\paragraph{Example:}
+\subparagraph{j label} jumps to label
 
 
 \section{Other}
 Special instructions such as pseudo instructions.
-
 
 \begin{center}
 \begin{tabular}{| c | c | c | c |}
@@ -126,6 +320,10 @@ Instruction & description & opcode & parameters \\ \hline
 nop & No operation & 1111 & no parameters, all zeros\\ \hline
 \end{tabular}
 \end{center}
+
+\subsection{Comments}
+\subsubsection{nop}
+\paragraph{}Effectively adds 0 to R0.
 
 \end{document}
 

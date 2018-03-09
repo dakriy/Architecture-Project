@@ -17,8 +17,8 @@ package common is
   constant alu_addi  : std_logic_vector(3 downto 0) := "1001";
   constant alu_ori   : std_logic_vector(3 downto 0) := "1010";
   constant alu_loadi : std_logic_vector(3 downto 0) := "1011";
-  constant alu_j     : std_logic_vector(3 downto 0) := "1100";
-  constant alu_jz    : std_logic_vector(3 downto 0) := "1101";
+  constant alu_j     : std_logic_vector(3 downto 0) := "1101";
+  constant alu_jz    : std_logic_vector(3 downto 0) := "1100";
 
   --
   --constant alu_nop   : std_logic_vector(3 downto 0) := "1111";

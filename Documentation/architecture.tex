@@ -11,8 +11,10 @@
 %% Useful packages
 \usepackage{amsmath}
 \usepackage{graphicx}
+\graphicspath{ {images/} }
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{minted} %vhdl syntax highlighting
 
 \title{Project Documentation}
 \author{Jacob Priddy, Andrew Glencross, Charles Oroko, Seth Ballance}
@@ -325,5 +327,56 @@ nop & No operation & 1111 & no parameters, all zeros\\ \hline
 \subsubsection{nop}
 \paragraph{}Effectively adds 0 to R0.
 
-\end{document}
+\section{Architecture}
+\paragraph{}
+This is a description of the blocks on the CPU that have already been designed, and how they work.
+\paragraph{Note}
+For writing VHDL we kept to some conventions. Input ports have the prefix \textbf{i}, output ports have the prefix \textbf{q} and signals have the prefix \textbf{l}. Also, for ease of typing, we kept the naming in lowercase.
 
+\subsection{Top Level}
+\paragraph{Description}
+The way the FPGA interacts with the outside world between user and CPU.
+
+For inputs, the CPU has a 100MHz clock, \textbf{clk}, and a couple of buttons and switches, \textbf{switches}, \textbf{buttons}, so that different modes can be implemented, like a bootloading mode, or a debugging mode. \textbf{rx} is a UART input.
+
+For outputs, the CPU has the seven segment display and 8 LEDs. \textbf{tx} is a UART output.
+\begin{minted}{vhdl}
+entity booths_architecture is
+  port( i_clk_100   : in  std_logic; --100MHz clock
+        i_switches  : in  std_logic_vector(  1 downto 0 ); --two switches
+        i_buttons   : in  std_logic_vector(  1 downto 0 ); --two buttons
+        i_rx        : in  std_logic; --serial input of UART
+
+        q_7_segment : out std_logic_vector(  6 downto 0 ); --7 segment display for debugging
+        q_leds      : out std_logic_vector(  7 downto 0 ); --8 lines for LEDs
+        q_tx        : out std_logic); --serial output of UART
+end booths_architecture;
+\end{minted}
+\paragraph{Comments}
+The operation of the other blocks with respect to the top level have not yet been implemented, as some are still being created and worked on. So far, there are two modes available: active mode and bootloading mode. a choice of input signal to choose the modes has yet to be decided, however most likely will be implemented as the position of the switches on power on. One button will be a reset signal that can be found in the code as \textbf{reset}.
+\subsection{rx Communication}
+\paragraph{Description}
+UART input communication.
+
+The rx communication protocol allows bootloading of the assembler to the FPGA. As can be seen from the entity below, it runs asynchronously. ie \textbf{clk} is not the same clock as the rest of the blocks. We get the \textbf{reset} and \textbf{baud 16} inputs from the switches on the FPGA board.
+\begin{minted}{vhdl}
+entity uart_rx is
+  port( i_clk     : in  std_logic; --asynchronous clock
+        i_reset   : in  std_logic; --reset signal
+        i_baud_16 : in  std_logic; --16 times baud rate
+        i_rx      : in  std_logic; --serial input line
+
+        q_data    : out std_logic_vector( 7 downto 0 ); --byte to receive
+        q_flag    : out std_logic); --toggle on byte receive
+end uart_rx;
+\end{minted}
+When \textbf{reset} and \textbf{baud 16} are set, the bootloading sequence begins. We double clock \textbf{clk} after the start bit is received in order to read the other bits as shown in the image below:
+
+\begin{figure}[h]
+\includegraphics[scale=.65]{timing.png}
+\end{figure}
+
+\begin{minted}{vhdl}
+	
+\end{minted}
+\end{document}

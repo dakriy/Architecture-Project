@@ -1,12 +1,6 @@
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
---
--- Module Name: booths_architecture - Behavioral
--- Description: top level of the CPU
---
---              It has 2 stitches, 2 buttons 4 leds and a 7 segment display
---              also has UART capability
--------------------------------------------------------------------------------
+--Describes how the top level acts.
+--It has 2 stitches, 2 buttons 4 leds and a 7 segment display
+--also has UART capability
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
@@ -19,8 +13,8 @@ entity booths_architecture is
         i_rx        : in  std_logic; --serial input of UART
 
         q_7_segment : out std_logic_vector(  6 downto 0 ); --7 segment display for debugging
-        q_leds      : out std_logic_vector(  3 downto 0 ); --4 lines for LEDs
-        q_tx        : out std_logic --serial output of UART
-  );
+        q_leds      : out std_logic_vector(  7 downto 0 ); --8 lines for LEDs
+        q_tx        : out std_logic); --serial output of UART
+end booths_architecture;
 
---architecture Behavioral of booths_architecture is
+architecture Behavioral of booths_architecture is

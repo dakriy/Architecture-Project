@@ -76,76 +76,86 @@ begin
 						q_we_m   <= "11";
 						q_alu_op <= alu_mov;
 
-					when others =>		--NOOP
+					when others =>		--NOP
 				end case;
 
-			when "01" =>		--first half of I-type commands
-				--01xx ssss iiii iiii
+			when "01" or "10" =>		--I-type commands
+				--(01xx) or (10xx) ssss iiii iiii
 				--$d will be changed
 				q_we_d   <= "11";
 
-				case i_opc(13 downto 12) is
-					when "00" =>		--SLL
-						--shift destination left by immediate (4bit)
+				case i_opc(14 downto 12) is
+				    --First half of I-type commands starting with "01"
+					when "100" =>		--SRL
+						--shift destination right by immediate and shift in zeros (4bit)
 						--0100 ssss xxxx iiii
-						--$d = $d << $i
-						q_alu_op <= alu_sll;
-
-					-- SLL and SLA are the same thing. Why do we have both?
-					--				when "01" =>		--SLA
-					--            --shift destination left by immediate (4bit)
-					--            --0101 ssss xxxx iiii
-					--            --$d = $d << $i
-					--            q_alu_op <= alu_sla;
-
-					when "10" =>		--SR
-						--shift destination right by immediate shifting in sign bit (4bit)
-						--0110 ssss xxxx iiii
 						--$d = $d >> $i
-						q_alu_op <= alu_sr;
+						q_alu_op <= alu_srl;
 
-					when "11" =>		--FLIP
-						--flip all bits
+                    when "101" =>		--SRA
+                        --shift destination right by immediate and shift in sign bit (4bit)
+                        --0100 ssss xxxx iiii
+                        --$d = $d >> $i
+                        q_alu_op <= alu_sra;
+
+					when "110" =>		--SL
+						--shift destination left by immediate (4bit)
+						--0110 ssss xxxx iiii
+						--$d = $d << $i
+						q_alu_op <= alu_sl;
+
+					when "111" =>		--NOT
+						--not all bits
 						--0111 ssss xxxx xxxx
-						q_alu_op <= alu_flip;
+						q_alu_op <= alu_not;
 
-					when others =>		--NOOP
-				end case;
+                    --Second half of I-type commands starting with "10"
+                    when "000" =>		--ANDI
+                        --and a register with an immediate
+                        --1000 ssss iiii iiii
+                        --$s = $s and i
+                        q_alu_op <= alu_andi;
 
-			when "10" =>		--second half of I-type commands
-				--10xx ssss iiii iiii
-				--$s will be changed
-				q_we_d   <= "11";
+                    when "001" =>		--ADDI
+                        --add a register with an immediate
+                        --1001 ssss iiii iiii
+                        --$s = $s + i
+                        q_alu_op <= alu_addi;
 
-				case i_opc(13 downto 12) is
-					when "00" =>		--ANDI
-						--and a register with an immediate
-						--1000 ssss iiii iiii
-						--$s = $s and i
-						q_alu_op <= alu_andi;
-
-					when "01" =>		--ADDI
-						--add a register with an immediate
-						--1001 ssss iiii iiii
-						--$s = $s + i
-						q_alu_op <= alu_addi;
-
-					when "10" =>		--ORI
+                    when "010" =>		--ORI
 						--or a register with an immediate
 						--1010 ssss iiii iiii
 						--$s = $s or i
 						q_alu_op <= alu_ori;
 
-					when "11" =>		--LOADI
-						--load an immediate into a register
-						--1011 ssss iiii iiii
-						--$s = i
-						q_alu_op <= alu_loadi;
+                    when "011" =>		--LOADI
+                        --load an immediate into a register
+                        --1011 ssss iiii iiii
+                        --$s = i
+                        q_alu_op <= alu_loadi;
 
-					when others =>		--NOOP
+					when others =>		--NOP
 				end case;
 
-			when "11" =>		--J-type instructions
+			when "11" =>		--J-type instructions and others
 				--11xx ssss iiii iiii
 
-				case
+				case i_opc(13 downto 12) is
+                    when "00" =>		--JZ
+						--jump when given register equals zero
+						--1100 ssss iiii iiii
+						q_alu_op <= alu_jz;
+
+                    when "01" =>		--J
+                        --jump unconditionally
+                        --1101 xxxx iiii iiii
+                        q_alu_op <= alu_j;
+
+                    when "11" =>		--NOP
+                        --1111 xxxx xxxx xxxx
+
+                    when others =>      --NOP
+                end case;
+      end case;
+    end if;
+  end process;

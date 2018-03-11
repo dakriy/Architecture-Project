@@ -6,7 +6,7 @@
 
 char * getFileContents(char * file)
 {
-	char * buffer = NULL;
+	char * buffer;
 	long length;
 	FILE * f = NULL;
 	if (file != NULL) f = fopen(file, "r");
@@ -39,14 +39,33 @@ void outputToFile(char * fileName, instruction * data, unsigned char instruction
 	FILE * f = fopen(fileName, "wb");
 	if (f)
 	{
-		// TODO: Make sure to test the output of these next 3 functions so I can have robust code :)
-		fseek(f, 0, SEEK_SET);
+		if(fseek(f, 0, SEEK_SET) != 0)
+		{
+			printf("Something went wrong when creating the assembly file.\n");
+			exit(EXIT_FAILURE);
+		}
 
-		fwrite(data, sizeof(instruction), instructionCount, f);
+		for (int i = 0; i < instructionCount; i++)
+		{
+			unsigned char buff[2];
+			// Make sure I don't get screwed over by big/little endianness
+			buff[0] = (data[i].O & 0xFF00) >> 8;
+			buff[1] = data[i].O & 0x00FF;
+			if(fwrite(buff, sizeof(char), sizeof(buff), f) != sizeof(instruction))
+			{
+				perror("Error writing to file");
+				exit(EXIT_FAILURE);
+			}
+		}
+
 		fclose(f);
 	}
 	else
+	{
+		perror("Error creating file");
 		exit(EXIT_FAILURE);
+	}
+		
 }
 
 char * setOutputFileName(char * outputFile, char * inputFile)
@@ -58,7 +77,7 @@ char * setOutputFileName(char * outputFile, char * inputFile)
 		char * end = outputFile + strlen(outputFile) - 1;
 		char * pos = end;
 		char extension[] = ".out";
-		char * new_str = NULL;
+		char * new_str;
 		while (pos > outputFile && *pos != '.') pos--;
 
 		if (pos != outputFile) // File extension on the input file
@@ -74,7 +93,6 @@ char * setOutputFileName(char * outputFile, char * inputFile)
 		
 		free(outputFile);
 		outputFile = new_str;
-		new_str = NULL;
 	}
 	return outputFile;
 }
@@ -122,7 +140,7 @@ int main(int argc, const char* argv[])
 
 	outputFile = setOutputFileName(outputFile, inputFile);
 
-	unsigned char instructionCount;
+	unsigned short instructionCount;
 
 	// Assemble it
 	instruction * machineCode = assemble(file, &instructionCount);

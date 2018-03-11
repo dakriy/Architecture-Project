@@ -10,10 +10,10 @@ const char * instructionIdentifiers[] = {
 	"or",
 	"mov",
 
-	"sll",
-	"sla",
-	"sr",
-	"neg",
+	"srl",
+	"sra",
+	"sl",
+	"not",
 	"andi",
 	"addi",
 	"ori",
@@ -27,7 +27,7 @@ const char * instructionIdentifiers[] = {
 };
 
 const char * registerIdentifiers[] = {
-	"pc"
+	"r0"
 	"r1"
 	"r2"
 	"r3"
@@ -75,7 +75,7 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 	}
 
 
-	unsigned char instruction_index = UCHAR_MAX;
+	unsigned char instruction_index;
 	for (instruction_index = 0; instruction_index < NUMBER_OF_INSTRUCTIONS; instruction_index++)
 		if (strcmp(iterator1, instructionIdentifiers[instruction_index]) == 0)
 			break;
@@ -152,20 +152,20 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 	 		syntaxError("Unknown Register Identifier", lineNum);
 
 		// Store operand
-		instruc.reg1 = (REGISTERS)register_index;
+		instruc.reg = (REGISTERS)register_index;
 
 		iterator1 = iterator2;
 		iterator1 = trimWhiteSpace(iterator1);
 		// Check if the entered immediate is a number
 		for(int i=0; i<strlen(iterator1); i++){
-			if(i==0 && iterator[i] == '-')continue;
-				if(!isdigit(iterator1[i]));
-					syntaxError("Uknown Character Entered: Only Enter Numbers",lineNum);
+			if(i==0 && iterator1[i] == '-') continue;
+			if(!isdigit(iterator1[i]))
+				syntaxError("Unknown character entered, only enter numbers", lineNum);
 		}
 		// Grab immediate value as a string and convert to int
 		int immediate = atoi(iterator1);
 		// Check if immediate value is within the bounds of -127 and 127
-		if(immediate > 127 || immediate < -127);
+		if(immediate > 127 || immediate < -127)
 		 	syntaxError("Immediate Value Out Of Bounds: -127 to 127", lineNum);
 		// Store immediate value
 		instruc.immediate = immediate;
@@ -245,6 +245,7 @@ bool trimComments(char * str)
 
 void syntaxError(char* message, unsigned char line)
 {
+	// TODO: turn this into a char * as the line numbers won't match up
 	printf("INVALID SYNTAX!\n%s\nOn line: %u", message, line);
 	exit(EXIT_FAILURE);
 }
@@ -290,7 +291,7 @@ char* parseLabelsInLine(char* line, unsigned char line_index)
 		{
 			if(isspace(*backCheck))
 			{
-				syntaxError("Invalid label syntax!", line);
+				syntaxError("Invalid label syntax!", line_index);
 			}
 			backCheck--;
 		}
@@ -327,7 +328,7 @@ char* parseLabelsInLine(char* line, unsigned char line_index)
 	return newLine;
 }
 
-instruction* assemble(char* assembly, unsigned char * instructionCount)
+instruction* assemble(char* assembly, unsigned short * instructionCount)
 {
 	instruction * machineCode = (instruction *)malloc(sizeof(instruction)*MAX_INSTRUCTIONS);
 	checkPtr(machineCode);

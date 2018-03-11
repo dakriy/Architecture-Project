@@ -20,7 +20,7 @@ extern node* mentionLabelListHead;
 #define IMMEDIATE_VALUE_LENGTH CHAR_BIT
 #define MAXIMUM_IMMEDATE_VALUE SCHAR_MAX
 #define MINIMUM_IMMEDATE_VALUE SCHAR_MIN
-#define MAX_INSTRUCTIONS 128
+#define MAX_INSTRUCTIONS 65536
 #define NUMBER_OF_INSTRUCTIONS (sizeof(instructionIdentifiers) / sizeof(char *))
 #define NUMBER_OF_REGISTERS (sizeof(registerIdentifiers) / sizeof(char *))
 #define RTYPE_INDEX 0
@@ -46,7 +46,7 @@ char* trimWhiteSpace(char*);
 /*
  * Takes a whole assembly c string and returns the machine code
  */
-instruction* assemble(char* assembly, unsigned char * instructionCount);
+instruction* assemble(char* assembly, unsigned short * instructionCount);
 
 /*
  * Puts a null terminater behind comments

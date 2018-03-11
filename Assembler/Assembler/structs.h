@@ -13,7 +13,7 @@ typedef int bool;
 // Register definitions
 typedef enum REGISTERS
 {
-	PC = 0x0,
+	r0 = 0x0,
 	R1 = 0x1,
 	R2 = 0x2,
 	R3 = 0x3,
@@ -43,14 +43,14 @@ typedef enum OPCODES
 	SLL = 0x4,
 	SLA = 0x5,
 	SR = 0x6,
-	NEG = 0x7,
+	NOT = 0x7,
 	ANDI = 0x8,
 	ADDI = 0x9,
 	ORI = 0xA,
 	LOADI = 0xB,
-	JZ = 0xC,
 
 	// J-type
+	JZ = 0xC,
 	J = 0xD,
 
 	// Other

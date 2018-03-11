@@ -1,5 +1,5 @@
 --Describes how the top level acts.
---It has 2 stitches, 2 buttons 4 leds and a 7 segment display
+--It has 2 switches, 2 buttons, 4 leds, and a 7 segment display
 --also has UART capability
 
 library IEEE;

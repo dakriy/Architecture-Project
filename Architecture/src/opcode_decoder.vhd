@@ -148,7 +148,7 @@ begin
 
                     when "01" =>		--J
                         --jump unconditionally
-                        --1101 xxxx iiii iiii
+                        --1101 iiii iiii iiii
                         q_alu_op <= alu_j;
 
                     when "11" =>		--NOP

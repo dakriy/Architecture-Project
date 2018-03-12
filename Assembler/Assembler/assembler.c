@@ -156,7 +156,7 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 
 		iterator1 = iterator2;
 		iterator1 = trimWhiteSpace(iterator1);
-		// Check if the entered immediate is a number
+		// Check if the immediate value is a number
 		for(int i=0; i<strlen(iterator1); i++){
 			if(i==0 && iterator1[i] == '-') continue;
 			if(!isdigit(iterator1[i]))
@@ -267,7 +267,7 @@ char* getNextLine(char* str, const char* start, const char** found_pos)
 	// Plus 1 because 0 index
 	char * line = (char *)malloc(sizeof(char) * (pos - start + 1));
 	checkPtr(line);
-	
+
 	// Copy over the line to the new string
 	memcpy(line, start, pos - start);
 

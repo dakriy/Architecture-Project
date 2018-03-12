@@ -16,15 +16,24 @@ end seven_segment;
 --describe how the lights on the 7-segment display are related to hex numbers
 function segment_map(val: std_logic_vector(3 downto 0)) return std_logic_vector is
 begin
-  ------0----
-  --|       |
-  --5       1
-  --|       |
-  --+---6---+
-  --|       |
-  --4       2
-  --|       |
-  ------3----
+  case val is --relate hex values to which leds are on
+    when x"0" => return "0111111"; --0
+    when x"0" => return "0000110"; --1
+    when x"0" => return "1011011"; --2
+    when x"0" => return "1001111"; --3
+    when x"0" => return "1100110"; --4
+    when x"0" => return "1101101"; --5
+    when x"0" => return "1111101"; --6
+    when x"0" => return "0000111"; --7
+    when x"0" => return "1111111"; --8
+    when x"0" => return "1101111"; --9
+    when x"0" => return "1110111"; --A
+    when x"0" => return "1111100"; --b
+    when x"0" => return "1011000"; --c
+    when x"0" => return "1011110"; --d
+    when x"0" => return "1111001"; --E
+    when x"0" => return "1110001"; --F
+  end case;
+end;
 
-  case val is --leds to "6543210"
-    when x"0" => return "0111111"
+signal l_count : std_logic_vector()

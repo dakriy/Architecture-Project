@@ -23,26 +23,27 @@ const char * instructionIdentifiers[] = {
 	"j",
 
 	"", // Empty so that opcodes match up to the instruction
-	"nop"
+	"",
+	"nop",
 };
 
 const char * registerIdentifiers[] = {
-	"r0"
-	"r1"
-	"r2"
-	"r3"
-	"r4"
-	"r5"
-	"r6"
-	"r7"
-	"r8"
-	"r9"
-	"r10"
-	"r11"
-	"r12"
-	"r13"
-	"r14"
-	"r15"
+	"r0",
+	"r1",
+	"r2",
+	"r3",
+	"r4",
+	"r5",
+	"r6",
+	"r7",
+	"r8",
+	"r9",
+	"r10",
+	"r11",
+	"r12",
+	"r13",
+	"r14",
+	"r15",
 };
 
 instruction instructionToMachineCode(char* line, unsigned char lineNum)
@@ -51,9 +52,7 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 	char * iterator2 = line;
 
 	unsigned short lineLength = strlen(line);
-	instruction inst;
-	inst.O = 0;
-
+	
 	// Make the whole thing lowercase
 	for (; *iterator1; ++iterator1) *iterator1 = tolower(*iterator1);
 
@@ -74,11 +73,16 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		syntaxError("Unknown syntax error.", lineNum);
 	}
 
-
 	unsigned char instruction_index;
 	for (instruction_index = 0; instruction_index < NUMBER_OF_INSTRUCTIONS; instruction_index++)
 		if (strcmp(iterator1, instructionIdentifiers[instruction_index]) == 0)
 			break;
+	if (instruction_index == NUMBER_OF_INSTRUCTIONS)
+	{
+		syntaxError("Unknown Instruction!", lineNum);
+	}
+
+	instruction inst = {.O = 0};
 
 	if (instruction_index < ITYPE_INDEX) // Instruction is a R type
 	{
@@ -124,10 +128,14 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 
 		inst.R = instruc;
 
-	} else if (instruction_index < JTYPE_INDEX || instruction_index == JZ) // instruction is a I type or a JZ which has the same signature as an I type
-	{
+	} else if (instruction_index < JTYPE_INDEX || instruction_index == JZ)
+	{ // instruction is a I type or a JZ which has the same signature as an I type
+
+		// TODO: Make this work for the NOT instruction.
 		IType instruc;
 		instruc.opcode = (OPCODES)instruction_index;
+
+		instruc.immediate = 16;
 
 		// Getting first operand
 		iterator1 = iterator2;
@@ -156,34 +164,60 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 
 		iterator1 = iterator2;
 		iterator1 = trimWhiteSpace(iterator1);
-		// Check if the immediate value is a number
-		for(int i=0; i<strlen(iterator1); i++){
-			if(i==0 && iterator1[i] == '-') continue;
-			if(!isdigit(iterator1[i]))
-				syntaxError("Unknown character entered, only enter numbers", lineNum);
+		
+		// Get label if jump instruction
+		if (instruction_index == JZ)
+		{
+			LabelMention * mention = (LabelMention*)malloc(sizeof(LabelMention));
+			checkPtr(mention);
+			
+			mention->location = lineNum;
+
+			mention->isOffset = TRUE;
+			
+			mention->label = malloc(sizeof(char) * (strlen(iterator1) + 1));
+			
+			checkPtr(mention);
+		
+			mention->label[strlen(iterator1)] = '\0';
+
+			memcpy(mention->label, iterator1, strlen(iterator1));
+
+			if (mentionLabelListHead == NULL)
+				mentionLabelListHead = create_m(mention, NULL);
+			else
+				append_m(mentionLabelListHead, mention);
+		} else
+		{
+			// Check if the immediate value is a number
+			for (int i = 0; i < strlen(iterator1); i++) {
+				if (i == 0 && iterator1[i] == '-') continue;
+				if (!isdigit(iterator1[i]))
+					syntaxError("Unknown character entered, only enter numbers", lineNum);
+			}
+			// Grab immediate value as a string and convert to int
+			int immediate = atoi(iterator1);
+			// Check if immediate value is within the bounds of -127 and 127
+			if (immediate > 127 || immediate < -127)
+				syntaxError("Immediate Value Out Of Bounds: -127 to 127", lineNum);
+			// Store immediate value
+			instruc.immediate = immediate;
 		}
-		// Grab immediate value as a string and convert to int
-		int immediate = atoi(iterator1);
-		// Check if immediate value is within the bounds of -127 and 127
-		if(immediate > 127 || immediate < -127)
-		 	syntaxError("Immediate Value Out Of Bounds: -127 to 127", lineNum);
-		// Store immediate value
-		instruc.immediate = immediate;
 
 		inst.I = instruc;
 
-	} else if(instruction_index < OTYPE_INDEX) // Instruction is a J type
-	{
+	} else if(instruction_index < OTYPE_INDEX)
+	{ // Instruction is a J type
 		JType instruc;
 		instruc.opcode = (OPCODES)instruction_index;
+
 		// TODO: PARSE THE REST OF THE J TYPE INSTRUCTIONS
 		inst.J = instruc;
-	} else if (instruction_index == OTYPE_INDEX) // Instruction is in the other category which is a NOP at this point
-	{
-		// NOP is the only option here, so...
+	} else
+	{ // Instruction is a pseudo instruction
+		// NOP is the only option here at this point, so...
 		inst.O = 0;
-	} else // Instruction not found
-		syntaxError("Unknown instruction!", lineNum);
+	}
 
 	// TODO: Actually parse instructions, on jumps, when you come to a label, just add it to the mention tree
 
@@ -243,13 +277,6 @@ bool trimComments(char * str)
 	return TRUE;
 }
 
-void syntaxError(char* message, unsigned char line)
-{
-	// TODO: turn this into a char * as the line numbers won't match up
-	printf("INVALID SYNTAX!\n%s\nOn line: %u", message, line);
-	exit(EXIT_FAILURE);
-}
-
 char* getNextLine(char* str, const char* start, const char** found_pos)
 {
 	// If we are at the end of the string, return a null as there are no more lines.
@@ -284,7 +311,7 @@ char* parseLabelsInLine(char* line, unsigned char line_index)
 	while (pos < line + strlen(line) && *pos != ':') pos++;
 
 	if (*pos == ':')
-	{
+	{ // We got a label
 		char * backCheck = pos;
 
 		while (backCheck > line)
@@ -298,6 +325,8 @@ char* parseLabelsInLine(char* line, unsigned char line_index)
 
 
 		Label * label = (Label*)malloc(sizeof(Label));
+
+		checkPtr(label);
 
 		label->label = (char*)malloc(sizeof(char*) * (pos - line + 1));
 
@@ -384,6 +413,7 @@ instruction* assemble(char* assembly, unsigned short * instructionCount)
 	}
 
 	// TODO: run through code again replacing all label symbols with their actual value.
+	dispose(mentionLabelListHead);
 	dispose(labelListHead);
 
 	*instructionCount = instruction_count;

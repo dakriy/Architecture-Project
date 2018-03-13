@@ -111,12 +111,9 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		if (! *iterator2) syntaxError("Invalid Operand", lineNum);
 
 		*iterator2 = '\0';
-		if(iterator2 < line + lineLength) {
+		if(iterator2 < line + lineLength)
 			iterator2++;
-		}
-		else {
-			syntaxError("Second Operand Not Found", lineNum);
-		}
+		else syntaxError("Second Operand Not Found", lineNum);
 
 
 		// Looking for the operand in registry
@@ -157,22 +154,19 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		IType instruc;
 		instruc.opcode = (OPCODES)instruction_index;
 
+		instruc.immediate = 16;
+
 		// Getting first operand
 		iterator1 = iterator2;
 		while (*iterator2 && *iterator2 != ',') iterator2++;
-		if (! *iterator2 && instruction_index != NOT) syntaxError("Invalid Operand", lineNum);
+		if (! *iterator2) syntaxError("Invalid Operand", lineNum);
 
 		// Getting Second Operand
 		*iterator2 = '\0';
-		if(iterator2 < line + lineLength) {
+		if(iterator2 < line + lineLength)
 			iterator2++;
-		}
-		else if (instruction_index == NOT) {
-			instruc.immediate = 16;
-		}
-		else {
-			syntaxError("Second Operand Not Found", lineNum);
-		}
+			else if (instruction_index == NOT);
+				else syntaxError("Second Operand Not Found", lineNum);
 
 
 		// Looking for the operand in registry
@@ -191,8 +185,12 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 
 		iterator1 = iterator2;
 		iterator1 = trimWhiteSpace(iterator1);
+<<<<<<< HEAD
 
 		// Get label if jump instruction
+=======
+
+>>>>>>> 1ec88974535e7c564671daff976582dd969c5367
 		if (instruction_index == JZ)
 		{
 			// Save the mention onto the mention list.
@@ -204,9 +202,15 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 			mention->isOffset = TRUE;
 
 			mention->label = malloc(sizeof(char) * (strlen(iterator1) + 1));
+<<<<<<< HEAD
+
+			checkPtr(mention);
+
+=======
 
 			checkPtr(mention->label);
 
+>>>>>>> 1ec88974535e7c564671daff976582dd969c5367
 			mention->label[strlen(iterator1)] = '\0';
 
 			memcpy(mention->label, iterator1, strlen(iterator1));
@@ -216,9 +220,6 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 			else
 				append_m(mentionLabelListHead, mention);
 			instruc.immediate = 0;
-		} else if (instruction_index == NOT)
-		{
-			// Nothing
 		} else
 		{
 			// Check if the immediate value is a number
@@ -474,7 +475,7 @@ instruction* assemble(char* assembly, unsigned short * instructionCount)
 	 */
 	char * found_pos = assembly;
 	unsigned char instruction_count = 0;
-	for (char * line = getNextLine(assembly, found_pos, (const char **)&found_pos); line != NULL; line = getNextLine(assembly, found_pos, (const char **)&found_pos))
+	for (char * line = getNextLine(assembly, found_pos, &found_pos); line != NULL; line = getNextLine(assembly, found_pos, &found_pos))
 	{
 		char * trimmed = trimWhiteSpace(line);
 		if(trimComments(trimmed))

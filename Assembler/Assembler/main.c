@@ -1,6 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+//#ifndef _WIN32
+//#include <arpa/inet.h>
+//#else
+//#include <Windows.h>
+//// WHY WINDOWS??? WHY?
+//#pragma comment(lib, "Ws2_32.lib")
+//#endif
 #include "help.h"
 #include "assembler.h"
 
@@ -34,7 +41,7 @@ char * getFileContents(char * file)
 	return buffer;
 }
 
-void outputToFile(char * fileName, instruction * data, unsigned char instructionCount)
+void outputToFile(char * fileName, instruction * data, unsigned short instructionCount)
 {
 	FILE * f = fopen(fileName, "wb");
 	if (f)
@@ -47,16 +54,21 @@ void outputToFile(char * fileName, instruction * data, unsigned char instruction
 
 		for (int i = 0; i < instructionCount; i++)
 		{
+			// TODO: GET AN ASRPRIN AND FIX THIS. HOOLY MOOOLLLYYY
 			unsigned char buff[2];
 			// Make sure I don't get screwed over by big/little endianness
-			buff[0] = (data[i].O & 0xFF00) >> 8;
-			buff[1] = data[i].O & 0x00FF;
-			if(fwrite(buff, sizeof(char), sizeof(buff), f) != sizeof(instruction))
+			// LATER EDIT: I'm getting screwed by it anyway.... This is probably only going to work on little endian machines...
+			// GAAAAAAAAAAH I CAN'T WIN SERIOUSLY
+			buff[0] = (data[i].O & 0xF000) >> 12 | (data[i].O & 0x0F00) >> 4;
+			buff[1] = (data[i].O & 0x00F0) >> 4 | (data[i].O & 0x000F) << 4;
+			if(fwrite(buff, sizeof(char), sizeof buff, f) != sizeof(instruction))
 			{
 				perror("Error writing to file");
 				exit(EXIT_FAILURE);
 			}
 		}
+
+//		fwrite(data, sizeof(instruction), instructionCount, f);
 
 		fclose(f);
 	}
@@ -97,11 +109,18 @@ char * setOutputFileName(char * outputFile, char * inputFile)
 	return outputFile;
 }
 
+void uploadToProcessor(instruction * machineCode, unsigned short instructionCount)
+{
+	// TODO: Actually implement this
+	return;
+}
+
 // Just call the program with the input and output files 
 int main(int argc, const char* argv[])
 {
 	char * inputFile = NULL;
 	char * outputFile = NULL;
+	bool upload = FALSE;
 	for (size_t optind = 1; optind < argc && argv[optind][0] == '-'; optind++) {
 		switch (argv[optind][1]) {
 		case 'o':
@@ -123,6 +142,11 @@ int main(int argc, const char* argv[])
 		case 'h':
 			printHelp(argv[0]);
 			break;
+		case 'u':
+			// TODO: Implement a UART communication to upload programs to the processor
+			printf("Not implemented.");
+			upload = TRUE;
+			break;
 		default:
 			printHelp(argv[0]);
 			exit(EXIT_FAILURE);
@@ -133,20 +157,22 @@ int main(int argc, const char* argv[])
 	{
 		printf("An input file is required!\n");
 		printHelp(argv[0]);
-		exit(EXIT_SUCCESS);
+		exit(EXIT_FAILURE);
 	}
 
 	char * file = getFileContents(inputFile);
-
-	outputFile = setOutputFileName(outputFile, inputFile);
+	if (!upload || outputFile != NULL)
+		outputFile = setOutputFileName(outputFile, inputFile);
 
 	unsigned short instructionCount;
 
 	// Assemble it
 	instruction * machineCode = assemble(file, &instructionCount);
 
-	// Write to the output file.
-	outputToFile(outputFile, machineCode, instructionCount);
+	if (outputFile != NULL) // Write to the output file.
+		outputToFile(outputFile, machineCode, instructionCount);
+	if (upload) // Write to processor
+		uploadToProcessor(machineCode, instructionCount);
 
 	free(machineCode);
 	free(file);

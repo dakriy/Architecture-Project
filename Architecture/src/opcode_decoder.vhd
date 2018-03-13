@@ -1,3 +1,15 @@
+-------------------------------------------------------------------------------
+--
+-- Module Name:     opcode_decoder
+-- Project Name:    Booth's Radix-4 Processor
+-- Target Device:   Spartan3E xc3s1200e
+-- Description:     the opcode fetch stage of a CPU.
+--
+-- We credit Dr. Juergen Sauermann for his initial design which we have modified to fit our needs
+-- link: https://github.com/freecores/cpu_lecture/tree/master/html
+--
+-------------------------------------------------------------------------------
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.STD_LOGIC_ARITH.all;
@@ -8,22 +20,22 @@ use work.common.all;
 entity opcode_decoder is
 	port(	i_clk  : in std_logic;
 
-	        i_opc  : in  std_logic_vector( 15 downto 0 );
-                i_pc   : in  std_logic_vector( 15 downto 0 );
-                --i_t0   : out std_logic;
+	        i_opc       : in  std_logic_vector( 15 downto 0 );
+            i_pc        : in  std_logic_vector( 15 downto 0 );
+            --i_t0        : out std_logic;
 
-        q_alu_op  : out std_logic_vector(  1 downto 0 );
-        q_ssss    : out std_logic_vector(  3 downto 0 ); --Rs
-        q_tttt    : out std_logic_vector(  3 downto 0 ); --Rt
-        q_imm     : out std_logic_vector(  7 downto 0 ); --immediate value (offset from PC for jumps)
-        q_jadr    : out std_logic_vector( 11 downto 0 ); --branch/jump address (byte addressed)
-        q_opc     : out std_logic_vector( 15 downto 0 ); --opcode to be decoded
-        q_pc      : out std_logic_vector( 15 downto 0 ); --program counter for current opcode
-        q_pc_op   : out std_logic_vector( 15 downto 0 ); --operation to be performed on pc
-        q_rsel    : out std_logic_vector(  7 downto 0 ); --register select
+            q_alu_op  : out std_logic_vector(  1 downto 0 );
+            q_ssss    : out std_logic_vector(  3 downto 0 ); --Rs
+            q_tttt    : out std_logic_vector(  3 downto 0 ); --Rt
+            q_imm     : out std_logic_vector(  7 downto 0 ); --immediate value (offset from PC for jumps)
+            q_jadr    : out std_logic_vector( 11 downto 0 ); --branch/jump address (byte addressed)
+            q_opc     : out std_logic_vector( 15 downto 0 ); --opcode to be decoded
+            q_pc      : out std_logic_vector( 15 downto 0 ); --program counter for current opcode
+            q_pc_op   : out std_logic_vector( 15 downto 0 ); --operation to be performed on pc
+            q_rsel    : out std_logic_vector(  7 downto 0 ); --register select
 
-        q_we_d    : out std_logic_vector(  1 downto 0); --set when Rs is to be written
-        q_we_m    : out std_logic_vector(  1 downto 0)); --set when memory is to be written
+            q_we_d    : out std_logic_vector(  1 downto 0); --set when Rs is to be written
+            q_we_m    : out std_logic_vector(  1 downto 0)); --set when memory is to be written
 end opcode_decoder;
 
 architecture Behavioral of opcode_decoder is

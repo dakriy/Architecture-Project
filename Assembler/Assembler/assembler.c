@@ -149,7 +149,7 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 
 		// TODO: Make this work for the NOT instruction.
 		// TODO: I added a nested if else statement to skip syntax error if no second operand is found
-		// TODO: I still need to figure out how to skip over the storing of the second operand 
+		// TODO: I still need to figure out how to skip over the storing of the second operand
 
 		IType instruc;
 		instruc.opcode = (OPCODES)instruction_index;
@@ -165,7 +165,7 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		*iterator2 = '\0';
 		if(iterator2 < line + lineLength)
 			iterator2++;
-			else if (instruction_index == NOT)
+			else if (instruction_index == NOT);
 				else syntaxError("Second Operand Not Found", lineNum);
 
 
@@ -189,7 +189,7 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 
 		// Get label if jump instruction
 =======
-		
+
 >>>>>>> 1ec88974535e7c564671daff976582dd969c5367
 		if (instruction_index == JZ)
 		{
@@ -207,9 +207,9 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 			checkPtr(mention);
 
 =======
-			
+
 			checkPtr(mention->label);
-		
+
 >>>>>>> 1ec88974535e7c564671daff976582dd969c5367
 			mention->label[strlen(iterator1)] = '\0';
 
@@ -515,7 +515,7 @@ instruction* assemble(char* assembly, unsigned short * instructionCount)
 		free(line);
 	}
 
-	// Go through all of the labels and replace 
+	// Go through all of the labels and replace
 	traverse(mentionLabelListHead, mentionCallback);
 
 	dispose(mentionLabelListHead);

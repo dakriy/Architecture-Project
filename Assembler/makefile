@@ -13,7 +13,6 @@ all: $(LINK_TARGET)
 $(LINK_TARGET): $(OBJS)
 	$(CC) -g -o $@ $^
 
-
 $(ODIR)/%.o: $(SDIR)/%.c
 	$(CC) -c $(INC) -o $@ $< $(CFLAGS)
 
@@ -21,8 +20,6 @@ $(OUT): $(OBJS)
 	ar rvs $(OUT) $^
 
 .PHONY: clean
-
-all:
 
 clean:
 	rm -f $(ODIR)/* $(OUT) $(LINK_TARGET)

@@ -111,9 +111,12 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		if (! *iterator2) syntaxError("Invalid Operand", lineNum);
 
 		*iterator2 = '\0';
-		if(iterator2 < line + lineLength)
+		if(iterator2 < line + lineLength) {
 			iterator2++;
-		else syntaxError("Second Operand Not Found", lineNum);
+		}
+		else {
+			syntaxError("Second Operand Not Found", lineNum);
+		}
 
 
 		// Looking for the operand in registry
@@ -163,10 +166,20 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 
 		// Getting Second Operand
 		*iterator2 = '\0';
-		if(iterator2 < line + lineLength)
+		if(iterator2 < line + lineLength) {
 			iterator2++;
+<<<<<<< HEAD:Assembler/Assembler/assembler.c
 			else if (instruction_index == NOT);
 				else syntaxError("Second Operand Not Found", lineNum);
+=======
+		}
+		else if (instruction_index == NOT) {
+			// Do something I guess?
+		}
+		else {
+			syntaxError("Second Operand Not Found", lineNum);
+		}
+>>>>>>> 0e5c458eee3488212a5910c832b988bfbe618a83:Assembler/assembler.c
 
 
 		// Looking for the operand in registry
@@ -185,12 +198,14 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 
 		iterator1 = iterator2;
 		iterator1 = trimWhiteSpace(iterator1);
-<<<<<<< HEAD
 
 		// Get label if jump instruction
+<<<<<<< HEAD:Assembler/Assembler/assembler.c
 =======
 
 >>>>>>> 1ec88974535e7c564671daff976582dd969c5367
+=======
+>>>>>>> 0e5c458eee3488212a5910c832b988bfbe618a83:Assembler/assembler.c
 		if (instruction_index == JZ)
 		{
 			// Save the mention onto the mention list.
@@ -202,15 +217,17 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 			mention->isOffset = TRUE;
 
 			mention->label = malloc(sizeof(char) * (strlen(iterator1) + 1));
-<<<<<<< HEAD
 
-			checkPtr(mention);
-
+<<<<<<< HEAD:Assembler/Assembler/assembler.c
 =======
 
 			checkPtr(mention->label);
 
 >>>>>>> 1ec88974535e7c564671daff976582dd969c5367
+=======
+			checkPtr(mention->label);
+
+>>>>>>> 0e5c458eee3488212a5910c832b988bfbe618a83:Assembler/assembler.c
 			mention->label[strlen(iterator1)] = '\0';
 
 			memcpy(mention->label, iterator1, strlen(iterator1));
@@ -475,7 +492,7 @@ instruction* assemble(char* assembly, unsigned short * instructionCount)
 	 */
 	char * found_pos = assembly;
 	unsigned char instruction_count = 0;
-	for (char * line = getNextLine(assembly, found_pos, &found_pos); line != NULL; line = getNextLine(assembly, found_pos, &found_pos))
+	for (char * line = getNextLine(assembly, found_pos, (const char **)&found_pos); line != NULL; line = getNextLine(assembly, found_pos, (const char **)&found_pos))
 	{
 		char * trimmed = trimWhiteSpace(line);
 		if(trimComments(trimmed))

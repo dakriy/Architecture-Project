@@ -8,7 +8,7 @@
 // I like my bools
 #define TRUE 1
 #define FALSE 0
-typedef int bool;
+typedef unsigned char bool;
 
 // Register definitions
 typedef enum REGISTERS
@@ -60,17 +60,15 @@ typedef enum OPCODES
 
 typedef struct Label
 {
-	unsigned char location;
 	char * label;
+	unsigned char location;
 } Label;
 
 typedef struct LabelMention
 {
 	char * label;
-	unsigned char instruction;
-	// Bit offset
-	unsigned char offset;
-
+	unsigned char location;
+	bool isOffset;
 } LabelMention;
 
 typedef struct node {
@@ -80,23 +78,25 @@ typedef struct node {
 } node;
 
 // Define instruction types
+// Each type HAS to be 2 bytes
+// Fields are gaurnteed to be laid out in memory in the same order as you define them.
 
 typedef struct RType {
-	OPCODES opcode : 4;
-	REGISTERS reg1 : 4;
-	REGISTERS reg2 : 4;
-	char addressMode : 2;
-	char padding : 2;
+	unsigned short opcode : 4;
+	unsigned short reg1 : 4;
+	unsigned short reg2 : 4;
+	unsigned short addressMode : 2;
+	unsigned short padding : 2;
 } RType;
 
 typedef struct IType {
-	OPCODES opcode : 4;
-	REGISTERS reg : 4;
-	char immediate;
+	unsigned short opcode : 4;
+	unsigned short reg : 4;
+	unsigned short immediate : 8;
 } IType;
 
 typedef struct JType {
-	OPCODES opcode : 4;
+	unsigned short opcode : 4;
 	unsigned short immediate : 12;
 } JType;
 

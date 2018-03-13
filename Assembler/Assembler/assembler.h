@@ -56,13 +56,6 @@ instruction* assemble(char* assembly, unsigned short * instructionCount);
 bool trimComments(char * str);
 
 /*
- * Exit program because of a syntax error of some sort.
- * Will not return after this gets called.
- * THIS WILL EXIT THE PROGRAM RIGHT THEN AND THERE!
- */
-void syntaxError(char * message, unsigned char line);
-
-/*
 * Gets the next line in a giant c string.
 * The returned string does need to be free'd
 */

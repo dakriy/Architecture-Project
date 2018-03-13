@@ -33,7 +33,7 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 entity cpu_core is
   port( i_clk     : in  std_logic; --global clock
         i_reset   : in  std_logic;
-        --i_intvec  : in  std_logic_vector(  5 downto 0 ); --interupt vector input
+        --i_intvec  : in  std_logic_vector(  5 downto 0 ); --interrupt vector input
         i_din     : in  std_logic_vector(  7 downto 0 ); --input data (pmem or i/o)
 
         q_opc     : out std_logic_vector( 15 downto 0 ); --current opcode

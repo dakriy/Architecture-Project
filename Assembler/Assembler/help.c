@@ -11,9 +11,10 @@ void printHelp(const char * name)
 	printf("Usage:\n");
 	printf("\t%s [options] -o [<Output File Name>] -i [<Input File Name>]\n", name);
 	printf("\nOptions:\n");
-	printOption("-h", "Prints this screen");
+	printOption("-h", "Prints this screen.");
 	printOption("-o", "Specifies the output file.");
 	printOption("-i", "Specifies the input file.");
+	printOption("-u", "Uploads the file onto the processor VIA a connected UART interface. (Not yet implemented)");
 }
 
 void checkPtr(void* ptr)

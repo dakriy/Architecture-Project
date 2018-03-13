@@ -13,7 +13,7 @@ typedef unsigned char bool;
 // Register definitions
 typedef enum REGISTERS
 {
-	r0 = 0x0,
+	R0 = 0x0,
 	R1 = 0x1,
 	R2 = 0x2,
 	R3 = 0x3,
@@ -40,9 +40,9 @@ typedef enum OPCODES
 	MOV = 0x3,
 
 	// I-type
-	SLL = 0x4,
-	SLA = 0x5,
-	SR = 0x6,
+	SRL = 0x4,
+	SRA = 0x5,
+	SL = 0x6,
 	NOT = 0x7,
 	ANDI = 0x8,
 	ADDI = 0x9,
@@ -51,10 +51,7 @@ typedef enum OPCODES
 
 	// J-type
 	JZ = 0xC,
-	J = 0xD,
-
-	// Other
-	NOP = 0xF
+	J = 0xD
 } OPCODES;
 
 
@@ -92,7 +89,7 @@ typedef struct RType {
 typedef struct IType {
 	unsigned short opcode : 4;
 	unsigned short reg : 4;
-	unsigned short immediate : 8;
+	short immediate : 8;
 } IType;
 
 typedef struct JType {

@@ -13,6 +13,10 @@ extern const char * instructionIdentifiers[];
 extern const char * registerIdentifiers[];
 extern node* labelListHead;
 extern node* mentionLabelListHead;
+extern callback mentionCallback, labelCallback;
+extern LabelMention * currentMention;
+extern bool breakTraverse;
+extern instruction * machineCode;
 
 
 #define OPCODE_LENGTH 4
@@ -68,5 +72,14 @@ char * getNextLine(char * str, const char * start,const char** found_pos);
  */
 char* parseLabelsInLine(char * line, unsigned char line_index);
 
+/*
+ * Label mention list traversal callback
+ */
+void traverseMention(node * n);
+
+/*
+ * Label list traversal callback
+ */
+void traverseLabels(node * n);
 
 #endif // ASSEMBLER_H_

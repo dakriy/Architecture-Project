@@ -27,7 +27,7 @@ char * getFileContents(char * file)
 	}
 	else
 	{
-		printf("File could not be read because: %s\n", strerror(errno));
+		perror("File could not be opened.");
 		exit(EXIT_FAILURE);
 	}
 
@@ -69,7 +69,7 @@ void outputToFile(char * fileName, instruction * data, unsigned short instructio
 		perror("Error creating file");
 		exit(EXIT_FAILURE);
 	}
-		
+
 }
 
 char * setOutputFileName(char * outputFile, char * inputFile)
@@ -94,7 +94,7 @@ char * setOutputFileName(char * outputFile, char * inputFile)
 		new_str[0] = '\0';   // ensures the memory is an empty string becuase malloc can return rubbish lol
 		strcat(new_str, outputFile);
 		strcat(new_str, extension);
-		
+
 		free(outputFile);
 		outputFile = new_str;
 	}
@@ -107,7 +107,7 @@ void uploadToProcessor(instruction * machineCode, unsigned short instructionCoun
 	return;
 }
 
-// Just call the program with the input and output files 
+// Just call the program with the input and output files
 int main(int argc, const char* argv[])
 {
 	char * inputFile = NULL;

@@ -111,9 +111,12 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		if (! *iterator2) syntaxError("Invalid Operand", lineNum);
 
 		*iterator2 = '\0';
-		if(iterator2 < line + lineLength)
+		if(iterator2 < line + lineLength) {
 			iterator2++;
-		else syntaxError("Second Operand Not Found", lineNum);
+		}
+		else {
+			syntaxError("Second Operand Not Found", lineNum);
+		}
 
 
 		// Looking for the operand in registry
@@ -149,7 +152,7 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 
 		// TODO: Make this work for the NOT instruction.
 		// TODO: I added a nested if else statement to skip syntax error if no second operand is found
-		// TODO: I still need to figure out how to skip over the storing of the second operand 
+		// TODO: I still need to figure out how to skip over the storing of the second operand
 
 		IType instruc;
 		instruc.opcode = (OPCODES)instruction_index;
@@ -163,10 +166,15 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 
 		// Getting Second Operand
 		*iterator2 = '\0';
-		if(iterator2 < line + lineLength)
+		if(iterator2 < line + lineLength) {
 			iterator2++;
-			else if (instruction_index == NOT)
-				else syntaxError("Second Operand Not Found", lineNum);
+		}
+		else if (instruction_index == NOT) {
+			// Do something I guess?
+		}
+		else {
+			syntaxError("Second Operand Not Found", lineNum);
+		}
 
 
 		// Looking for the operand in registry
@@ -185,12 +193,8 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 
 		iterator1 = iterator2;
 		iterator1 = trimWhiteSpace(iterator1);
-<<<<<<< HEAD
 
 		// Get label if jump instruction
-=======
-		
->>>>>>> 1ec88974535e7c564671daff976582dd969c5367
 		if (instruction_index == JZ)
 		{
 			// Save the mention onto the mention list.
@@ -202,15 +206,9 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 			mention->isOffset = TRUE;
 
 			mention->label = malloc(sizeof(char) * (strlen(iterator1) + 1));
-<<<<<<< HEAD
 
-			checkPtr(mention);
-
-=======
-			
 			checkPtr(mention->label);
-		
->>>>>>> 1ec88974535e7c564671daff976582dd969c5367
+
 			mention->label[strlen(iterator1)] = '\0';
 
 			memcpy(mention->label, iterator1, strlen(iterator1));
@@ -475,7 +473,7 @@ instruction* assemble(char* assembly, unsigned short * instructionCount)
 	 */
 	char * found_pos = assembly;
 	unsigned char instruction_count = 0;
-	for (char * line = getNextLine(assembly, found_pos, &found_pos); line != NULL; line = getNextLine(assembly, found_pos, &found_pos))
+	for (char * line = getNextLine(assembly, found_pos, (const char **)&found_pos); line != NULL; line = getNextLine(assembly, found_pos, (const char **)&found_pos))
 	{
 		char * trimmed = trimWhiteSpace(line);
 		if(trimComments(trimmed))
@@ -515,7 +513,7 @@ instruction* assemble(char* assembly, unsigned short * instructionCount)
 		free(line);
 	}
 
-	// Go through all of the labels and replace 
+	// Go through all of the labels and replace
 	traverse(mentionLabelListHead, mentionCallback);
 
 	dispose(mentionLabelListHead);

@@ -52,7 +52,7 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 	char * iterator2 = line;
 
 	unsigned short lineLength = strlen(line);
-	
+
 	// Make the whole thing lowercase
 	for (; *iterator1; ++iterator1) *iterator1 = tolower(*iterator1);
 
@@ -132,6 +132,9 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 	{ // instruction is a I type or a JZ which has the same signature as an I type
 
 		// TODO: Make this work for the NOT instruction.
+		// TODO: I added a nested if else statement to skip syntax error if no second operand is found
+		// TODO: I still need to figure out how to skip over the storing of the second operand 
+
 		IType instruc;
 		instruc.opcode = (OPCODES)instruction_index;
 
@@ -142,10 +145,12 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		while (*iterator2 && *iterator2 != ',') iterator2++;
 		if (! *iterator2) syntaxError("Invalid Operand", lineNum);
 
+		// Getting Second Operand
 		*iterator2 = '\0';
 		if(iterator2 < line + lineLength)
 			iterator2++;
-		else syntaxError("Second Operand Not Found", lineNum);
+			else if (instruction_index == NOT)
+				else syntaxError("Second Operand Not Found", lineNum);
 
 
 		// Looking for the operand in registry
@@ -164,21 +169,21 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 
 		iterator1 = iterator2;
 		iterator1 = trimWhiteSpace(iterator1);
-		
+
 		// Get label if jump instruction
 		if (instruction_index == JZ)
 		{
 			LabelMention * mention = (LabelMention*)malloc(sizeof(LabelMention));
 			checkPtr(mention);
-			
+
 			mention->location = lineNum;
 
 			mention->isOffset = TRUE;
-			
+
 			mention->label = malloc(sizeof(char) * (strlen(iterator1) + 1));
-			
+
 			checkPtr(mention);
-		
+
 			mention->label[strlen(iterator1)] = '\0';
 
 			memcpy(mention->label, iterator1, strlen(iterator1));

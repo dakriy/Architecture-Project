@@ -1,13 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#ifndef _WIN32
-//#include <arpa/inet.h>
-//#else
-//#include <Windows.h>
-//// WHY WINDOWS??? WHY?
-//#pragma comment(lib, "Ws2_32.lib")
-//#endif
 #include "help.h"
 #include "assembler.h"
 

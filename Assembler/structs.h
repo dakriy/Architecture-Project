@@ -1,9 +1,12 @@
 #ifndef STRUCTS_H_   /* Include guard */
 #define STRUCTS_H_
 
+#include "instructions.h"
+
 #ifdef _WIN32
 #define strdup _strdup
 #endif
+
 
 // I like my bools
 #define TRUE 1
@@ -73,38 +76,6 @@ typedef struct node {
 	struct LabelMention * mention;
 	struct node* next;
 } node;
-
-// Define instruction types
-// Each type HAS to be 2 bytes
-// Fields are gaurnteed to be laid out in memory in the same order as you define them.
-
-typedef struct RType {
-	unsigned short opcode : 4;
-	unsigned short reg1 : 4;
-	unsigned short reg2 : 4;
-	unsigned short addressMode : 2;
-	unsigned short padding : 2;
-} RType;
-
-typedef struct IType {
-	unsigned short opcode : 4;
-	unsigned short reg : 4;
-	short immediate : 8;
-} IType;
-
-typedef struct JType {
-	unsigned short opcode : 4;
-	unsigned short immediate : 12;
-} JType;
-
-typedef union instruction
-{
-	RType R;
-	IType I;
-	JType J;
-	// OType/direct accessor
-	unsigned short O;
-} instruction;
 
 typedef void(*callback)(node* data);
 

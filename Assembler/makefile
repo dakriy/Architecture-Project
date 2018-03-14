@@ -5,7 +5,7 @@ SDIR = .
 INC = -Iinc
 LINK_TARGET = Debug/assembler.exe
 
-_OBJS = main.o assembler.o help.o list.o
+_OBJS = main.o assembler.o help.o list.o instructions.o
 OBJS = $(patsubst %,$(ODIR)/%,$(_OBJS))
 
 all: $(LINK_TARGET)

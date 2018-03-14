@@ -93,7 +93,7 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		syntaxError("Unknown Instruction!", lineNum);
 	}
 
-	instruction inst = {.O = 0};
+	instruction inst;
 
 	if (instruction_index < ITYPE_INDEX) // Instruction is a R type
 	{
@@ -145,7 +145,7 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		// Store second operand
 		instruc.reg2 = (REGISTERS)register_index;
 
-		inst.R = instruc;
+		inst = rtoin(instruc);
 
 	} else if (instruction_index < JTYPE_INDEX || instruction_index == JZ)
 	{ // instruction is a I type or a JZ which has the same signature as an I type
@@ -236,7 +236,7 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 			instruc.immediate = immediate;
 		}
 
-		inst.I = instruc;
+		inst = itoin(instruc);
 
 	} else if(instruction_index < OTYPE_INDEX)
 	{ // Instruction is a J type
@@ -270,11 +270,11 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		else
 			append_m(mentionLabelListHead, mention);
 
-		inst.J = instruc;
+		inst = jtoin(instruc);
 	} else
 	{ // Instruction is a pseudo instruction
 		// NOP is the only pseudo instruction at this point, so...
-		inst.O = 0;
+		inst = 0;
 	}
 
 	return inst;
@@ -449,9 +449,9 @@ void traverseLabels(node* n)
 			if (abs(location) > 127)
 				syntaxError("Conditional jump label too far away, use j for larger distances.", currentMention->location);
 
-			machineCode[currentMention->location].I.immediate = (char)location;
+			machineCode[currentMention->location] |= (char)location;
 		} else
-			 machineCode[currentMention->location].J.immediate = label->location;
+			 machineCode[currentMention->location] |= label->location;
 
 		breakTraverse = TRUE;
 	}

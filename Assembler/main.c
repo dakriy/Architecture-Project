@@ -47,12 +47,11 @@ void outputToFile(char * fileName, instruction * data, unsigned short instructio
 
 		for (int i = 0; i < instructionCount; i++)
 		{
-			// TODO: Make sure this is right
 			unsigned char buff[2];
 			// Make sure I don't get screwed over by big/little endianness
-			// LATER EDIT: I'm getting screwed by it anyway.... This is probably only going to work on little endian machines...
-			buff[1] = (data[i].O & 0xF000) >> 12 | (data[i].O & 0x0F00) >> 4;
-			buff[0] = (data[i].O & 0x00F0) >> 4 | (data[i].O & 0x000F) << 4;
+			// LATER EDIT: I'm getting screwed by it anyway...
+			buff[0] = (data[i] & 0xFF00) >> 8;
+			buff[1] = (data[i] & 0xFF);
 			if(fwrite(buff, sizeof(char), sizeof buff, f) != sizeof(instruction))
 			{
 				perror("Error writing to file");

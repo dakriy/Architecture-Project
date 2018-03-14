@@ -1,19 +1,22 @@
 #ifndef STRUCTS_H_   /* Include guard */
 #define STRUCTS_H_
 
+#include "instructions.h"
+
 #ifdef _WIN32
 #define strdup _strdup
 #endif
 
+
 // I like my bools
 #define TRUE 1
 #define FALSE 0
-typedef int bool;
+typedef unsigned char bool;
 
 // Register definitions
 typedef enum REGISTERS
 {
-	r0 = 0x0,
+	R0 = 0x0,
 	R1 = 0x1,
 	R2 = 0x2,
 	R3 = 0x3,
@@ -40,9 +43,9 @@ typedef enum OPCODES
 	MOV = 0x3,
 
 	// I-type
-	SLL = 0x4,
-	SLA = 0x5,
-	SR = 0x6,
+	SRL = 0x4,
+	SRA = 0x5,
+	SL = 0x6,
 	NOT = 0x7,
 	ANDI = 0x8,
 	ADDI = 0x9,
@@ -51,26 +54,21 @@ typedef enum OPCODES
 
 	// J-type
 	JZ = 0xC,
-	J = 0xD,
-
-	// Other
-	NOP = 0xF
+	J = 0xD
 } OPCODES;
 
 
 typedef struct Label
 {
-	unsigned char location;
 	char * label;
+	unsigned char location;
 } Label;
 
 typedef struct LabelMention
 {
 	char * label;
-	unsigned char instruction;
-	// Bit offset
-	unsigned char offset;
-
+	unsigned char location;
+	bool isOffset;
 } LabelMention;
 
 typedef struct node {
@@ -78,36 +76,6 @@ typedef struct node {
 	struct LabelMention * mention;
 	struct node* next;
 } node;
-
-// Define instruction types
-
-typedef struct RType {
-	OPCODES opcode : 4;
-	REGISTERS reg1 : 4;
-	REGISTERS reg2 : 4;
-	char addressMode : 2;
-	char padding : 2;
-} RType;
-
-typedef struct IType {
-	OPCODES opcode : 4;
-	REGISTERS reg : 4;
-	char immediate;
-} IType;
-
-typedef struct JType {
-	OPCODES opcode : 4;
-	unsigned short immediate : 12;
-} JType;
-
-typedef union instruction
-{
-	RType R;
-	IType I;
-	JType J;
-	// OType/direct accessor
-	unsigned short O;
-} instruction;
 
 typedef void(*callback)(node* data);
 

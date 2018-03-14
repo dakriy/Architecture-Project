@@ -1,33 +1,14 @@
 ----------------------------------------------------------------------------------
--- Company:
--- Engineer:
 --
--- Create Date:    18:22:41 02/28/2018
--- Design Name:
--- Module Name:    register_16 - Behavioral
--- Project Name:
--- Target Devices:
--- Tool versions:
--- Description:
+-- Module Name:     register_16
+-- Project Name:    Booth's Radix-4 Processor
+-- Target Device:   Spartan3E xc3s1200e
+-- Description:     a register pair of a CPU.
 --
--- Dependencies:
---
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
+-- We credit Dr. Juergen Sauermann for his initial design which we have modified to fit our needs
+-- link: https://github.com/freecores/cpu_lecture/tree/master/html
 --
 ----------------------------------------------------------------------------------
-library IEEE;
-use IEEE.STD_LOGIC_1164.all;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;

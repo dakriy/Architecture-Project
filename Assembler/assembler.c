@@ -2,7 +2,18 @@
 #include "help.h"
 
 node* labelListHead = NULL;
+
 node* mentionLabelListHead = NULL;
+
+callback mentionCallback = traverseMention;
+
+callback labelCallback = traverseLabels;
+
+LabelMention * currentMention = NULL;
+
+bool breakTraverse = FALSE;
+
+instruction * machineCode = NULL;
 
 const char * instructionIdentifiers[] = {
 	"add",
@@ -18,31 +29,32 @@ const char * instructionIdentifiers[] = {
 	"addi",
 	"ori",
 	"loadi",
-	"jz",
 
+	"jz",
 	"j",
 
 	"", // Empty so that opcodes match up to the instruction
-	"nop"
+	"",
+	"nop",
 };
 
 const char * registerIdentifiers[] = {
-	"r0"
-	"r1"
-	"r2"
-	"r3"
-	"r4"
-	"r5"
-	"r6"
-	"r7"
-	"r8"
-	"r9"
-	"r10"
-	"r11"
-	"r12"
-	"r13"
-	"r14"
-	"r15"
+	"r0",
+	"r1",
+	"r2",
+	"r3",
+	"r4",
+	"r5",
+	"r6",
+	"r7",
+	"r8",
+	"r9",
+	"r10",
+	"r11",
+	"r12",
+	"r13",
+	"r14",
+	"r15",
 };
 
 instruction instructionToMachineCode(char* line, unsigned char lineNum)
@@ -51,8 +63,6 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 	char * iterator2 = line;
 
 	unsigned short lineLength = strlen(line);
-	instruction inst;
-	inst.O = 0;
 
 	// Make the whole thing lowercase
 	for (; *iterator1; ++iterator1) *iterator1 = tolower(*iterator1);
@@ -74,30 +84,43 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		syntaxError("Unknown syntax error.", lineNum);
 	}
 
-
 	unsigned char instruction_index;
 	for (instruction_index = 0; instruction_index < NUMBER_OF_INSTRUCTIONS; instruction_index++)
 		if (strcmp(iterator1, instructionIdentifiers[instruction_index]) == 0)
 			break;
+	if (instruction_index == NUMBER_OF_INSTRUCTIONS)
+	{
+		syntaxError("Unknown Instruction!", lineNum);
+	}
+
+	iterator1 = trimWhiteSpace(iterator2);
+
+	instruction inst;
 
 	if (instruction_index < ITYPE_INDEX) // Instruction is a R type
 	{
 		RType instruc;
 		instruc.opcode = (OPCODES)instruction_index;
+		instruc.padding = 0;
+
+		// TODO: Finish MOV instruction.
+
+		instruc.addressMode = 0;
 
 		// Getting first operand
-		iterator1 = iterator2;
 		while (*iterator2 && *iterator2 != ',') iterator2++;
 		if (! *iterator2) syntaxError("Invalid Operand", lineNum);
 
 		*iterator2 = '\0';
-		if(iterator2 < line + lineLength)
+		if(iterator2 < line + lineLength) {
 			iterator2++;
-		else syntaxError("Second Operand Not Found", lineNum);
+		}
+		else {
+			syntaxError("Second Operand Not Found", lineNum);
+		}
 
 
 		// Looking for the operand in registry
-		iterator1 = trimWhiteSpace(iterator1);
 		unsigned char register_index;
 		for(register_index = 0; register_index < NUMBER_OF_REGISTERS; register_index++)
 			if(strcmp(iterator1, registerIdentifiers[register_index]) == 0)
@@ -122,26 +145,21 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		// Store second operand
 		instruc.reg2 = (REGISTERS)register_index;
 
-		inst.R = instruc;
+		inst = rtoin(instruc);
 
-	} else if (instruction_index < JTYPE_INDEX || instruction_index == JZ) // instruction is a I type or a JZ which has the same signature as an I type
-	{
+	} else if (instruction_index < JTYPE_INDEX || instruction_index == JZ)
+	{ // instruction is a I type or a JZ which has the same signature as an I type
+
 		IType instruc;
 		instruc.opcode = (OPCODES)instruction_index;
 
 		// Getting first operand
-		iterator1 = iterator2;
 		while (*iterator2 && *iterator2 != ',') iterator2++;
-		if (! *iterator2) syntaxError("Invalid Operand", lineNum);
+		if (! *iterator2 ) syntaxError("No immediate value.", lineNum);
 
 		*iterator2 = '\0';
-		if(iterator2 < line + lineLength)
-			iterator2++;
-		else syntaxError("Second Operand Not Found", lineNum);
-
 
 		// Looking for the operand in registry
-		iterator1 = trimWhiteSpace(iterator1);
 		unsigned char register_index;
 		for(register_index = 0; register_index < NUMBER_OF_REGISTERS; register_index++)
 			if(strcmp(iterator1, registerIdentifiers[register_index]) == 0)
@@ -154,38 +172,97 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		// Store operand
 		instruc.reg = (REGISTERS)register_index;
 
+		iterator2++;
 		iterator1 = iterator2;
 		iterator1 = trimWhiteSpace(iterator1);
-		// Check if the entered immediate is a number
-		for(int i=0; i<strlen(iterator1); i++){
-			if(i==0 && iterator1[i] == '-') continue;
-			if(!isdigit(iterator1[i]))
-				syntaxError("Unknown character entered, only enter numbers", lineNum);
+
+		// Immediate parsing
+
+		// Get label if jump instruction
+		if (instruction_index == JZ)
+		{
+			// Save the mention onto the mention list.
+			LabelMention * mention = (LabelMention*)malloc(sizeof(LabelMention));
+			checkPtr(mention);
+
+			mention->location = lineNum;
+
+			mention->isOffset = TRUE;
+
+			mention->label = malloc(sizeof(char) * (strlen(iterator1) + 1));
+
+			checkPtr(mention->label);
+
+			mention->label[strlen(iterator1)] = '\0';
+
+			memcpy(mention->label, iterator1, strlen(iterator1));
+
+			if (mentionLabelListHead == NULL)
+				mentionLabelListHead = create_m(mention, NULL);
+			else
+				append_m(mentionLabelListHead, mention);
+
+			// Set it to zero as we will come back to it on the label pass to set it.
+			instruc.immediate = 0;
+		} else
+		{
+			if (instruction_index == NOT && (strcmp("", iterator1) == 0))
+			{
+				instruc.immediate = 16;
+			} else {
+				// Check if the immediate value is a number
+				for (unsigned short i = 0; i < strlen(iterator1); i++) {
+					if (i == 0 && iterator1[i] == '-' && instruction_index != NOT) continue;
+					if (!isdigit(iterator1[i]))
+						syntaxError("Unknown character entered, only enter numbers. Or negative number not allowed here.", lineNum);
+				}
+				// Grab immediate value as a string and convert to int
+				int immediate = atoi(iterator1);
+				if (instruction_index == NOT && immediate > 16)
+					syntaxError("Cannot invert more than a word at a time", lineNum);
+				// Check if immediate value is within the bounds of -127 and 127
+				if (immediate > 127 || immediate < -127)
+					syntaxError("Immediate Value Out Of Bounds: -127 to 127", lineNum);
+				// Store immediate value
+				instruc.immediate = immediate;
+			}
 		}
-		// Grab immediate value as a string and convert to int
-		int immediate = atoi(iterator1);
-		// Check if immediate value is within the bounds of -127 and 127
-		if(immediate > 127 || immediate < -127)
-		 	syntaxError("Immediate Value Out Of Bounds: -127 to 127", lineNum);
-		// Store immediate value
-		instruc.immediate = immediate;
 
-		inst.I = instruc;
-
-	} else if(instruction_index < OTYPE_INDEX) // Instruction is a J type
-	{
+		inst = itoin(instruc);
+	} else if(instruction_index < OTYPE_INDEX)
+	{ // Instruction is a J type
 		JType instruc;
-		instruc.opcode = (OPCODES)instruction_index;
-		// TODO: PARSE THE REST OF THE J TYPE INSTRUCTIONS
-		inst.J = instruc;
-	} else if (instruction_index == OTYPE_INDEX) // Instruction is in the other category which is a NOP at this point
-	{
-		// NOP is the only option here, so...
-		inst.O = 0;
-	} else // Instruction not found
-		syntaxError("Unknown instruction!", lineNum);
 
-	// TODO: Actually parse instructions, on jumps, when you come to a label, just add it to the mention tree
+		instruc.immediate = 0;
+
+		instruc.opcode = (OPCODES)instruction_index;
+
+		LabelMention * mention = (LabelMention*)malloc(sizeof(LabelMention));
+		checkPtr(mention);
+
+		mention->location = lineNum;
+
+		mention->isOffset = FALSE;
+
+		mention->label = malloc(sizeof(char) * (strlen(iterator1) + 1));
+
+		checkPtr(mention->label);
+
+		mention->label[strlen(iterator1)] = '\0';
+
+		memcpy(mention->label, iterator1, strlen(iterator1));
+
+		if (mentionLabelListHead == NULL)
+			mentionLabelListHead = create_m(mention, NULL);
+		else
+			append_m(mentionLabelListHead, mention);
+
+		inst = jtoin(instruc);
+	} else
+	{ // Instruction is a pseudo instruction
+		// NOP is the only pseudo instruction at this point, so...
+		inst = 0;
+	}
 
 	return inst;
 }
@@ -202,6 +279,7 @@ char* trimWhiteSpace(char* str)
 
 	// Trim trailing space
 	end = str + strlen(str) - 1;
+
 	while (end > str && isspace((unsigned char)*end)) end--;
 
 	// Write new null terminator
@@ -243,13 +321,6 @@ bool trimComments(char * str)
 	return TRUE;
 }
 
-void syntaxError(char* message, unsigned char line)
-{
-	// TODO: turn this into a char * as the line numbers won't match up
-	printf("INVALID SYNTAX!\n%s\nOn line: %u", message, line);
-	exit(EXIT_FAILURE);
-}
-
 char* getNextLine(char* str, const char* start, const char** found_pos)
 {
 	// If we are at the end of the string, return a null as there are no more lines.
@@ -267,7 +338,7 @@ char* getNextLine(char* str, const char* start, const char** found_pos)
 	// Plus 1 because 0 index
 	char * line = (char *)malloc(sizeof(char) * (pos - start + 1));
 	checkPtr(line);
-	
+
 	// Copy over the line to the new string
 	memcpy(line, start, pos - start);
 
@@ -284,7 +355,7 @@ char* parseLabelsInLine(char* line, unsigned char line_index)
 	while (pos < line + strlen(line) && *pos != ':') pos++;
 
 	if (*pos == ':')
-	{
+	{ // We got a label
 		char * backCheck = pos;
 
 		while (backCheck > line)
@@ -298,6 +369,8 @@ char* parseLabelsInLine(char* line, unsigned char line_index)
 
 
 		Label * label = (Label*)malloc(sizeof(Label));
+
+		checkPtr(label);
 
 		label->label = (char*)malloc(sizeof(char*) * (pos - line + 1));
 
@@ -328,12 +401,57 @@ char* parseLabelsInLine(char* line, unsigned char line_index)
 	return newLine;
 }
 
+void traverseMention(node* n)
+{
+	currentMention = n->mention;
+
+	breakTraverse = FALSE;
+
+	traverse(labelListHead, labelCallback);
+
+	if(!breakTraverse)
+		syntaxError("Unknown label", currentMention->location);
+}
+
+void traverseLabels(node* n)
+{
+	if(breakTraverse)
+		return;
+
+	Label * label = n->data;
+
+	if (currentMention == NULL)
+	{
+		printf("Label mention or label was added with no data. This is definitely a problem.\n");
+
+		exit(EXIT_FAILURE);
+	}
+
+	if (strcmp(currentMention->label, label->label) == 0)
+	{ // We found the label counter part
+		if(currentMention->isOffset)
+		{
+			short location = label->location - currentMention->location;
+
+			if (abs(location) > 127)
+				syntaxError("Conditional jump label too far away, use j for larger distances.", currentMention->location);
+
+			machineCode[currentMention->location] |= (char)location;
+		} else
+			 machineCode[currentMention->location] |= label->location;
+
+		breakTraverse = TRUE;
+	}
+
+}
+
 instruction* assemble(char* assembly, unsigned short * instructionCount)
 {
-	instruction * machineCode = (instruction *)malloc(sizeof(instruction)*MAX_INSTRUCTIONS);
-	checkPtr(machineCode);
-	instruction * machineCodePos = machineCode;
+	machineCode = (instruction *)malloc(sizeof(instruction)*MAX_INSTRUCTIONS);
 
+	checkPtr(machineCode);
+
+	instruction * machineCodePos = machineCode;
 
 	/*
 	 * The general idea here is to trim the whitespace
@@ -342,8 +460,8 @@ instruction* assemble(char* assembly, unsigned short * instructionCount)
 	 * one line at a time
 	 */
 	char * found_pos = assembly;
-	unsigned char instruction_count = 0;
-	for (char * line = getNextLine(assembly, found_pos, &found_pos); line != NULL; line = getNextLine(assembly, found_pos, &found_pos))
+	unsigned short instruction_count = 0;
+	for (char * line = getNextLine(assembly, found_pos, (const char **)&found_pos); line != NULL; line = getNextLine(assembly, found_pos, (const char **)&found_pos))
 	{
 		char * trimmed = trimWhiteSpace(line);
 		if(trimComments(trimmed))
@@ -369,7 +487,7 @@ instruction* assemble(char* assembly, unsigned short * instructionCount)
 			*machineCodePos = newMachineCode;
 
 			// Increase instruction count
-			machineCodePos += sizeof(instruction);
+			machineCodePos++;
 			instruction_count++;
 
 			if (instruction_count > MAX_INSTRUCTIONS)
@@ -383,7 +501,11 @@ instruction* assemble(char* assembly, unsigned short * instructionCount)
 		free(line);
 	}
 
-	// TODO: run through code again replacing all label symbols with their actual value.
+	// Go through all of the labels and replace
+	traverse(mentionLabelListHead, mentionCallback);
+
+	dispose(mentionLabelListHead);
+
 	dispose(labelListHead);
 
 	*instructionCount = instruction_count;

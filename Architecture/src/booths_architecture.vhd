@@ -1,6 +1,16 @@
---Describes how the top level acts.
---It has 2 switches, 2 buttons, 4 leds, and a 7 segment display
---also has UART capability
+-------------------------------------------------------------------------------
+--
+-- Module Name:     booths_architecture
+-- Project Name:    Booth's Radix-4 Processor
+-- Target Device:   Spartan3E xc3s1200e
+-- Description:     describes how the top level acts.
+-- Details:         it has 2 switches, 2 buttons, 4 leds, and a 7 segment display
+--                  also has UART capability
+--
+-- We credit Dr. Juergen Sauermann for his initial design which we have modified to fit our needs
+-- link: https://github.com/freecores/cpu_lecture/tree/master/html
+--
+-------------------------------------------------------------------------------
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;

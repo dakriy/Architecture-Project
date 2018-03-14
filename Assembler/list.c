@@ -33,7 +33,7 @@ node* prepend(node* head, Label * data)
 
 node* prepend_m(node* head, LabelMention* data)
 {
-	node* new_node = create(data, head);
+	node* new_node = create_m(data, head);
 	head = new_node;
 	return head;
 }
@@ -64,7 +64,7 @@ node* append_m(node* head, LabelMention* data)
 		cursor = cursor->next;
 
 	/* create a new node */
-	node* new_node = create(data, NULL);
+	node* new_node = create_m(data, NULL);
 	cursor->next = new_node;
 
 	return head;
@@ -248,6 +248,14 @@ void dispose(node *head)
 			free(cursor);
 			cursor = tmp;
 		}
+		if (head->mention != NULL)
+			free(head->mention->label);
+		if (head->data != NULL)
+			free(head->data->label);
+
+		free(head->mention);
+		free(head->data);
+		free(head);
 	}
 }
 

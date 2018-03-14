@@ -1,27 +1,12 @@
 -------------------------------------------------------------------------------
 --
--- Copyright (C) 2009, 2010 Dr. Juergen Sauermann
+-- Module Name:     cpu_core
+-- Project Name:    Booth's Radix-4 Processor
+-- Target Device:   Spartan3E xc3s1200e
+-- Description:     the instruction set implementation of a CPU.
 --
--- This code is free software: you can redistribute it and/or modify
--- it under the terms of the GNU General Public License as published by
--- the Free Software Foundation, either version 3 of the License, or
--- (at your option) any later version.
---
--- This code is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
--- GNU General Public License for more details.
---
--- You should have received a copy of the GNU General Public License
--- along with this code (see the file named COPYING).
--- If not, see http://www.gnu.org/licenses/.
---
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
---
--- Module Name:   cpu_core - Behavioral
--- Create Date:   13:51:24 11/07/2009
--- Description:   the instruction set implementation of a CPU.
+-- We credit Dr. Juergen Sauermann for his initial design which we have modified to fit our needs
+-- link: https://github.com/freecores/cpu_lecture/tree/master/html
 --
 -------------------------------------------------------------------------------
 --
@@ -33,7 +18,7 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 entity cpu_core is
   port( i_clk     : in  std_logic; --global clock
         i_reset   : in  std_logic;
-        --i_intvec  : in  std_logic_vector(  5 downto 0 ); --interupt vector input
+        --i_intvec  : in  std_logic_vector(  5 downto 0 ); --interrupt vector input
         i_din     : in  std_logic_vector(  7 downto 0 ); --input data (pmem or i/o)
 
         q_opc     : out std_logic_vector( 15 downto 0 ); --current opcode

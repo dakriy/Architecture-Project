@@ -1,3 +1,15 @@
+----------------------------------------------------------------------------------
+--
+-- Module Name:     uart_rx
+-- Project Name:    Booth's Radix-4 Processor
+-- Target Device:   Spartan3E xc3s1200e
+-- Description:     a UART receiver.
+--
+-- We credit Dr. Juergen Sauermann for his initial design which we have modified to fit our needs
+-- link: https://github.com/freecores/cpu_lecture/tree/master/html
+--
+----------------------------------------------------------------------------------
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.STD_LOGIC_ARITH.all;

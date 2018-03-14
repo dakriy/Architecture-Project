@@ -1,6 +1,7 @@
 # WHASSUP THis should be a comment
 add r3, r5 #also a comment lol
-
+not r15, 3
+not r12,
 	#oh oops what's this
 	addi r6, 1
 	jz r3, label2

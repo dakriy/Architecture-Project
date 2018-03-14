@@ -176,17 +176,6 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		iterator1 = iterator2;
 		iterator1 = trimWhiteSpace(iterator1);
 
-		// // Getting Second Operand
-		// if(iterator2 < line + lineLength) {
-		// 	iterator2++;
-		// }
-		// else if (instruction_index == NOT) {
-		// 	instruc.immediate = 16;
-		// }
-		// else {
-		// 	syntaxError("Second Operand Not Found", lineNum);
-		// }
-
 		// Immediate parsing
 
 		// Get label if jump instruction

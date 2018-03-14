@@ -29,6 +29,7 @@ void checkPtr(void* ptr)
 void syntaxError(char* message, unsigned char line)
 {
 	// TODO: turn this into a char * as the line numbers won't match up
-	printf("INVALID SYNTAX!\n%s\nOn line: %u", message, line + 1);
+	// Change "On Instruction" to "On Line"
+	printf("INVALID SYNTAX!\n%s\nOn Instruction: %u", message, line + 1);
 	exit(EXIT_FAILURE);
 }

@@ -150,9 +150,7 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 	} else if (instruction_index < JTYPE_INDEX || instruction_index == JZ)
 	{ // instruction is a I type or a JZ which has the same signature as an I type
 
-		// TODO: Make this work for the NOT instruction.
-		// TODO: I added a nested if else statement to skip syntax error if no second operand is found
-		// TODO: I still need to figure out how to skip over the storing of the second operand
+		// TODO: Make sure the NOT isntruction works
 
 		IType instruc;
 		instruc.opcode = (OPCODES)instruction_index;

@@ -6,17 +6,17 @@
 // Fields are gaurnteed to be laid out in memory in the same order as you define them.
 
 typedef struct RType {
-	unsigned short opcode : 4;
-	unsigned short reg1 : 4;
-	unsigned short reg2 : 4;
-	unsigned short addressMode : 2;
-	unsigned short padding : 2;
+	unsigned char opcode : 4;
+	unsigned char reg1 : 4;
+	unsigned char reg2 : 4;
+	unsigned char addressMode : 2;
+	unsigned char padding : 2;
 } RType;
 
 typedef struct IType {
-	unsigned short opcode : 4;
-	unsigned short reg : 4;
-	short immediate : 8;
+	unsigned char opcode : 4;
+	unsigned char reg : 4;
+	char immediate;
 } IType;
 
 typedef struct JType {

@@ -1,14 +1,15 @@
-OUT = Debug/assembler.a
-CC = gcc
 ODIR = Debug
+OUT = $(ODIR)/assembler.a
+CC = gcc
 SDIR = .
 INC = -Iinc
-LINK_TARGET = Debug/assembler.exe
+LINK_TARGET = $(ODIR)/assembler.exe
+MKDIR_P = mkdir -p
 
 _OBJS = main.o assembler.o help.o list.o instructions.o
 OBJS = $(patsubst %,$(ODIR)/%,$(_OBJS))
 
-all: $(LINK_TARGET)
+all: directories $(LINK_TARGET)
 
 $(LINK_TARGET): $(OBJS)
 	$(CC) -g -o $@ $^
@@ -22,4 +23,11 @@ $(OUT): $(OBJS)
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/* $(OUT) $(LINK_TARGET)
+	rm -f $(ODIR)/*.o $(OUT) $(LINK_TARGET)
+
+.PHONY: directories
+
+directories: $(ODIR)
+
+$(ODIR):
+	$(MKDIR_P) $(ODIR)

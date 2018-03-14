@@ -30,6 +30,6 @@ void syntaxError(char* message, unsigned char line)
 {
 	// TODO: turn this into a char * as the line numbers won't match up
 	// Change "On Instruction" to "On Line"
-	printf("INVALID SYNTAX!\n%s\nOn Instruction: %u", message, line + 1);
+	printf("INVALID SYNTAX!\n%s\nOn Instruction: %u\n", message, line + 1);
 	exit(EXIT_FAILURE);
 }

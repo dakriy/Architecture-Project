@@ -93,6 +93,8 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		syntaxError("Unknown Instruction!", lineNum);
 	}
 
+	iterator1 = trimWhiteSpace(iterator2);
+
 	instruction inst;
 
 	if (instruction_index < ITYPE_INDEX) // Instruction is a R type
@@ -106,7 +108,6 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		instruc.addressMode = 0;
 
 		// Getting first operand
-		iterator1 = iterator2;
 		while (*iterator2 && *iterator2 != ',') iterator2++;
 		if (! *iterator2) syntaxError("Invalid Operand", lineNum);
 
@@ -120,7 +121,6 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 
 
 		// Looking for the operand in registry
-		iterator1 = trimWhiteSpace(iterator1);
 		unsigned char register_index;
 		for(register_index = 0; register_index < NUMBER_OF_REGISTERS; register_index++)
 			if(strcmp(iterator1, registerIdentifiers[register_index]) == 0)
@@ -150,31 +150,16 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 	} else if (instruction_index < JTYPE_INDEX || instruction_index == JZ)
 	{ // instruction is a I type or a JZ which has the same signature as an I type
 
-		// TODO: Make sure the NOT isntruction works
-
 		IType instruc;
 		instruc.opcode = (OPCODES)instruction_index;
 
 		// Getting first operand
-		iterator1 = iterator2;
 		while (*iterator2 && *iterator2 != ',') iterator2++;
-		if (! *iterator2 && instruction_index != NOT) syntaxError("Invalid Operand", lineNum);
+		if (! *iterator2 ) syntaxError("No immediate value.", lineNum);
 
-		// Getting Second Operand
 		*iterator2 = '\0';
-		if(iterator2 < line + lineLength) {
-			iterator2++;
-		}
-		else if (instruction_index == NOT) {
-			instruc.immediate = 16;
-		}
-		else {
-			syntaxError("Second Operand Not Found", lineNum);
-		}
-
 
 		// Looking for the operand in registry
-		iterator1 = trimWhiteSpace(iterator1);
 		unsigned char register_index;
 		for(register_index = 0; register_index < NUMBER_OF_REGISTERS; register_index++)
 			if(strcmp(iterator1, registerIdentifiers[register_index]) == 0)
@@ -187,8 +172,22 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		// Store operand
 		instruc.reg = (REGISTERS)register_index;
 
+		iterator2++;
 		iterator1 = iterator2;
 		iterator1 = trimWhiteSpace(iterator1);
+
+		// // Getting Second Operand
+		// if(iterator2 < line + lineLength) {
+		// 	iterator2++;
+		// }
+		// else if (instruction_index == NOT) {
+		// 	instruc.immediate = 16;
+		// }
+		// else {
+		// 	syntaxError("Second Operand Not Found", lineNum);
+		// }
+
+		// Immediate parsing
 
 		// Get label if jump instruction
 		if (instruction_index == JZ)
@@ -213,29 +212,34 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 				mentionLabelListHead = create_m(mention, NULL);
 			else
 				append_m(mentionLabelListHead, mention);
+
+			// Set it to zero as we will come back to it on the label pass to set it.
 			instruc.immediate = 0;
-		} else if (instruction_index == NOT)
-		{
-			// Nothing
 		} else
 		{
-			// Check if the immediate value is a number
-			for (unsigned short i = 0; i < strlen(iterator1); i++) {
-				if (i == 0 && iterator1[i] == '-') continue;
-				if (!isdigit(iterator1[i]))
-					syntaxError("Unknown character entered, only enter numbers", lineNum);
+			if (instruction_index == NOT && (strcmp("", iterator1) == 0))
+			{
+				instruc.immediate = 16;
+			} else {
+				// Check if the immediate value is a number
+				for (unsigned short i = 0; i < strlen(iterator1); i++) {
+					if (i == 0 && iterator1[i] == '-' && instruction_index != NOT) continue;
+					if (!isdigit(iterator1[i]))
+						syntaxError("Unknown character entered, only enter numbers. Or negative number not allowed here.", lineNum);
+				}
+				// Grab immediate value as a string and convert to int
+				int immediate = atoi(iterator1);
+				if (instruction_index == NOT && immediate > 16)
+					syntaxError("Cannot invert more than a word at a time", lineNum);
+				// Check if immediate value is within the bounds of -127 and 127
+				if (immediate > 127 || immediate < -127)
+					syntaxError("Immediate Value Out Of Bounds: -127 to 127", lineNum);
+				// Store immediate value
+				instruc.immediate = immediate;
 			}
-			// Grab immediate value as a string and convert to int
-			int immediate = atoi(iterator1);
-			// Check if immediate value is within the bounds of -127 and 127
-			if (immediate > 127 || immediate < -127)
-				syntaxError("Immediate Value Out Of Bounds: -127 to 127", lineNum);
-			// Store immediate value
-			instruc.immediate = immediate;
 		}
 
 		inst = itoin(instruc);
-
 	} else if(instruction_index < OTYPE_INDEX)
 	{ // Instruction is a J type
 		JType instruc;
@@ -243,10 +247,6 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		instruc.immediate = 0;
 
 		instruc.opcode = (OPCODES)instruction_index;
-
-		iterator1 = iterator2;
-
-		iterator1 = trimWhiteSpace(iterator1);
 
 		LabelMention * mention = (LabelMention*)malloc(sizeof(LabelMention));
 		checkPtr(mention);
@@ -471,7 +471,7 @@ instruction* assemble(char* assembly, unsigned short * instructionCount)
 	 * one line at a time
 	 */
 	char * found_pos = assembly;
-	unsigned char instruction_count = 0;
+	unsigned short instruction_count = 0;
 	for (char * line = getNextLine(assembly, found_pos, (const char **)&found_pos); line != NULL; line = getNextLine(assembly, found_pos, (const char **)&found_pos))
 	{
 		char * trimmed = trimWhiteSpace(line);
@@ -498,7 +498,7 @@ instruction* assemble(char* assembly, unsigned short * instructionCount)
 			*machineCodePos = newMachineCode;
 
 			// Increase instruction count
-			machineCodePos += sizeof(instruction);
+			machineCodePos++;
 			instruction_count++;
 
 			if (instruction_count > MAX_INSTRUCTIONS)

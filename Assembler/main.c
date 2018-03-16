@@ -3,6 +3,7 @@
 #include <string.h>
 #include "help.h"
 #include "assembler.h"
+#include "serial.h"
 
 char * getFileContents(char * file)
 {
@@ -135,7 +136,7 @@ int main(int argc, const char* argv[])
 			break;
 		case 'u':
 			// TODO: Implement a UART communication to upload programs to the processor
-			printf("Not implemented.");
+			printPorts();
 			upload = TRUE;
 			break;
 		default:

@@ -122,13 +122,17 @@
     <ClCompile Include="instructions.c" />
     <ClCompile Include="list.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="serial.c" />
+    <ClCompile Include="winSerial.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assembler.h" />
     <ClInclude Include="help.h" />
     <ClInclude Include="instructions.h" />
     <ClInclude Include="list.h" />
+    <ClInclude Include="serial.h" />
     <ClInclude Include="structs.h" />
+    <ClInclude Include="winSerial.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="code.asm" />

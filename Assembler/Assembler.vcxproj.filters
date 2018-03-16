@@ -30,6 +30,12 @@
     <ClCompile Include="instructions.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="winSerial.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="serial.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="help.h">
@@ -45,6 +51,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="instructions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="winSerial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="serial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

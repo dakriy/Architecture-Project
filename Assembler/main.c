@@ -101,10 +101,9 @@ char * setOutputFileName(char * outputFile, char * inputFile)
 	return outputFile;
 }
 
-void uploadToProcessor(instruction * machineCode, unsigned short instructionCount)
+bool uploadToProcessor(FILEDESCRIPTOR fd, instruction * machineCode, unsigned short instructionCount)
 {
-	// TODO: Actually implement this
-	return;
+	return writeInstructions(fd, machineCode, instructionCount);
 }
 
 // Just call the program with the input and output files
@@ -112,7 +111,8 @@ int main(int argc, const char* argv[])
 {
 	char * inputFile = NULL;
 	char * outputFile = NULL;
-	bool upload = FALSE;
+	int upload = FALSE;
+	FILEDESCRIPTOR outputDeviceFD = NULL;
 	for (size_t optind = 1; optind < argc && argv[optind][0] == '-'; optind++) {
 		switch (argv[optind][1]) {
 		case 'o':
@@ -122,6 +122,7 @@ int main(int argc, const char* argv[])
 				exit(EXIT_FAILURE);
 			}
 			outputFile = strdup(argv[optind + 1]);
+			optind++;
 			break;
 		case 'i':
 			if (optind + 1 >= argc || argv[optind + 1][0] == '-')
@@ -130,13 +131,13 @@ int main(int argc, const char* argv[])
 				exit(EXIT_FAILURE);
 			}
 			inputFile = strdup(argv[optind + 1]);
+			optind++;
 			break;
 		case 'h':
 			printHelp(argv[0]);
 			break;
 		case 'u':
-			// TODO: Implement a UART communication to upload programs to the processor
-			printPorts();
+			outputDeviceFD = getWantedDevice();
 			upload = TRUE;
 			break;
 		default:
@@ -163,8 +164,14 @@ int main(int argc, const char* argv[])
 
 	if (outputFile != NULL) // Write to the output file.
 		outputToFile(outputFile, machineCode, instructionCount);
-	if (upload) // Write to processor
-		uploadToProcessor(machineCode, instructionCount);
+	if (upload)
+	{
+		if(!uploadToProcessor(outputDeviceFD, machineCode, instructionCount))
+		{
+			printf("Failed to upload all of the instructions.\n");
+		}
+		disconnectFromComPort(outputDeviceFD);
+	}
 
 	free(machineCode);
 	free(file);

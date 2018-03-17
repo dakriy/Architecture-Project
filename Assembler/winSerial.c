@@ -1,92 +1,171 @@
 #include "winSerial.h"
 
 
-HRESULT getComPorts(COMPort ** foundPorts, int * length)
+BOOL getComPorts(COMPort ** foundPorts, int * length)
 {
-	// Initialize COM. ------------------------------------------ 
+	//Create a "device information set" for the specified GUID
+	HDEVINFO hDevInfoSet = SetupDiGetClassDevs(&GUID_DEVINTERFACE_COMPORT, NULL, NULL, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+	if (hDevInfoSet == INVALID_HANDLE_VALUE)
+		return FALSE;
 
-	BSTR resource = SysAllocString(L"\\\\.\\root\\cimv2");
-	BSTR SerialPort = SysAllocString(L"Win32_SerialPort");
-	BSTR DeviceID = SysAllocString(L"DeviceID");
-	BSTR COM = SysAllocString(L"COM");
-	BSTR Name = SysAllocString(L"Name");
-
-	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
-	if (FAILED(hr))
-		return hr;
-
-	//Create the WBEM locator
-	IWbemLocator * pLocator = NULL;
-	hr = CoCreateInstance(&CLSID_WbemLocator, NULL, CLSCTX_INPROC_SERVER, &IID_IWbemLocator, (LPVOID *)&pLocator);
-	if (FAILED(hr))
-		return hr;
-
-	IWbemServices * pServices = NULL;
-	hr = pLocator->lpVtbl->ConnectServer(pLocator, resource, NULL, NULL, 0, 0, 0, 0, &pServices);
-	if (FAILED(hr))
-		return hr;
-
-	//Execute the query
-	IEnumWbemClassObject * pClassObject;
-	hr = pServices->lpVtbl->CreateInstanceEnum(pServices, SerialPort, WBEM_FLAG_RETURN_WBEM_COMPLETE, NULL, &pClassObject);
-	if (FAILED(hr))
-		return hr;
-
-
-	//Now enumerate all the ports
-	hr = WBEM_S_NO_ERROR;
-
-	//The final Next will return WBEM_S_FALSE
-	// Change this to while maybe
-	if(hr == WBEM_S_NO_ERROR)
+	//Finally do the enumeration
+	BOOL bMoreItems = TRUE;
+	int nIndex = 0;
+	SP_DEVINFO_DATA devInfo;
+	// Default buffer size I guess...
+	*foundPorts = malloc(sizeof(COMPort) * 1024);
+	int num = 0;
+	while (bMoreItems && num < 1024)
 	{
-		ULONG uReturned = 0;
-		IWbemClassObject * apObj[100];
-		hr = pClassObject->lpVtbl->Next(pClassObject, WBEM_INFINITE, 10, apObj, &uReturned);
-		*length = uReturned;
-		if (SUCCEEDED(hr))
+		//Enumerate the current device
+		devInfo.cbSize = sizeof(SP_DEVINFO_DATA);
+		bMoreItems = SetupDiEnumDeviceInfo(hDevInfoSet, nIndex, &devInfo);
+		if (bMoreItems)
 		{
-			*foundPorts = malloc(sizeof(COMPort) * uReturned);
-			for (ULONG n = 0; n < uReturned; n++)
+			//Did we find a serial port for this device
+			BOOL bAdded = FALSE;
+
+			//Get the registry key which stores the ports settings
+			HKEY deviceKey = SetupDiOpenDevRegKey(hDevInfoSet, &devInfo, DICS_FLAG_GLOBAL, 0, DIREG_DEV, KEY_QUERY_VALUE);
+			if (deviceKey != INVALID_HANDLE_VALUE)
 			{
-				VARIANT varProperty1;
-				HRESULT hrGet = apObj[n]->lpVtbl->Get(apObj[n], DeviceID, 0, &varProperty1, NULL, NULL);
-				if (SUCCEEDED(hrGet) && (varProperty1.vt == VT_BSTR) && (wcslen(varProperty1.bstrVal) > 3))
+				int nPort = 0;
+				if (QueryRegistryPortName(deviceKey, &nPort))
 				{
-					//If it looks like "COMX" then add it to the array which will be returned
-					if ((_wcsnicmp(varProperty1.bstrVal, COM, 3) == 0) && isdigit(varProperty1.bstrVal[3]))
-					{
-						//Work out the port number
-						int nPort = _wtoi(&(varProperty1.bstrVal[3]));
+					(*foundPorts)[num].port = nPort;
 
-						//Also get the friendly name of the port
-						VARIANT varProperty2;
-
-						if (SUCCEEDED(apObj[n]->lpVtbl->Get(apObj[n], Name, 0, &varProperty2, NULL, NULL)) && (varProperty2.vt == VT_BSTR))
-						{
-							(*foundPorts)[n].friendly_name = varProperty2.bstrVal;
-							(*foundPorts)[n].port = nPort;
-						}
-						VariantClear(&varProperty2);
-					}
-
-					VariantClear(&varProperty1);
+					bAdded = TRUE;
 				}
-				apObj[n]->lpVtbl->Release(apObj[n]);
+			}
+
+			//If the port was a serial port, then also try to get its friendly name
+			if (bAdded)
+			{
+				unsigned char * byFriendlyName;
+				if (QueryDeviceDescription(hDevInfoSet, &devInfo, &byFriendlyName))
+				{
+					(*foundPorts)[num].friendly_name = byFriendlyName;
+				}
+				num++;
 			}
 		}
+
+		++nIndex;
 	}
 
-	pClassObject->lpVtbl->Release(pClassObject);
-	pServices->lpVtbl->Release(pServices);
-	pLocator->lpVtbl->Release(pLocator);
-	SysFreeString(resource);
-	SysFreeString(SerialPort);
-	SysFreeString(DeviceID);
-	SysFreeString(COM);
-	SysFreeString(Name);
-	CoUninitialize();
-	return S_OK;
+	*length = num;
+
+	//Free up the "device information set" now that we are finished with it
+	SetupDiDestroyDeviceInfoList(hDevInfoSet);
+
+	//Return the success indicator
+	return TRUE;
+}
+
+
+BOOL QueryRegistryPortName(HKEY deviceKey, int * nPort)
+{
+	//What will be the return value from the method (assume the worst)
+	BOOL bAdded = FALSE;
+
+	//Read in the name of the port
+	LPTSTR pszPortName = NULL;
+	if (RegQueryValueString(deviceKey, _T("PortName"), &pszPortName))
+	{
+		//If it looks like "COMX" then
+		//add it to the array which will be returned
+		size_t nLen = _tcslen(pszPortName);
+		if (nLen > 3)
+		{
+			if ((_tcsnicmp(pszPortName, _T("COM"), 3) == 0) && isdigit(*(pszPortName + 3)))
+			{
+				//Work out the port number
+				*nPort = _ttoi(pszPortName + 3);
+
+				bAdded = TRUE;
+			}
+		}
+		LocalFree(pszPortName);
+	}
+
+	return bAdded;
+}
+
+BOOL RegQueryValueString(HKEY key, LPCTSTR lpValueName, LPTSTR* pszValue)
+{
+	//Initialize the output parameter
+	*pszValue = NULL;
+
+	//First query for the size of the registry value 
+	ULONG nChars = 0;
+	LSTATUS nStatus = RegQueryValueEx(key, lpValueName, NULL, NULL, NULL, &nChars);
+	if (nStatus != ERROR_SUCCESS)
+	{
+		SetLastError(nStatus);
+		return FALSE;
+	}
+
+	//Allocate enough bytes for the return value
+	DWORD dwAllocatedSize = ((nChars + 1) * sizeof(TCHAR)); //+1 is to allow us to null terminate the data if required
+	*pszValue = (LPTSTR)(LocalAlloc(LMEM_FIXED, dwAllocatedSize));
+	if (*pszValue == NULL)
+		return FALSE;
+
+
+	DWORD dwType = 0;
+	ULONG nBytes = dwAllocatedSize;
+	(*pszValue)[0] = _T('\0');
+	nStatus = RegQueryValueEx(key, lpValueName, NULL, &dwType, (LPBYTE)(*pszValue), &nBytes);
+	if (nStatus != ERROR_SUCCESS)
+	{
+		LocalFree(*pszValue);
+		*pszValue = NULL;
+		SetLastError(nStatus);
+		return FALSE;
+	}
+	if ((dwType != REG_SZ) && (dwType != REG_EXPAND_SZ))
+	{
+		LocalFree(*pszValue);
+		*pszValue = NULL;
+		SetLastError(ERROR_INVALID_DATA);
+		return FALSE;
+	}
+	if ((nBytes % sizeof(TCHAR)) != 0)
+	{
+		LocalFree(*pszValue);
+		*pszValue = NULL;
+		SetLastError(ERROR_INVALID_DATA);
+		return FALSE;
+	}
+	if ((*pszValue)[(nBytes / sizeof(TCHAR)) - 1] != _T('\0'))
+	{
+		//Forcibly null terminate the data ourselves
+		(*pszValue)[(nBytes / sizeof(TCHAR))] = _T('\0');
+	}
+
+	return TRUE;
+}
+
+BOOL QueryDeviceDescription(HDEVINFO hDevInfoSet, SP_DEVINFO_DATA * devInfo, unsigned char ** byFriendlyName)
+{
+	DWORD dwType = 0;
+	DWORD dwSize = 0;
+	//Query initially to get the buffer size required
+	if (!SetupDiGetDeviceRegistryProperty(hDevInfoSet, devInfo, SPDRP_DEVICEDESC, &dwType, NULL, 0, &dwSize))
+	{
+		if (GetLastError() != ERROR_INSUFFICIENT_BUFFER)
+			return FALSE;
+	}
+
+	*byFriendlyName = malloc(dwSize);
+
+	if (!(*byFriendlyName))
+	{
+		SetLastError(ERROR_OUTOFMEMORY);
+		return FALSE;
+	}
+
+	return SetupDiGetDeviceRegistryProperty(hDevInfoSet, devInfo, SPDRP_DEVICEDESC, &dwType, *byFriendlyName, dwSize, &dwSize) && (dwType == REG_SZ);
 }
 
 
@@ -94,9 +173,12 @@ HRESULT getComPorts(COMPort ** foundPorts, int * length)
 HANDLE connectToComPort(COMPort * port)
 {
 	HANDLE hComm;
-	char * buff = malloc(sizeof(char) * 3);
-	snprintf(buff, 3, "%d", port->port);
-	hComm = CreateFile(strcat("\\\\.\\COM", buff),                //port name
+	char comdef[] = "\\\\.\\COM";
+	// 3 for a com port up to 999 and the extra 1 for the null terminator
+	char * buff = calloc(strlen(comdef) + 4, sizeof(char));
+	strcat(buff, comdef);
+	snprintf(buff + strlen(comdef), 4, "%d", port->port);
+	hComm = CreateFile(buff,                //port name
 		GENERIC_READ | GENERIC_WRITE, //Read/Write
 		0,                            // No Sharing
 		NULL,                         // No Security
@@ -119,7 +201,7 @@ BOOL disconnectFromComPort(HANDLE port)
 
 void printPortOption(COMPort* p, int num)
 {
-	printf(L"%d: %S\r\n", num, p->friendly_name);
+	printf("%d: COM%d, %s\r\n", num, p->port, (char *)p->friendly_name);
 }
 
 int setParameters(HANDLE hComm)
@@ -168,13 +250,23 @@ int setTimeouts(HANDLE hComm)
 	return SetCommTimeouts(hComm, &timeouts);
 }
 
-BOOL writeDataToPort(HANDLE hComm, char* data, DWORD numberOfElements)
+BOOL writeDataToPort(HANDLE hComm, short * instructions, int number_of_instructions)
 {
 	DWORD  dNoOfBytesWritten = 0;          // Number of bytes written to the port
 
-	return WriteFile(hComm,               // Handle to the Serialport
-		data,            // Data to be written to the port 
-		numberOfElements,   // No of bytes to write into the port
+
+	unsigned char * buffer = (unsigned char *)malloc(sizeof(short) * number_of_instructions);
+	for (int i = 0; i < number_of_instructions; i++)
+	{
+		buffer[2 * i] = (instructions[i] & 0xFF00) >> 8;
+		buffer[2 * i + 1] = (instructions[i] & 0x00FF);
+	}
+
+	BOOL retval = WriteFile(hComm,               // Handle to the Serialport
+		buffer,            // Data to be written to the port 
+		sizeof(short)*number_of_instructions,   // No of bytes to write into the port
 		&dNoOfBytesWritten,  // No of bytes written to the port
 		NULL);
+	free(buffer);
+	return retval;
 }

@@ -77,7 +77,7 @@ void probe_serial8250_comports(char ** comList, int * size_of_com_list, char ** 
 	}
 }
 
-char ** getComList(int * size) {
+int getComPorts(COMPort ** foundPorts, int * length) {
     int n;
     struct dirent **namelist;
     char ** comList;
@@ -116,12 +116,19 @@ char ** getComList(int * size) {
     // serial8250-devices must be probe to check for validity
     probe_serial8250_comports(comList, &comListNum, comList8250, comList8250Num);
 
-	*size = comListNum;
-
 	free(comList8250);
 
-    // Return the lsit of detected comports
-    return comList;
+	*length = comListNum;
+
+	*foundPorts = malloc(sizeof(COMPort) * comListNum);
+
+	for (int i = 0; i < comListNum; i++)
+	{
+		(*foundPorts)[i].friendly_name = comList[i];
+	}
+
+    // Return true
+    return 1;
 }
 
 
@@ -181,7 +188,7 @@ int set_blocking (int fd, int should_block)
 
 int writeDataToPort(int fd, short * instructions, int number_of_instructions)
 {
-	unsigned char * buffer = (char *) malloc(sizeof(short) * number_of_instructions);
+	unsigned char * buffer = (unsigned char *) malloc(sizeof(short) * number_of_instructions);
 	for(int i = 0; i < number_of_instructions; i++)
 	{
 		buffer[2*i] = (instructions[i] & 0xFF00) >> 8;
@@ -195,15 +202,15 @@ int writeDataToPort(int fd, short * instructions, int number_of_instructions)
 	}
 
 	free(buffer);
-	return 0;
+	return 1;
 }
 
-int connectToComPort(char * port)
+int connectToComPort(COMPort * port)
 {
-	int fd = open(port, O_RDWR | O_NOCTTY | O_SYNC | O_NONBLOCK);
+	int fd = open(port->friendly_name, O_RDWR | O_NOCTTY | O_SYNC | O_NONBLOCK);
 	if (fd < 0)
 	{
-		printf("error %d opening %s: %s\n", errno, port, strerror (errno));
+		printf("error %d opening %s: %s\n", errno, port->friendly_name, strerror (errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -217,4 +224,9 @@ int disconnectFromComPort(int file)
 	if (close(file) < 0)
 		return 1;
 	return 0;
+}
+
+void printPortOption(COMPort *, int num)
+{
+	printf("%d: %s\r\n", num, (char *)p->friendly_name);
 }

@@ -22,20 +22,18 @@
 
 typedef struct COMPort {
 	char * friendly_name;
-	int port;
 } COMPort;
 
-// int getComPorts(COMPort **, int *);
-//
-int connectToComPort(char *);
-//
-int writeDataToPort(int, short *, int);
-//
-int disconnectFromComPort(int);
-//
-// void printPortOption(COMPort *, int);
+int connectToComPort(COMPort * port);
 
-char ** getComList(int * size);
+int writeDataToPort(int fd, short * instructions, int number_of_instructions);
+
+int disconnectFromComPort(int fd);
+
+int getComPorts(COMPort ** foundPorts, int * length);
+
+void printPortOption(COMPort *, int num);
+
 
 int register_comport( char ** comList, char * dir, int * n, char ** comList8250, int * pos_8250);
 

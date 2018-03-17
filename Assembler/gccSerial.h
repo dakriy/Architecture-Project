@@ -34,6 +34,8 @@ int getComPorts(COMPort ** foundPorts, int * length);
 
 void printPortOption(COMPort *, int num);
 
+int initialize(int fd);
+
 
 int register_comport( char ** comList, char * dir, int * n, char ** comList8250, int * pos_8250);
 

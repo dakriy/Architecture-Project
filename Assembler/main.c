@@ -60,8 +60,6 @@ void outputToFile(char * fileName, instruction * data, unsigned short instructio
 			}
 		}
 
-//		fwrite(data, sizeof(instruction), instructionCount, f);
-
 		fclose(f);
 	}
 	else
@@ -138,7 +136,16 @@ int main(int argc, const char* argv[])
 			break;
 		case 'u':
 			outputDeviceFD = getWantedDevice();
-			upload = TRUE;
+			if (!initDevice(outputDeviceFD))
+			{
+				printf("Error when intitializing output device.\n");
+				disconnectFromComPort(outputDeviceFD);
+				upload = FALSE;
+			}
+			else
+			{
+				upload = TRUE;
+			}
 			break;
 		default:
 			printHelp(argv[0]);

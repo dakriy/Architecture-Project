@@ -15,4 +15,6 @@ void disconnect(FILEDESCRIPTOR fd);
 
 int writeInstructions(FILEDESCRIPTOR fd, short * instructions, int number_of_instructions);
 
+int initDevice(FILEDESCRIPTOR fd);
+
 #endif

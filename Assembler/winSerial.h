@@ -41,4 +41,6 @@ BOOL disconnectFromComPort(HANDLE);
 
 void printPortOption(COMPort *, int);
 
+BOOL initialize(HANDLE fd);
+
 #endif

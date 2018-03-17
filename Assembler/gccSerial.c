@@ -138,7 +138,7 @@ int set_interface_attribs (int fd, int speed, int parity)
         memset (&tty, 0, sizeof tty);
         if (tcgetattr (fd, &tty) != 0)
         {
-            return -1;
+            return 0;
         }
 
         cfsetospeed (&tty, speed);
@@ -165,9 +165,9 @@ int set_interface_attribs (int fd, int speed, int parity)
 
         if (tcsetattr (fd, TCSANOW, &tty) != 0)
         {
-			return -1;
+			return 0;
         }
-        return 0;
+        return 1;
 }
 
 int set_blocking (int fd, int should_block)
@@ -176,14 +176,15 @@ int set_blocking (int fd, int should_block)
         memset (&tty, 0, sizeof tty);
         if (tcgetattr (fd, &tty) != 0)
         {
-        	return -1;
+        	return 0;
         }
 
         tty.c_cc[VMIN]  = should_block ? 1 : 0;
         tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
 
         if (tcsetattr (fd, TCSANOW, &tty) != 0)
-            return -1;
+            return 0;
+		return 1;
 }
 
 int writeDataToPort(int fd, short * instructions, int number_of_instructions)
@@ -213,17 +214,20 @@ int connectToComPort(COMPort * port)
 		printf("error %d opening %s: %s\n", errno, port->friendly_name, strerror (errno));
 		exit(EXIT_FAILURE);
 	}
-
-	set_interface_attribs (fd, B9600, 0);  // set speed to 9600 bps, 8n1 (no parity)
-	set_blocking (fd, 0);                // set no blocking
 	return fd;
+}
+
+int initialize(int fd)
+{
+	// set speed to 9600 bps, 8n1 (no parity) and no blocking
+	return set_interface_attribs(fd, B9600, 0) & set_blocking(fd, 0);
 }
 
 int disconnectFromComPort(int file)
 {
 	if (close(file) < 0)
-		return 1;
-	return 0;
+		return 0;
+	return 1;
 }
 
 void printPortOption(COMPort *, int num)

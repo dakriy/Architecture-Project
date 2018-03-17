@@ -1,48 +1,5 @@
 #include "serial.h"
 
-void printPorts()
-{
-	
-//	int size;
-//
-//	char ** ports = getComList(&size);
-//
-//
-//	printf("Please select a com port:\n");
-//	for (int i = 0; i < size; i++)
-//	{
-//		printf("%d: %s\n", i + 1, ports[i]);
-//	}
-//	int num;
-//	scanf("%d", &num);
-//
-//	if (num > size)
-//	{
-//		printf("Bad selection\n");
-//		exit(EXIT_FAILURE);
-//	}
-//
-//	int fd;
-//
-//	if(fd = connectToComPort(ports[num - 1]) < 0)
-//	{
-//		printf("Unable to open port.\n");
-//		exit(EXIT_FAILURE);
-//	}
-//
-//	short s = 0x4849;
-//
-//	writeDataToPort(fd, &s, 1);
-//
-//
-//	for (int i = 0; i < size; i++)
-//		free(ports[i]);
-//
-//	free(ports);
-//
-//	disconnectFromComPort(fd);
-}
-
 FILEDESCRIPTOR getWantedDevice()
 {
 	COMPort * ports = NULL;
@@ -92,4 +49,9 @@ void disconnect(FILEDESCRIPTOR fd)
 int writeInstructions(FILEDESCRIPTOR fd, short* instructions, int number_of_instructions)
 {
 	return writeDataToPort(fd, instructions, number_of_instructions);
+}
+
+int initDevice(FILEDESCRIPTOR fd)
+{
+	return initialize(fd);
 }

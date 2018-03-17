@@ -204,6 +204,11 @@ void printPortOption(COMPort* p, int num)
 	printf("%d: COM%d, %s\r\n", num, p->port, (char *)p->friendly_name);
 }
 
+BOOL initialize(HANDLE fd)
+{
+	return setParameters(fd) & setTimeouts(fd);
+}
+
 int setParameters(HANDLE hComm)
 {
 	DCB dcbSerialParams = { 0 };                        // Initializing DCB structure
@@ -229,11 +234,6 @@ int setParameters(HANDLE hComm)
 		printf("\n   Error! in Setting DCB Structure");
 		return FALSE;
 	}
-	printf("\n   Setting DCB Structure Successfull\n");
-	printf("\n       Baudrate = %d", dcbSerialParams.BaudRate);
-	printf("\n       ByteSize = %d", dcbSerialParams.ByteSize);
-	printf("\n       StopBits = %d", dcbSerialParams.StopBits);
-	printf("\n       Parity   = %d", dcbSerialParams.Parity);
 	return TRUE;
 }
 

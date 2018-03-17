@@ -15,10 +15,38 @@ void printPorts()
 
 	char ** ports = getComList(&size);
 
+
+	printf("Please select a com port:\n");
 	for (int i = 0; i < size; i++)
 	{
-		printf("%s\n", ports[i]);
-		free(ports[i]);
+		printf("%d: %s\n", i + 1, ports[i]);
 	}
+	int num;
+	scanf("%d", &num);
+
+	if (num > size)
+	{
+		printf("Bad selection\n");
+		exit(EXIT_FAILURE);
+	}
+
+	int fd;
+
+	if(fd = connectToComPort(ports[num - 1]) < 0)
+	{
+		printf("Unable to open port.\n");
+		exit(EXIT_FAILURE);
+	}
+
+	short s = 0x4849;
+
+	writeDataToPort(fd, &s, 1);
+
+
+	for (int i = 0; i < size; i++)
+		free(ports[i]);
+
 	free(ports);
+
+	disconnectFromComPort(fd);
 }

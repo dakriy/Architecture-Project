@@ -13,6 +13,8 @@
 #include <sys/ioctl.h>
 #include <linux/serial.h>
 #include <libgen.h>
+#include <errno.h>
+#include <string.h>
 
 // Credit to https://stackoverflow.com/questions/6947413/how-to-open-read-and-write-from-serial-port-in-c
 // Also credit to https://stackoverflow.com/questions/2530096/how-to-find-all-serial-devices-ttys-ttyusb-on-linux-without-opening-them
@@ -25,20 +27,24 @@ typedef struct COMPort {
 
 // int getComPorts(COMPort **, int *);
 //
-// int connectToComPort(COMPort *);
+int connectToComPort(char *);
 //
-// int setParameters(HANDLE);
+int writeDataToPort(int, short *, int);
 //
-// int setTimeouts(HANDLE);
-//
-// int writeDataToPort(HANDLE, char *, DWORD);
-//
-// int disconnectFromComPort(HANDLE);
+int disconnectFromComPort(int);
 //
 // void printPortOption(COMPort *, int);
+
 char ** getComList(int * size);
+
 int register_comport( char ** comList, char * dir, int * n, char ** comList8250, int * pos_8250);
+
 void probe_serial8250_comports(char ** comList, int * size_of_com_list, char ** comList8250, int size_of_8250_com_list);
+
 char * get_driver(char * tty);
+
+int set_interface_attribs (int fd, int speed, int parity);
+
+int set_blocking (int fd, int should_block);
 
 #endif

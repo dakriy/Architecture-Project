@@ -123,3 +123,98 @@ char ** getComList(int * size) {
     // Return the lsit of detected comports
     return comList;
 }
+
+
+int set_interface_attribs (int fd, int speed, int parity)
+{
+        struct termios tty;
+        memset (&tty, 0, sizeof tty);
+        if (tcgetattr (fd, &tty) != 0)
+        {
+            return -1;
+        }
+
+        cfsetospeed (&tty, speed);
+        cfsetispeed (&tty, speed);
+
+        tty.c_cflag = (tty.c_cflag & ~CSIZE) | CS8;     // 8-bit chars
+        // disable IGNBRK for mismatched speed tests; otherwise receive break
+        // as \000 chars
+        tty.c_iflag &= ~IGNBRK;         // disable break processing
+        tty.c_lflag = 0;                // no signaling chars, no echo,
+                                        // no canonical processing
+        tty.c_oflag = 0;                // no remapping, no delays
+        tty.c_cc[VMIN]  = 0;            // read doesn't block
+        tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
+
+        tty.c_iflag &= ~(IXON | IXOFF | IXANY); // shut off xon/xoff ctrl
+
+        tty.c_cflag |= (CLOCAL | CREAD);// ignore modem controls,
+                                        // enable reading
+        tty.c_cflag &= ~(PARENB | PARODD);      // shut off parity
+        tty.c_cflag |= parity;
+        tty.c_cflag &= ~CSTOPB;
+        tty.c_cflag &= ~CRTSCTS;
+
+        if (tcsetattr (fd, TCSANOW, &tty) != 0)
+        {
+			return -1;
+        }
+        return 0;
+}
+
+int set_blocking (int fd, int should_block)
+{
+        struct termios tty;
+        memset (&tty, 0, sizeof tty);
+        if (tcgetattr (fd, &tty) != 0)
+        {
+        	return -1;
+        }
+
+        tty.c_cc[VMIN]  = should_block ? 1 : 0;
+        tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
+
+        if (tcsetattr (fd, TCSANOW, &tty) != 0)
+            return -1;
+}
+
+int writeDataToPort(int fd, short * instructions, int number_of_instructions)
+{
+	unsigned char * buffer = (char *) malloc(sizeof(short) * number_of_instructions);
+	for(int i = 0; i < number_of_instructions; i++)
+	{
+		buffer[2*i] = (instructions[i] & 0xFF00) >> 8;
+		buffer[2*i+1] = (instructions[i] & 0x00FF);
+	}
+
+	if(write(fd, buffer, sizeof(short) * number_of_instructions) != (sizeof(short) * number_of_instructions))
+	{
+		printf("Did not write the total amount\n");
+		exit(EXIT_FAILURE);
+	}
+
+	free(buffer);
+	return 0;
+}
+
+int connectToComPort(char * port)
+{
+	int fd = open(port, O_RDWR | O_NOCTTY | O_SYNC | O_NONBLOCK);
+	if (fd < 0)
+	{
+		printf("error %d opening %s: %s\n", errno, port, strerror (errno));
+		exit(EXIT_FAILURE);
+	}
+
+	set_interface_attribs (fd, B9600, 0);  // set speed to 9600 bps, 8n1 (no parity)
+	set_blocking (fd, 0);                // set no blocking
+	return fd;
+}
+
+int disconnectFromComPort(int file)
+{
+	if (close(file) < 0)
+		return 1;
+	return 0;
+}

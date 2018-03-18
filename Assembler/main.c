@@ -110,6 +110,7 @@ int main(int argc, const char* argv[])
 	char * inputFile = NULL;
 	char * outputFile = NULL;
 	int upload = FALSE;
+	int outputFileFlag = TRUE;
 	FILEDESCRIPTOR outputDeviceFD = NULL;
 	for (size_t optind = 1; optind < argc && argv[optind][0] == '-'; optind++) {
 		switch (argv[optind][1]) {
@@ -147,6 +148,9 @@ int main(int argc, const char* argv[])
 				upload = TRUE;
 			}
 			break;
+		case 'n':
+			outputFileFlag = FALSE;
+			break;
 		default:
 			printHelp(argv[0]);
 			exit(EXIT_FAILURE);
@@ -169,7 +173,7 @@ int main(int argc, const char* argv[])
 	// Assemble it
 	instruction * machineCode = assemble(file, &instructionCount);
 
-	if (outputFile != NULL) // Write to the output file.
+	if (outputFile != NULL && outputFileFlag) // Write to the output file.
 		outputToFile(outputFile, machineCode, instructionCount);
 	if (upload)
 	{

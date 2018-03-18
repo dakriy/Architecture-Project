@@ -14,7 +14,8 @@ void printHelp(const char * name)
 	printOption("-h", "Prints this screen.");
 	printOption("-o", "Specifies the output file.");
 	printOption("-i", "Specifies the input file.");
-	printOption("-u", "Uploads the file onto the processor VIA a connected UART interface. (Not yet implemented)");
+	printOption("-u", "Uploads the file onto the processor VIA a connected USB to Serial UART interface.");
+	printOption("-n", "Supresses output file.");
 }
 
 void checkPtr(void* ptr)
@@ -28,8 +29,6 @@ void checkPtr(void* ptr)
 
 void syntaxError(char* message, unsigned char line)
 {
-	// TODO: turn this into a char * as the line numbers won't match up
-	// Change "On Instruction" to "On Line"
 	printf("INVALID SYNTAX!\n%s\nOn Instruction: %u\n", message, line + 1);
 	exit(EXIT_FAILURE);
 }

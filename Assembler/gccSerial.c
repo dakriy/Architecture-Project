@@ -230,7 +230,7 @@ int disconnectFromComPort(int file)
 	return 1;
 }
 
-void printPortOption(COMPort *, int num)
+void printPortOption(COMPort * p, int num)
 {
-	printf("%d: %s\r\n", num, (char *)p->friendly_name);
+	printf("%d: %s\r", num, (char *)p->friendly_name);
 }

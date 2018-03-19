@@ -219,8 +219,8 @@ int connectToComPort(COMPort * port)
 
 int initialize(int fd)
 {
-	// set speed to 9600 bps, 8n1 (no parity) and no blocking
-	return set_interface_attribs(fd, B9600, 0) & set_blocking(fd, 0);
+	// set speed to 115200 bps, 8n1 (no parity) and no blocking
+	return set_interface_attribs(fd, B115200, 0) & set_blocking(fd, 0);
 }
 
 int disconnectFromComPort(int file)

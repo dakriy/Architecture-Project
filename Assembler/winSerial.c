@@ -222,7 +222,7 @@ int setParameters(HANDLE hComm)
 		return FALSE;
 	}
 
-	dcbSerialParams.BaudRate = CBR_9600;      // Setting BaudRate = 9600
+	dcbSerialParams.BaudRate = CBR_115200;      // Setting BaudRate = 115200
 	dcbSerialParams.ByteSize = 8;             // Setting ByteSize = 8
 	dcbSerialParams.StopBits = ONESTOPBIT;    // Setting StopBits = 1
 	dcbSerialParams.Parity = NOPARITY;      // Setting Parity = None 

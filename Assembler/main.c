@@ -114,6 +114,10 @@ int main(int argc, const char* argv[])
 	FILEDESCRIPTOR outputDeviceFD = NULL;
 	for (size_t optind = 1; optind < argc && argv[optind][0] == '-'; optind++) {
 		switch (argv[optind][1]) {
+		case 'h':
+			printHelp(argv[0]);
+			exit(EXIT_SUCCESS);
+			break;
 		case 'o':
 			if (optind + 1 >= argc || argv[optind+1][0] == '-')
 			{
@@ -131,9 +135,6 @@ int main(int argc, const char* argv[])
 			}
 			inputFile = strdup(argv[optind + 1]);
 			optind++;
-			break;
-		case 'h':
-			printHelp(argv[0]);
 			break;
 		case 'u':
 			outputDeviceFD = getWantedDevice();

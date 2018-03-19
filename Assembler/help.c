@@ -15,7 +15,7 @@ void printHelp(const char * name)
 	printOption("-o", "Specifies the output file.");
 	printOption("-i", "Specifies the input file.");
 	printOption("-u", "Uploads the file onto the processor VIA a connected USB to Serial UART interface.");
-	printOption("-n", "Supresses output file.");
+	printOption("-n", "Suppresses output file.");
 }
 
 void checkPtr(void* ptr)

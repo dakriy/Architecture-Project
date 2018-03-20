@@ -18,23 +18,23 @@ entity register_file is
 
 					i_amod      : in std_logic_vector( 5 downto 0)
 					i_cond      : in std_logic_vector( 3 downto 0);
-                    i_ssss      : in std_logic_vector( 3 downto 0);
-                    --i_din     : in std_logic_vector( 8 downto 0);
-                    --i_flags   : in std_logic_vector( 7 downto 0);
-                    i_imm       : in std_logic_vector(15 downto 0);
-                    i_tttt      : in std_logic_vector( 3 downto 0);
-                    i_we_01     : in std_logic;
-                    i_we_d      : in std_logic_vector( 1 downto 0);
-                    --i_we_f    : in std_logic;
-                    i_we_m      : in std_logic;
+          i_ssss      : in std_logic_vector( 3 downto 0);
+          --i_din     : in std_logic_vector( 8 downto 0);
+          --i_flags   : in std_logic_vector( 7 downto 0);
+          i_imm       : in std_logic_vector(15 downto 0);
+          i_tttt      : in std_logic_vector( 3 downto 0);
+          i_we_01     : in std_logic;
+          i_we_d      : in std_logic_vector( 1 downto 0);
+          --i_we_f    : in std_logic;
+          i_we_m      : in std_logic;
 
-                    q_adr       : out std_logic_vector(15 downto 0);
-                    q_cc        : out std_logic;
-                    q_d         : out std_logic_vector(15 downto 0);
-                    q_flags     : out std_logic_vector( 7 downto 0);
-                    q_r         : out std_logic_vector(15 downto 0);
-                    q_s         : out std_logic_vector( 7 downto 0);
-                    q_z         : out std_logic_vector(15 downto 0));
+          q_adr       : out std_logic_vector(15 downto 0);
+          q_cc        : out std_logic;
+          q_d         : out std_logic_vector(15 downto 0);
+          q_flags     : out std_logic_vector( 7 downto 0);
+          q_r         : out std_logic_vector(15 downto 0);
+          q_s         : out std_logic_vector( 7 downto 0);
+          q_z         : out std_logic_vector(15 downto 0));
 end register_file;
 
 architecture Behavioral of register_file is
@@ -254,5 +254,5 @@ architecture Behavioral of register_file is
     q_flags <= s_flags;
     q_z <= r_r15;
     q_adr <= l_adr;
-    
+
 end Behavioral

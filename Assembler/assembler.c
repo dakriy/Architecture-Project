@@ -103,8 +103,6 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		instruc.opcode = (OPCODES)instruction_index;
 		instruc.padding = 0;
 
-		// TODO: Finish MOV instruction.
-
 		instruc.addressMode = 0;
 
 		// Getting first operand
@@ -112,13 +110,18 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		if (! *iterator2) syntaxError("Invalid Operand", lineNum);
 
 		*iterator2 = '\0';
-		if(iterator2 < line + lineLength) {
+		if(iterator2 < line + lineLength)
 			iterator2++;
-		}
-		else {
+		else
 			syntaxError("Second Operand Not Found", lineNum);
-		}
 
+		// Check address mode on first register
+		if(*iterator1 == '*')
+		{
+			instruc.addressMode |= 0x2;
+			iterator1++;
+		}
+		iterator1 = trimWhiteSpace(iterator1);
 
 		// Looking for the operand in registry
 		unsigned char register_index;
@@ -133,11 +136,20 @@ instruction instructionToMachineCode(char* line, unsigned char lineNum)
 		// Store first operand
 		instruc.reg1 = (REGISTERS)register_index;
 
-		iterator1 = iterator2;
+		iterator1 = trimWhiteSpace(iterator2);
+
+		// Check address mode on second register
+		if (*iterator1 == '*')
+		{
+			instruc.addressMode |= 0x1;
+			iterator1++;
+		}
 		iterator1 = trimWhiteSpace(iterator1);
+
 		for(register_index = 0; register_index < NUMBER_OF_REGISTERS; register_index++)
 			if(strcmp(iterator1, registerIdentifiers[register_index]) == 0)
 				break;
+
 		// Throw error for unknown input
 		if(register_index == NUMBER_OF_REGISTERS)
 			syntaxError("Unknown Register Identifier", lineNum);

@@ -7,7 +7,6 @@
 #define strdup _strdup
 #endif
 
-
 // I like my bools
 #define TRUE 1
 #define FALSE 0

@@ -3,10 +3,10 @@ OUT = $(ODIR)/assembler.a
 CC = gcc
 SDIR = .
 INC = -Iinc
-LINK_TARGET = $(ODIR)/assembler.exe
+LINK_TARGET = $(ODIR)/assembler
 MKDIR_P = mkdir -p
 
-_OBJS = main.o assembler.o help.o list.o instructions.o
+_OBJS = main.o assembler.o help.o list.o instructions.o serial.o gccSerial.o
 OBJS = $(patsubst %,$(ODIR)/%,$(_OBJS))
 
 all: directories $(LINK_TARGET)

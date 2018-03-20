@@ -85,6 +85,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -118,14 +119,20 @@
   <ItemGroup>
     <ClCompile Include="assembler.c" />
     <ClCompile Include="help.c" />
+    <ClCompile Include="instructions.c" />
     <ClCompile Include="list.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="serial.c" />
+    <ClCompile Include="winSerial.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assembler.h" />
     <ClInclude Include="help.h" />
+    <ClInclude Include="instructions.h" />
     <ClInclude Include="list.h" />
+    <ClInclude Include="serial.h" />
     <ClInclude Include="structs.h" />
+    <ClInclude Include="winSerial.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="code.asm" />

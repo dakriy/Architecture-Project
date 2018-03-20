@@ -15,6 +15,57 @@ use IEEE.STD_LOGIC_1164.all;
 use IEEE.STD_LOGIC_ARITH.all;
 use IEEE.STD_LOGIC_UNSIGNED.all;
 
+entity opc_fetch is
+  port( i_clk : in std_logic;
+        i_reset : in std_logic;
+        i_load_pc : in std_logic_vector(15 downto 0);
+        i_new_pc : in std_logic_vector(15 downto 0);
+        i_pm_adr : in std_logic_vector(15 downto 0);
+
+        q_opc : out std_logic_vector(15 downto 0);
+        q_pc : out std_logic_vector(15 downto 0);
+        q_pm_dout : out std_logic_vector(7 downto 0);
+        q_t0 : out std_logic);
+end opc_fetch;
+architecture beharioral of opc_fetch is
+component prog_mem
+  port( i_clk : in std_logic;
+        i_wait : in std_logic;
+        i_pc : in std_logic_vector(15 downto 0);
+        i_pm_adr : in std_logic_vector(11 downto 0);
+        q_opc : in std_logic_vector(15 downto 0)
+        q_pc : in std_logic_vector(15 downto 0);
+        q_pm_dout : in std_logic_vector(7 downto 0));
+end component;
+signal p_opc : std_logic_vector(15 downto 0);
+signal p_pc : std_logic_vector(7 downto 0);
+
+signal l_invalidate : std_logic;
+signal l_long_op : std_logic;
+signal l_next_pc : std_logic_vector(15 downto 0);
+signal l_pc : std_logic_vector(15 downto 0);
+signal l_t0 : std_logic;
+signal l_wait : std_logic;
+
+begin
+  pmem : prog_mem
+  port map( i_clk => i_clk,
+          i_wait => l_wait,
+          i_pc => l_next_pc,
+          i_pm_adr => i_pm_adr,
+          q_opc => p_opc,
+          q_pc => p_pc,
+          q_pm_dout => q_pm_dout);
+  lpc: process(I_CLK)
+  begin
+    if (rising_edge(I_CLK)) then
+      L_PC <= L_NEXT_PC;
+      L_T0 <= not L_WAIT;
+    end if;
+  end process;
+
+
+end architecture;
 signal l_pc : std_logic_vector( 15 downto 0 );
 
 lpc: process( i_clk )

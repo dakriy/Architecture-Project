@@ -1,0 +1,6 @@
+vhdl work "../Architecture/common.vhd"
+vhdl work "../Architecture/opc_fetch.vhd"
+vhdl work "../Architecture/opcode_decoder.vhd"
+vhdl work "../Architecture/seven_segment.vhd"
+vhdl work "../Architecture/cpu_core.vhd"
+vhdl work "../Architecture/booths_architecture.vhd"

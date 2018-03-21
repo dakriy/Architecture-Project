@@ -1,0 +1,12 @@
+[Inputs]
+i_clk
+i_reset
+i_load_pc
+=i_new_pc[15:0]=
+=i_pm_adr[11:0]=
+[Outputs]
+q_t0
+=q_opc[15:0]=
+=q_pc[15:0]=
+=q_pm_dout[7:0]=
+[BiDir]

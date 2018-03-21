@@ -1,0 +1,144 @@
+Release 14.7 - xst P.20131013 (lin64)
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+--> 
+Parameter TMPDIR set to xst/projnav.tmp
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.09 secs
+ 
+--> 
+Parameter xsthdpdir set to xst
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.09 secs
+ 
+--> 
+Reading design: booths_architecture.prj
+
+TABLE OF CONTENTS
+  1) Synthesis Options Summary
+  2) HDL Compilation
+  3) Design Hierarchy Analysis
+  4) HDL Analysis
+  5) HDL Synthesis
+     5.1) HDL Synthesis Report
+  6) Advanced HDL Synthesis
+     6.1) Advanced HDL Synthesis Report
+  7) Low Level Synthesis
+  8) Partition Report
+  9) Final Report
+	9.1) Device utilization summary
+	9.2) Partition Resource Summary
+	9.3) TIMING REPORT
+
+
+=========================================================================
+*                      Synthesis Options Summary                        *
+=========================================================================
+---- Source Parameters
+Input File Name                    : "booths_architecture.prj"
+Input Format                       : mixed
+Ignore Synthesis Constraint File   : NO
+
+---- Target Parameters
+Output File Name                   : "booths_architecture"
+Output Format                      : NGC
+Target Device                      : xc3s1200e-4-fg320
+
+---- Source Options
+Top Module Name                    : booths_architecture
+Automatic FSM Extraction           : YES
+FSM Encoding Algorithm             : Auto
+Safe Implementation                : No
+FSM Style                          : LUT
+RAM Extraction                     : Yes
+RAM Style                          : Auto
+ROM Extraction                     : Yes
+Mux Style                          : Auto
+Decoder Extraction                 : YES
+Priority Encoder Extraction        : Yes
+Shift Register Extraction          : YES
+Logical Shifter Extraction         : YES
+XOR Collapsing                     : YES
+ROM Style                          : Auto
+Mux Extraction                     : Yes
+Resource Sharing                   : YES
+Asynchronous To Synchronous        : NO
+Multiplier Style                   : Auto
+Automatic Register Balancing       : No
+
+---- Target Options
+Add IO Buffers                     : YES
+Global Maximum Fanout              : 100000
+Add Generic Clock Buffer(BUFG)     : 24
+Register Duplication               : YES
+Slice Packing                      : YES
+Optimize Instantiated Primitives   : NO
+Use Clock Enable                   : Yes
+Use Synchronous Set                : Yes
+Use Synchronous Reset              : Yes
+Pack IO Registers into IOBs        : Auto
+Equivalent register Removal        : YES
+
+---- General Options
+Optimization Goal                  : Speed
+Optimization Effort                : 1
+Keep Hierarchy                     : No
+Netlist Hierarchy                  : As_Optimized
+RTL Output                         : Yes
+Global Optimization                : AllClockNets
+Read Cores                         : YES
+Write Timing Constraints           : NO
+Cross Clock Analysis               : NO
+Hierarchy Separator                : /
+Bus Delimiter                      : <>
+Case Specifier                     : Maintain
+Slice Utilization Ratio            : 100
+BRAM Utilization Ratio             : 100
+Verilog 2001                       : YES
+Auto BRAM Packing                  : NO
+Slice Utilization Ratio Delta      : 5
+
+=========================================================================
+
+
+=========================================================================
+*                          HDL Compilation                              *
+=========================================================================
+Compiling vhdl file "/home/seth.ballance/Desktop/Architecture-Project/Architecture/register_16.vhd" in Library work.
+Architecture behavioral of Entity register_16 is up to date.
+Compiling vhdl file "/home/seth.ballance/Desktop/Architecture-Project/Architecture/common.vhd" in Library work.
+Compiling vhdl file "/home/seth.ballance/Desktop/Architecture-Project/Architecture/alu.vhd" in Library work.
+Architecture behavioral of Entity alu is up to date.
+Compiling vhdl file "/home/seth.ballance/Desktop/Architecture-Project/Architecture/register_file.vhd" in Library work.
+Architecture behavioral of Entity register_file is up to date.
+Compiling vhdl file "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opc_fetch.vhd" in Library work.
+Architecture behavioral of Entity opc_fetch is up to date.
+Compiling vhdl file "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" in Library work.
+Entity <opcode_decoder> compiled.
+ERROR:HDLParsers:837 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" Line 70. Width mismatch. Expected width 2, Actual width is 4 for dimension 1 of alu_add.
+ERROR:HDLParsers:837 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" Line 76. Width mismatch. Expected width 2, Actual width is 4 for dimension 1 of alu_and.
+ERROR:HDLParsers:837 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" Line 82. Width mismatch. Expected width 2, Actual width is 4 for dimension 1 of alu_or.
+ERROR:HDLParsers:837 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" Line 89. Width mismatch. Expected width 2, Actual width is 4 for dimension 1 of alu_mov.
+ERROR:HDLParsers:837 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" Line 105. Width mismatch. Expected width 2, Actual width is 4 for dimension 1 of alu_srl.
+ERROR:HDLParsers:837 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" Line 111. Width mismatch. Expected width 2, Actual width is 4 for dimension 1 of alu_sra.
+ERROR:HDLParsers:837 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" Line 117. Width mismatch. Expected width 2, Actual width is 4 for dimension 1 of alu_sl.
+ERROR:HDLParsers:837 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" Line 122. Width mismatch. Expected width 2, Actual width is 4 for dimension 1 of alu_not.
+ERROR:HDLParsers:837 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" Line 129. Width mismatch. Expected width 2, Actual width is 4 for dimension 1 of alu_andi.
+ERROR:HDLParsers:837 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" Line 135. Width mismatch. Expected width 2, Actual width is 4 for dimension 1 of alu_addi.
+ERROR:HDLParsers:837 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" Line 141. Width mismatch. Expected width 2, Actual width is 4 for dimension 1 of alu_ori.
+ERROR:HDLParsers:837 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" Line 147. Width mismatch. Expected width 2, Actual width is 4 for dimension 1 of alu_loadi.
+ERROR:HDLParsers:837 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" Line 159. Width mismatch. Expected width 2, Actual width is 4 for dimension 1 of alu_jz.
+ERROR:HDLParsers:837 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" Line 164. Width mismatch. Expected width 2, Actual width is 4 for dimension 1 of alu_j.
+WARNING:HDLParsers:817 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd" Line 94. Choice or is not a locally static expression.
+--> 
+
+
+Total memory usage is 493668 kilobytes
+
+Number of errors   :   14 (   0 filtered)
+Number of warnings :    1 (   0 filtered)
+Number of infos    :    0 (   0 filtered)
+

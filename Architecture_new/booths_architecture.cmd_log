@@ -1,0 +1,16 @@
+vhdtdtfi -lib work ../Architecture/booths_architecture.vhd -prj Architecture_new -o booths_architecture.spl -module booths_architecture -template /wwu/apps/xilinx/14.7/ISE_DS/ISE//data/splfile.tft -deleteonerror 
+spl2sym -intstyle ise -family spartan3e booths_architecture.spl /home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.sym 
+xst -intstyle ise -ifn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.xst" -ofn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.syr" 
+vhdtdtfi -lib work ../Architecture/booths_architecture.vhd -prj Architecture_new -o booths_architecture.spl -module booths_architecture -template /wwu/apps/xilinx/14.7/ISE_DS/ISE//data/splfile.tft -deleteonerror 
+vhdtdtfi -lib work ../Architecture/booths_architecture.vhd -prj Architecture_new -o booths_architecture.spl -module booths_architecture -template /wwu/apps/xilinx/14.7/ISE_DS/ISE//data/splfile.tft -deleteonerror 
+spl2sym -intstyle ise -family spartan3e booths_architecture.spl /home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.sym 
+xst -intstyle ise -ifn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.xst" -ofn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.syr" 
+xst -intstyle ise -ifn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.xst" -ofn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.syr" 
+xst -intstyle ise -ifn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.xst" -ofn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.syr" 
+xst -intstyle ise -ifn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.xst" -ofn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.syr" 
+xst -intstyle ise -ifn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.xst" -ofn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.syr" 
+xst -intstyle ise -ifn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.xst" -ofn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.syr" 
+xst -intstyle ise -ifn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.xst" -ofn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.syr" 
+xst -intstyle ise -ifn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.xst" -ofn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.syr" 
+xst -intstyle ise -ifn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.xst" -ofn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.syr" 
+xst -intstyle ise -ifn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.xst" -ofn "/home/seth.ballance/Desktop/Architecture-Project/Architecture_new/booths_architecture.syr" 

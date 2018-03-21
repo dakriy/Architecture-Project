@@ -1,0 +1,8 @@
+[Inputs]
+i_clk
+i_reset
+=i_opc[15:0]=
+=i_pc[15:0]=
+[Outputs]
+=q_7_segment[6:0]=
+[BiDir]

@@ -1,0 +1,2 @@
+work	"../Architecture/common.vhd"
+work	"../Architecture/opcode_decoder.vhd"

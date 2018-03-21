@@ -1,0 +1,126 @@
+Release 14.7 - xst P.20131013 (lin64)
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+--> 
+Parameter TMPDIR set to xst/projnav.tmp
+
+
+Total REAL time to Xst completion: 1.00 secs
+Total CPU time to Xst completion: 0.09 secs
+ 
+--> 
+Parameter xsthdpdir set to xst
+
+
+Total REAL time to Xst completion: 1.00 secs
+Total CPU time to Xst completion: 0.09 secs
+ 
+--> 
+Reading design: register_file.prj
+
+TABLE OF CONTENTS
+  1) Synthesis Options Summary
+  2) HDL Compilation
+  3) Design Hierarchy Analysis
+  4) HDL Analysis
+  5) HDL Synthesis
+     5.1) HDL Synthesis Report
+  6) Advanced HDL Synthesis
+     6.1) Advanced HDL Synthesis Report
+  7) Low Level Synthesis
+  8) Partition Report
+  9) Final Report
+	9.1) Device utilization summary
+	9.2) Partition Resource Summary
+	9.3) TIMING REPORT
+
+
+=========================================================================
+*                      Synthesis Options Summary                        *
+=========================================================================
+---- Source Parameters
+Input File Name                    : "register_file.prj"
+Input Format                       : mixed
+Ignore Synthesis Constraint File   : NO
+
+---- Target Parameters
+Output File Name                   : "register_file"
+Output Format                      : NGC
+Target Device                      : xc3s1200e-4-fg320
+
+---- Source Options
+Top Module Name                    : register_file
+Automatic FSM Extraction           : YES
+FSM Encoding Algorithm             : Auto
+Safe Implementation                : No
+FSM Style                          : LUT
+RAM Extraction                     : Yes
+RAM Style                          : Auto
+ROM Extraction                     : Yes
+Mux Style                          : Auto
+Decoder Extraction                 : YES
+Priority Encoder Extraction        : Yes
+Shift Register Extraction          : YES
+Logical Shifter Extraction         : YES
+XOR Collapsing                     : YES
+ROM Style                          : Auto
+Mux Extraction                     : Yes
+Resource Sharing                   : YES
+Asynchronous To Synchronous        : NO
+Multiplier Style                   : Auto
+Automatic Register Balancing       : No
+
+---- Target Options
+Add IO Buffers                     : YES
+Global Maximum Fanout              : 100000
+Add Generic Clock Buffer(BUFG)     : 24
+Register Duplication               : YES
+Slice Packing                      : YES
+Optimize Instantiated Primitives   : NO
+Use Clock Enable                   : Yes
+Use Synchronous Set                : Yes
+Use Synchronous Reset              : Yes
+Pack IO Registers into IOBs        : Auto
+Equivalent register Removal        : YES
+
+---- General Options
+Optimization Goal                  : Speed
+Optimization Effort                : 1
+Keep Hierarchy                     : No
+Netlist Hierarchy                  : As_Optimized
+RTL Output                         : Yes
+Global Optimization                : AllClockNets
+Read Cores                         : YES
+Write Timing Constraints           : NO
+Cross Clock Analysis               : NO
+Hierarchy Separator                : /
+Bus Delimiter                      : <>
+Case Specifier                     : Maintain
+Slice Utilization Ratio            : 100
+BRAM Utilization Ratio             : 100
+Verilog 2001                       : YES
+Auto BRAM Packing                  : NO
+Slice Utilization Ratio Delta      : 5
+
+=========================================================================
+
+
+=========================================================================
+*                          HDL Compilation                              *
+=========================================================================
+WARNING:HDLParsers:3607 - Unit work/register_file/Behavioral is now defined in a different file.  It was defined in "/home/seth.ballance/Desktop/Architecture-Project/Architecture/register_file.vhd", and is now defined in "/home/seth.ballance/Desktop/Architecture-Project/Architecture/src/register_file.vhd".
+WARNING:HDLParsers:3516 - Found error in file "/home/seth.ballance/Desktop/Architecture-Project/Architecture/src/register_file.vhd". 
+WARNING:HDLParsers:3607 - Unit work/register_file is now defined in a different file.  It was defined in "/home/seth.ballance/Desktop/Architecture-Project/Architecture/src/register_file.vhd", and is now defined in "/home/seth.ballance/Desktop/Architecture-Project/Architecture/register_file.vhd".
+WARNING:HDLParsers:3607 - Unit work/register_file/Behavioral is now defined in a different file.  It was defined in "/home/seth.ballance/Desktop/Architecture-Project/Architecture/src/register_file.vhd", and is now defined in "/home/seth.ballance/Desktop/Architecture-Project/Architecture/register_file.vhd".
+WARNING:HDLParsers:3458 - Because of erroneous VHDL file(s), automatic determination of correct order of compilation of files in project file "/home/seth.ballance/Desktop/Architecture-Project/Architecture/register_file_vhdl.prj" may be inaccurate. Please put the files in the project file in correct order with keyword 'nosort' at end of the project file, or compile your vhdl file(s) individually to find and fix the error(s) in your vhdl file(s). 
+Compiling vhdl file "/home/seth.ballance/Desktop/Architecture-Project/Architecture/register_16.vhd" in Library work.
+ERROR:HDLParsers:3312 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/register_16.vhd" Line 33. Undefined symbol 'clk'.
+ERROR:HDLParsers:1209 - "/home/seth.ballance/Desktop/Architecture-Project/Architecture/register_16.vhd" Line 33. clk: Undefined symbol (last report in this block)
+--> 
+
+
+Total memory usage is 492124 kilobytes
+
+Number of errors   :    2 (   0 filtered)
+Number of warnings :    5 (   0 filtered)
+Number of infos    :    0 (   0 filtered)
+

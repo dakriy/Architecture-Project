@@ -1,0 +1,16 @@
+[Inputs]
+i_d0
+i_r0
+=i_alu_op[3:0]=
+=i_bit[3:0]=
+=i_d[15:0]=
+=i_din[7:0]=
+=i_flags[7:0]=
+=i_imm[11:0]=
+=i_pc[15:0]=
+=i_r[15:0]=
+=i_rsel[1:0]=
+[Outputs]
+=q_flags[9:0]=
+=q_dout[15:0]=
+[BiDir]

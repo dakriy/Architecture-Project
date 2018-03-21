@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IMPORTANT: This is an internal file that has been generated
+     by the Xilinx ISE software.  Any direct editing or
+     changes made to this file may result in unpredictable
+     behavior or data corruption.  It is strongly advised that
+     users do not edit the contents of this file. -->
+<messages>
+<msg type="warning" file="HDLParsers" num="3516" delta="old" >Found error in file &quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/src/io.vhd</arg>&quot;. 
+</msg>
+
+<msg type="warning" file="HDLParsers" num="3458" delta="old" >Because of erroneous VHDL file(s), automatic determination of correct order of compilation of files in project file &quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/New/booths_architecture_vhdl.prj</arg>&quot; may be inaccurate. Please put the files in the project file in correct order with keyword &apos;nosort&apos; at end of the project file, or compile your vhdl file(s) individually to find and fix the error(s) in your vhdl file(s). 
+</msg>
+
+<msg type="error" file="HDLParsers" num="808" delta="new" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/uart_rx.vhd</arg>&quot; Line <arg fmt="%d" index="2">82</arg>. <arg fmt="%s" index="3">=</arg> can not have such operands in this context.
+</msg>
+
+<msg type="error" file="HDLParsers" num="808" delta="new" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/uart_rx.vhd</arg>&quot; Line <arg fmt="%d" index="2">85</arg>. <arg fmt="%s" index="3">=</arg> can not have such operands in this context.
+</msg>
+
+</messages>
+

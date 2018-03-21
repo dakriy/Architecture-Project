@@ -1,0 +1,16 @@
+AR register_file behavioral /home/seth.ballance/Desktop/Architecture-Project/Architecture/register_file.vhd sub00/vhpl03 1521591134
+EN booths_architecture NULL /home/seth.ballance/Desktop/Architecture-Project/Architecture/booths_architecture.vhd sub00/vhpl13 1521590555
+EN register_16 NULL /home/seth.ballance/Desktop/Architecture-Project/Architecture/register_16.vhd sub00/vhpl00 1521591128
+EN opcode_decoder NULL /home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd sub00/vhpl15 1521591137
+AR register_16 behavioral /home/seth.ballance/Desktop/Architecture-Project/Architecture/register_16.vhd sub00/vhpl01 1521591129
+AR cpu_core behavioral /home/seth.ballance/Desktop/Architecture-Project/Architecture/cpu_core.vhd sub00/vhpl12 1521590554
+EN data_path NULL /home/seth.ballance/Desktop/Architecture-Project/Architecture/data_path.vhd sub00/vhpl07 1521590551
+EN register_file NULL /home/seth.ballance/Desktop/Architecture-Project/Architecture/register_file.vhd sub00/vhpl02 1521591133
+AR booths_architecture behavioral /home/seth.ballance/Desktop/Architecture-Project/Architecture/booths_architecture.vhd sub00/vhpl14 1521590556
+PH common NULL /home/seth.ballance/Desktop/Architecture-Project/Architecture/common.vhd sub00/vhpl04 1521591130
+EN opc_fetch NULL /home/seth.ballance/Desktop/Architecture-Project/Architecture/opc_fetch.vhd sub00/vhpl05 1521591135
+AR alu behavioral /home/seth.ballance/Desktop/Architecture-Project/Architecture/alu.vhd sub00/vhpl09 1521591132
+AR data_path behavioral /home/seth.ballance/Desktop/Architecture-Project/Architecture/data_path.vhd sub00/vhpl10 1521590552
+AR opc_fetch behavioral /home/seth.ballance/Desktop/Architecture-Project/Architecture/opc_fetch.vhd sub00/vhpl06 1521591136
+EN cpu_core NULL /home/seth.ballance/Desktop/Architecture-Project/Architecture/cpu_core.vhd sub00/vhpl11 1521590553
+EN alu NULL /home/seth.ballance/Desktop/Architecture-Project/Architecture/alu.vhd sub00/vhpl08 1521591131

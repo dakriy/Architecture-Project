@@ -18,24 +18,26 @@ use IEEE.STD_LOGIC_UNSIGNED.all;
 use work.common.all;
 
 entity opcode_decoder is
-	port(	i_clk  : in std_logic;
-
-	        i_opc       : in  std_logic_vector( 15 downto 0 );
-            i_pc        : in  std_logic_vector( 15 downto 0 );
-            --i_t0        : out std_logic;
-
-            q_alu_op  : out std_logic_vector(  1 downto 0 );
-            q_ssss    : out std_logic_vector(  3 downto 0 ); --Rs
-            q_tttt    : out std_logic_vector(  3 downto 0 ); --Rt
-            q_imm     : out std_logic_vector(  7 downto 0 ); --immediate value (offset from PC for jumps)
-            q_jadr    : out std_logic_vector( 11 downto 0 ); --branch/jump address (byte addressed)
-            q_opc     : out std_logic_vector( 15 downto 0 ); --opcode to be decoded
-            q_pc      : out std_logic_vector( 15 downto 0 ); --program counter for current opcode
-            q_pc_op   : out std_logic_vector( 15 downto 0 ); --operation to be performed on pc
-            q_rsel    : out std_logic_vector(  7 downto 0 ); --register select
-
-            q_we_d    : out std_logic_vector(  1 downto 0); --set when Rs is to be written
-            q_we_m    : out std_logic_vector(  1 downto 0)); --set when memory is to be written
+	port(	i_clk       : in std_logic;
+            i_opc       : in std_logic_vector(15 downto 0);
+            i_pc        : in std_logic_vector(15 downto 0);
+            i_t0        : in std_logic;
+            q_alu_op    : out std_logic_vector( 3 downto 0);
+            q_bit       : out std_logic_vector( 3 downto 0);
+            q_ssss      : out std_logic_vector( 3 downto 0);
+            q_imm       : out std_logic_vector(7 downto 0);
+            q_jadr      : out std_logic_vector(15 downto 0);
+            q_opc       : out std_logic_vector(15 downto 0);
+            q_pc        : out std_logic_vector(15 downto 0);
+            q_pc_op     : out std_logic_vector( 1 downto 0);
+            q_pms       : out std_logic; -- program memory select
+            q_rd_m      : out std_logic;
+            q_tttt      : out std_logic_vector( 3 downto 0);
+            q_rsel      : out std_logic_vector( 1 downto 0);
+            q_we_01     : out std_logic;
+            q_we_d      : out std_logic_vector( 1 downto 0);
+            q_we_f      : out std_logic;
+            q_we_m      : out std_logic_vector( 1 downto 0));
 end opcode_decoder;
 
 architecture Behavioral of opcode_decoder is
@@ -44,11 +46,11 @@ begin
   begin
     if (rising_edge(i_clk)) then
       --set the most common settings
-      q_alu_op  <= alu_d_mv_q;
+      --q_alu_op  <= alu_d_mv_q;
       q_ssss    <= i_opc( 11 downto 8); --Rs in bits 11-8
       q_tttt    <= i_opc(  7 downto 4); --Rt register in bits 7-4
       q_imm     <= i_opc(  7 downto 0); --immediate value in bits 7-0
-      q_jadr    <= i_opc( 11 downto 0); --jump address in bits 11-0
+      q_jadr    <= "00000000" & i_opc( 7 downto 0); --jump address in bits 11-0
       q_opc     <= i_opc; --opcode
       q_pc      <= i_pc; --current pc
       q_pc_op   <= pc_next; --next pc
@@ -91,7 +93,7 @@ begin
 					when others =>		--NOP
 				end case;
 
-			when "01" or "10" =>		--I-type commands
+			when ("01" or "10") =>		--I-type commands
 				--(01xx) or (10xx) ssss iiii iiii
 				--$d will be changed
 				q_we_d   <= "11";
@@ -104,11 +106,11 @@ begin
 						--$d = $d >> $i
 						q_alu_op <= alu_srl;
 
-                    when "101" =>		--SRA
-                        --shift destination right by immediate and shift in sign bit (4bit)
-                        --0100 ssss xxxx iiii
-                        --$d = $d >> $i
-                        q_alu_op <= alu_sra;
+				  when "101" =>		--SRA
+						--shift destination right by immediate and shift in sign bit (4bit)
+						--0100 ssss xxxx iiii
+						--$d = $d >> $i
+						q_alu_op <= alu_sra;
 
 					when "110" =>		--SL
 						--shift destination left by immediate (4bit)
@@ -171,3 +173,4 @@ begin
       end case;
     end if;
   end process;
+end Behavioral;

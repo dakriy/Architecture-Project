@@ -25,12 +25,12 @@ entity register_16 is
 end register_16;
 
 architecture Behavioral of register_16 is
-	signal l			: in std_logic_vector( 15 downto 0 ) := x"0000";
+	signal l			: std_logic_vector( 15 downto 0 ) := x"0000";
 	begin
 
 		process( i_clk )
 		begin
-			if (rising_edge(clk)) then
+			if (rising_edge(i_clk)) then
 				if (i_we(1) = '1') then
 					l( 15 downto 8 )	<= i_d( 15 downto 8 );
 				end if;

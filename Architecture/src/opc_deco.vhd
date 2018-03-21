@@ -1,64 +1,94 @@
 -------------------------------------------------------------------------------
+-- 
+-- copyright (c) 2009, 2010 dr. juergen sauermann
+-- 
+--  this code is free software: you can redistribute it and/or modify
+--  it under the terms of the gnu general public license as published by
+--  the free software foundation, either version 3 of the license, or
+--  (at your option) any later version.
 --
--- Module Name:     opcode_decoder
--- Project Name:    Booth's Radix-4 Processor
--- Target Device:   Spartan3E xc3s1200e
--- Description:     the opcode fetch stage of a CPU.
+--  this code is distributed in the hope that it will be useful,
+--  but without any warranty; without even the implied warranty of
+--  merchantability or fitness for a particular purpose.  see the
+--  gnu general public license for more details.
 --
--- We credit Dr. Juergen Sauermann for his initial design which we have modified to fit our needs
--- link: https://github.com/freecores/cpu_lecture/tree/master/html
+--  you should have received a copy of the gnu general public license
+--  along with this code (see the file named copying).
+--  if not, see http://www.gnu.org/licenses/.
 --
 -------------------------------------------------------------------------------
-
-library IEEE;
-use IEEE.STD_LOGIC_1164.all;
-use IEEE.STD_LOGIC_ARITH.all;
-use IEEE.STD_LOGIC_UNSIGNED.all;
+-------------------------------------------------------------------------------
+--
+-- module name:    opc_deco - behavioral 
+-- create date:    16:05:16 10/29/2009 
+-- description:    the opcode decoder of a cpu.
+--
+-------------------------------------------------------------------------------
+--
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
 
 use work.common.all;
 
-entity opcode_decoder is
-	port(	i_clk       : in std_logic;
-            i_opc       : in std_logic_vector(15 downto 0);
-            i_pc        : in std_logic_vector(15 downto 0);
-            i_t0        : in std_logic;
+entity opc_deco is
+    port (  i_clk       : in  std_logic;
+
+            i_opc       : in  std_logic_vector(15 downto 0);
+            i_pc        : in  std_logic_vector(15 downto 0);
+            i_t0        : in  std_logic;
+
             q_alu_op    : out std_logic_vector( 3 downto 0);
+            q_amod      : out std_logic_vector( 5 downto 0);
             q_bit       : out std_logic_vector( 3 downto 0);
-            q_ssss      : out std_logic_vector( 3 downto 0);
-            q_imm       : out std_logic_vector(7 downto 0);
-            q_jadr      : out std_logic_vector(15 downto 0);
+            q_ddddd     : out std_logic_vector( 3 downto 0);
+            q_imm       : out std_logic_vector( 7 downto 0);
+            q_jadr      : out std_logic_vector( 7 downto 0);
             q_opc       : out std_logic_vector(15 downto 0);
             q_pc        : out std_logic_vector(15 downto 0);
-            q_pc_op     : out std_logic_vector( 1 downto 0);
-            q_pms       : out std_logic; -- program memory select
+            q_pc_op     : out std_logic_vector( 2 downto 0);
+            q_pms       : out std_logic;  -- program memory select
             q_rd_m      : out std_logic;
-            q_tttt      : out std_logic_vector( 3 downto 0);
+            q_rrrrr     : out std_logic_vector( 3 downto 0);
             q_rsel      : out std_logic_vector( 1 downto 0);
             q_we_01     : out std_logic;
             q_we_d      : out std_logic_vector( 1 downto 0);
             q_we_f      : out std_logic;
-            q_we_m      : out std_logic_vector( 1 downto 0));
-end opcode_decoder;
+            q_we_m      : out std_logic_vector( 1 downto 0);
+            q_we_xyzs   : out std_logic);
+end opc_deco;
 
-architecture Behavioral of opcode_decoder is
+architecture behavioral of opc_deco is
+
 begin
-  process( i_clk )
-  begin
-    if (rising_edge(i_clk)) then
-      --set the most common settings
-      --q_alu_op  <= alu_d_mv_q;
-      q_ssss    <= i_opc( 11 downto 8); --Rs in bits 11-8
-      q_tttt    <= i_opc(  7 downto 4); --Rt register in bits 7-4
-      q_imm     <= i_opc(  7 downto 0); --immediate value in bits 7-0
-      q_jadr    <= "00000000" & i_opc( 7 downto 0); --jump address in bits 11-0
-      q_opc     <= i_opc; --opcode
-      q_pc      <= i_pc; --current pc
-      q_pc_op   <= pc_next; --next pc
-      q_rsel    <= rs_reg; -- Choose what type of data to send to the ALU
-      q_we_d    <= "00";	-- For writing to register
-      q_we_m    <= "00";	-- For writing to memory
 
-      case i_opc(15 downto 14) is
+    process(i_clk)
+    begin
+    if (rising_edge(i_clk)) then
+        --
+        -- set the most common settings as default.
+        --
+        q_alu_op  <= alu_mov;
+        q_amod    <= amod_abs;
+--        q_bit     <= i_opc(10) & i_opc(2 downto 0);
+        q_ddddd   <= i_opc(11 downto 8);
+        q_imm     <= i_opc(7 downto 0);
+        q_jadr    <= i_opc(7 downto 0);
+        q_opc     <= i_opc(15 downto  0);
+        q_pc      <= i_pc;
+        q_pc_op   <= pc_next;
+        q_pms     <= '0';
+        q_rd_m    <= '0';
+        q_rrrrr   <= i_opc(7 downto 4);
+        q_rsel    <= rs_reg;
+        q_we_d    <= "00";
+        q_we_01   <= '0';
+        q_we_f    <= '0';
+        q_we_m    <= "00";
+        q_we_xyzs <= '0';
+
+        case i_opc(15 downto 14) is
 			when "00" =>		--R-type commands
 				--00xx ssss tttt xxxx
 				--$d will be changed
@@ -89,7 +119,13 @@ begin
 						--$s = $t, $t = 0
 						q_we_m   <= "11";
 						q_alu_op <= alu_mov;
-
+						if (i_opc(3 downto 2) = "01") then
+							q_we_m <= "11";
+							q_we_d <= "00";
+						else
+							q_we_d <= "11";
+							q_we_m <= "00";
+						end if;	
 					when others =>		--NOP
 				end case;
 
@@ -151,26 +187,29 @@ begin
 					when others =>		--NOP
 				end case;
 
-			when "11" =>		--J-type instructions and others
+			 when "11" =>		--J-type instructions and others
 				--11xx ssss iiii iiii
+				q_we_d <= "00";
 
 				case i_opc(13 downto 12) is
-                    when "00" =>		--JZ
+             when "00" =>		--JZ
 						--jump when given register equals zero
 						--1100 ssss iiii iiii
 						q_alu_op <= alu_jz;
+						
 
-                    when "01" =>		--J
+             when "01" =>		--J
                         --jump unconditionally
                         --1101 iiii iiii iiii
                         q_alu_op <= alu_j;
 
-                    when "11" =>		--NOP
-                        --1111 xxxx xxxx xxxx
+             when others =>      --NOP
+				 
+           end case;
+			  when others =>
+			  
+			end case;
+		end if;
+    end process;
 
-                    when others =>      --NOP
-                end case;
-      end case;
-    end if;
-  end process;
-end Behavioral;
+end behavioral;

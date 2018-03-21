@@ -25,6 +25,7 @@ entity uart_rx is
         q_flag    : out std_logic); --toggle on byte receive
 end uart_rx;
 
+architecture Behavioral of uart_rx is
 signal l_position : std_logic_vector( 7 downto 0 ); --sample position
 signal l_buffer   : std_logic_vector( 9 downto 0 ); --sample buffer
 signal l_flag     : std_logic; --transfer flag
@@ -74,7 +75,7 @@ begin
         else --if uart not idle
           l_position <= l_position + x"01"; --increment position
           if (l_position(3 downto 0) = "0111") then --sample data at middle of cycle
-            l_buffer <= l_serial_bit & l_buffer(9 downto 1)
+            l_buffer <= l_serial_bit & l_buffer(9 downto 1);
             if (start_bit and l_serial_bit = '1') then --check if start bit is noise
               l_position <= x"00";
             end if;

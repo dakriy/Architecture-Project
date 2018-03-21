@@ -38,8 +38,9 @@ package common is
   -----------------------------------------------------------------------
   -- PC manipulations
   --
-  constant pc_next   : std_logic := '0';
-  constant pc_bcc    : std_logic := '1';
+  constant pc_next   : std_logic_vector(1 downto 0) := "00";
+  constant pc_bcc    : std_logic_vector(1 downto 0) := "10";
+  constant pc_ld_i   : std_logic_vector(1 downto 0) := "11";
 
   -----------------------------------------------------------------------
   -- ALU multiplexers

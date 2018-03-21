@@ -12,40 +12,42 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
 
 entity register_file is
-	port	( i_clk		: in std_logic;
+	port	(	i_clk			: in std_logic;
 
-					i_amod      : in std_logic_vector( 5 downto 0)
-					i_cond      : in std_logic_vector( 3 downto 0);
-          i_ssss      : in std_logic_vector( 3 downto 0);
-          --i_din     : in std_logic_vector( 8 downto 0);
-          --i_flags   : in std_logic_vector( 7 downto 0);
-          i_imm       : in std_logic_vector(15 downto 0);
-          i_tttt      : in std_logic_vector( 3 downto 0);
-          i_we_01     : in std_logic;
-          i_we_d      : in std_logic_vector( 1 downto 0);
-          --i_we_f    : in std_logic;
-          i_we_m      : in std_logic;
+				i_amod      : in std_logic_vector( 5 downto 0);
+				i_cond      : in std_logic_vector( 3 downto 0);
+				i_ssss		: in std_logic_vector( 3 downto 0);
+				i_din			: in std_logic_vector( 15 downto 0);
+				i_flags		: in std_logic_vector( 7 downto 0);
+				i_imm			: in std_logic_vector(7 downto 0);
+				i_tttt		: in std_logic_vector( 3 downto 0);
+				i_we_01		: in std_logic;
+				i_we_d		: in std_logic_vector( 1 downto 0);
+				i_we_f      : in std_logic;
+				i_we_m		: in std_logic;
 
-          q_adr       : out std_logic_vector(15 downto 0);
-          q_cc        : out std_logic;
-          q_d         : out std_logic_vector(15 downto 0);
-          q_flags     : out std_logic_vector( 7 downto 0);
-          q_r         : out std_logic_vector(15 downto 0);
-          q_s         : out std_logic_vector( 7 downto 0);
-          q_z         : out std_logic_vector(15 downto 0));
+				q_adr			: out std_logic_vector(15 downto 0);
+				q_cc			: out std_logic;
+				q_d			: out std_logic_vector(15 downto 0);
+				q_flags		: out std_logic_vector( 7 downto 0);
+				q_r			: out std_logic_vector(15 downto 0);
+				q_s			: out std_logic_vector( 7 downto 0);
+				q_z			: out std_logic_vector(15 downto 0));
 end register_file;
 
 architecture Behavioral of register_file is
 
 	component register_16
-		port	( i_clk		: in std_logic;
+		port	(	i_clk		: in std_logic;
 
-						i_d		: in std_logic_vector(15 downto 0);
-						i_we	: in std_logic_vector( 1 downto 0);
+					i_d		: in std_logic_vector(15 downto 0);
+					i_we		: in std_logic_vector( 1 downto 0);
 
-						q		: out std_logic_vector(15 downto 0));
+					q			: out std_logic_vector(15 downto 0));
 	end component;
 
 
@@ -95,45 +97,45 @@ architecture Behavioral of register_file is
     signal l_we_misc    : std_logic_vector(31 downto 0);
 
 	begin
-		r00:	register_16 port map(i_clk => i_clk, i_we => l_i_we(1 downto 0), i_d => i_din, q => r_r00);
-		r01:	register_16 port map(i_clk => i_clk, i_we => l_i_we(3 downto 2), i_d => i_din, q => r_r01);
-		r02:	register_16 port map(i_clk => i_clk, i_we => l_i_we(5 downto 4), i_d => i_din, q => r_r02);
-		r03:	register_16 port map(i_clk => i_clk, i_we => l_i_we(7 downto 6), i_d => i_din, q => r_r03);
-		r04:	register_16 port map(i_clk => i_clk, i_we => l_i_we(9 downto 8), i_d => i_din, q => r_r04);
-		r05:	register_16 port map(i_clk => i_clk, i_we => l_i_we(11 downto 10), i_d => i_din, q => r_r05);
-		r06:	register_16 port map(i_clk => i_clk, i_we => l_i_we(13 downto 12), i_d => i_din, q => r_r06);
-		r07:	register_16 port map(i_clk => i_clk, i_we => l_i_we(15 downto 14), i_d => i_din, q => r_r07);
-		r06:	register_16 port map(i_clk => i_clk, i_we => l_i_we(17 downto 16), i_d => i_din, q => r_r08);
-		r08:	register_16 port map(i_clk => i_clk, i_we => l_i_we(19 downto 18), i_d => i_din, q => r_r09);
-		r10:	register_16 port map(i_clk => i_clk, i_we => l_i_we(21 downto 20), i_d => i_din, q => r_r10);
-		r11:	register_16 port map(i_clk => i_clk, i_we => l_i_we(23 downto 22), i_d => i_din, q => r_r11);
-		r12:	register_16 port map(i_clk => i_clk, i_we => l_i_we(25 downto 24), i_d => i_din, q => r_r12);
-		r13:	register_16 port map(i_clk => i_clk, i_we => l_i_we(27 downto 26), i_d => i_din, q => r_r13);
-		r14:	register_16 port map(i_clk => i_clk, i_we => l_i_we(29 downto 28), i_d => i_din, q => r_r14);
-		r15:	register_16 port map(i_clk => i_clk, i_we => l_i_we(31 downto 30), i_d => i_din, q => r_r15);
+		r00:	register_16 port map(i_clk => i_clk, i_we => l_we(1 downto 0), i_d => i_din, q => r_r00);
+		r01:	register_16 port map(i_clk => i_clk, i_we => l_we(3 downto 2), i_d => i_din, q => r_r01);
+		r02:	register_16 port map(i_clk => i_clk, i_we => l_we(5 downto 4), i_d => i_din, q => r_r02);
+		r03:	register_16 port map(i_clk => i_clk, i_we => l_we(7 downto 6), i_d => i_din, q => r_r03);
+		r04:	register_16 port map(i_clk => i_clk, i_we => l_we(9 downto 8), i_d => i_din, q => r_r04);
+		r05:	register_16 port map(i_clk => i_clk, i_we => l_we(11 downto 10), i_d => i_din, q => r_r05);
+		r06:	register_16 port map(i_clk => i_clk, i_we => l_we(13 downto 12), i_d => i_din, q => r_r06);
+		r07:	register_16 port map(i_clk => i_clk, i_we => l_we(15 downto 14), i_d => i_din, q => r_r07);
+		r08:	register_16 port map(i_clk => i_clk, i_we => l_we(17 downto 16), i_d => i_din, q => r_r08);
+		r09:	register_16 port map(i_clk => i_clk, i_we => l_we(19 downto 18), i_d => i_din, q => r_r09);
+		r10:	register_16 port map(i_clk => i_clk, i_we => l_we(21 downto 20), i_d => i_din, q => r_r10);
+		r11:	register_16 port map(i_clk => i_clk, i_we => l_we(23 downto 22), i_d => i_din, q => r_r11);
+		r12:	register_16 port map(i_clk => i_clk, i_we => l_we(25 downto 24), i_d => i_din, q => r_r12);
+		r13:	register_16 port map(i_clk => i_clk, i_we => l_we(27 downto 26), i_d => i_din, q => r_r13);
+		r14:	register_16 port map(i_clk => i_clk, i_we => l_we(29 downto 28), i_d => i_din, q => r_r14);
+		r15:	register_16 port map(i_clk => i_clk, i_we => l_we(31 downto 30), i_d => i_din, q => r_r15);
 		--sr:	status_register port map();
 
 	-- The output of the register pair selected by l_adr
 	process(r_r00, r_r01, r_r02, r_r03, r_r04, r_r05, r_r06, r_r07, r_r08, r_r09, r_r10, r_r11, r_r12, r_r13, r_r14, r_r15, s_flags, l_adr(6 downto 1))
 
     begin
-		case l_adr(6 downto 1) is
-			when "0000" => l_s	<= r_r00
-			when "0001" => l_s	<= r_r01
-			when "0010" => l_s	<= r_r02
-			when "0011" => l_s	<= r_r03
-			when "0100" => l_s	<= r_r04
-			when "0101" => l_s	<= r_r05
-			when "0110" => l_s	<= r_r06
-			when "0111" => l_s	<= r_r07
-			when "1000" => l_s	<= r_r08
-			when "1001" => l_s	<= r_r09
-			when "1010" => l_s	<= r_r10
-			when "1011" => l_s	<= r_r11
-			when "1100" => l_s	<= r_r12
-			when "1101" => l_s	<= r_r13
-			when "1110" => l_s	<= r_r14
-			when others => l_s	<= r_r15
+		case l_adr(4 downto 1) is --double check what this does
+			when "0000" => l_s	<= r_r00;
+			when "0001" => l_s	<= r_r01;
+			when "0010" => l_s	<= r_r02;
+			when "0011" => l_s	<= r_r03;
+			when "0100" => l_s	<= r_r04;
+			when "0101" => l_s	<= r_r05;
+			when "0110" => l_s	<= r_r06;
+			when "0111" => l_s	<= r_r07;
+			when "1000" => l_s	<= r_r08;
+			when "1001" => l_s	<= r_r09;
+			when "1010" => l_s	<= r_r10;
+			when "1011" => l_s	<= r_r11;
+			when "1100" => l_s	<= r_r12;
+			when "1101" => l_s	<= r_r13;
+			when "1110" => l_s	<= r_r14;
+			when others => l_s	<= r_r15;
 		end case;
 	end process;
 
@@ -141,23 +143,23 @@ architecture Behavioral of register_file is
     process(r_r00, r_r01, r_r02, r_r03, r_r04, r_r05, r_r06, r_r07, r_r08, r_r09, r_r10, r_r11, r_r12, r_r13, r_r14, r_r15, s_flags, i_ssss(11 downto 8))
 
 	begin
-		case i_ssss(11 downto 8) is
-			when "0000" => q_d	<= r_r00
-			when "0001" => q_d	<= r_r01
-			when "0010" => q_d	<= r_r02
-			when "0011" => q_d	<= r_r03
-			when "0100" => q_d	<= r_r04
-			when "0101" => q_d	<= r_r05
-			when "0110" => q_d	<= r_r06
-			when "0111" => q_d	<= r_r07
-			when "1000" => q_d	<= r_r08
-			when "1001" => q_d	<= r_r09
-			when "1010" => q_d	<= r_r10
-			when "1011" => q_d	<= r_r11
-			when "1100" => q_d	<= r_r12
-			when "1101" => q_d	<= r_r13
-			when "1110" => q_d	<= r_r14
-			when others => q_d	<= r_r15
+		case i_ssss(3 downto 0) is --check again
+			when "0000" => q_d	<= r_r00;
+			when "0001" => q_d	<= r_r01;
+			when "0010" => q_d	<= r_r02;
+			when "0011" => q_d	<= r_r03;
+			when "0100" => q_d	<= r_r04;
+			when "0101" => q_d	<= r_r05;
+			when "0110" => q_d	<= r_r06;
+			when "0111" => q_d	<= r_r07;
+			when "1000" => q_d	<= r_r08;
+			when "1001" => q_d	<= r_r09;
+			when "1010" => q_d	<= r_r10;
+			when "1011" => q_d	<= r_r11;
+			when "1100" => q_d	<= r_r12;
+			when "1101" => q_d	<= r_r13;
+			when "1110" => q_d	<= r_r14;
+			when others => q_d	<= r_r15;
 		end case;
 	end process;
 
@@ -167,28 +169,27 @@ architecture Behavioral of register_file is
 
 	begin
 		case i_tttt is
-			when "0000" => q_r	<= r_r00
-			when "0001" => q_r	<= r_r01
-			when "0010" => q_r	<= r_r02
-			when "0011" => q_r	<= r_r03
-			when "0100" => q_r	<= r_r04
-			when "0101" => q_r	<= r_r05
-			when "0110" => q_r	<= r_r06
-			when "0111" => q_r	<= r_r07
-			when "1000" => q_r	<= r_r08
-			when "1001" => q_r	<= r_r09
-			when "1010" => q_r	<= r_r10
-			when "1011" => q_r	<= r_r11
-			when "1100" => q_r	<= r_r12
-			when "1101" => q_r	<= r_r13
-			when "1110" => q_r	<= r_r14
-			when others => q_r	<= r_r15
+			when "0000" => q_r	<= r_r00;
+			when "0001" => q_r	<= r_r01;
+			when "0010" => q_r	<= r_r02;
+			when "0011" => q_r	<= r_r03;
+			when "0100" => q_r	<= r_r04;
+			when "0101" => q_r	<= r_r05;
+			when "0110" => q_r	<= r_r06;
+			when "0111" => q_r	<= r_r07;
+			when "1000" => q_r	<= r_r08;
+			when "1001" => q_r	<= r_r09;
+			when "1010" => q_r	<= r_r10;
+			when "1011" => q_r	<= r_r11;
+			when "1100" => q_r	<= r_r12;
+			when "1101" => q_r	<= r_r13;
+			when "1110" => q_r	<= r_r14;
+			when others => q_r	<= r_r15;
 		end case;
 	end process;
 
     l_adr       <= l_base + l_pre;
     l_we_a      <= i_we_m when (l_adr(15 downto 5) = "00000000000") else '0';
-    l_we_sr     <= i_we_m when (l_adr = x"005f") else '0';
 
     -- the we signals for the differen registers.
     -- case 1: write to an 8-bit register addressed by ddddd.
@@ -255,4 +256,4 @@ architecture Behavioral of register_file is
     q_z <= r_r15;
     q_adr <= l_adr;
 
-end Behavioral
+end Behavioral;

@@ -23,7 +23,7 @@ entity cpu_core is
         q_opc       : out std_logic_vector( 15 downto 0 ); --current opcode
         q_pc        : out std_logic_vector( 15 downto 0 ); --current program counter
         q_dout      : out std_logic_vector(  7 downto 0 ); --output data
-        q_adr_io    : out std_logic_vector(  4 downto 0 ); --address of i/o register (16 16-bit registers)
+        q_adr_io    : out std_logic_vector(  7 downto 0 ); --address of i/o register (16 16-bit registers)
         q_rd_io     : out std_logic; --select register to read
         q_we_io     : out std_logic); --select register to write
 end cpu_core;
@@ -32,33 +32,35 @@ architecture Behavioral of cpu_core is
 component opc_fetch
   port( i_clk       : in std_logic;
 
-        i_reset     : in std_logic_vector( 5 downto 0);
+        i_reset     : in std_logic;
         i_new_pc    : in std_logic_vector(15 downto 0);
         i_load_pc   : in std_logic;
-        i_pm_addr   : in std_logic_vector(11 downto 0);
-        q_opc       : out std_logic_vector(31 downto 0);
+        i_pm_adr   : in std_logic_vector(11 downto 0);
+        q_opc       : out std_logic_vector(15 downto 0);
         q_pc        : out std_logic_vector(15 downto 0);
         q_pm_dout   : out std_logic_vector( 7 downto 0);
         q_t0        : out std_logic);
 end component;
 
 signal f_pc     : std_logic_vector(15 downto 0);
-signal f_opc    : std_logic_vector(31 downto 0);
+signal f_opc    : std_logic_vector(15 downto 0);
+signal f_pm_dout : std_logic_vector(7 downto 0);
 signal f_t0     : std_logic;
 
-component opc_deco is
+
+component opcode_decoder is
     port (  i_clk       : in std_logic;
-            i_opc       : in std_logic_vector(31 downto 0);
+            i_opc       : in std_logic_vector(15 downto 0);
             i_pc        : in std_logic_vector(15 downto 0);
             i_t0        : in std_logic;
-            q_alu_op    : out std_logic_vector( 4 downto 0);
+            q_alu_op    : out std_logic_vector( 3 downto 0);
             q_bit       : out std_logic_vector( 3 downto 0);
             q_ssss      : out std_logic_vector( 3 downto 0);
-            q_imm       : out std_logic_vector(15 downto 0);
+            q_imm       : out std_logic_vector(7 downto 0);
             q_jadr      : out std_logic_vector(15 downto 0);
             q_opc       : out std_logic_vector(15 downto 0);
             q_pc        : out std_logic_vector(15 downto 0);
-            q_pc_op     : out std_logic_vector( 2 downto 0);
+            q_pc_op     : out std_logic_vector( 1 downto 0);
             q_pms       : out std_logic; -- program memory select
             q_rd_m      : out std_logic;
             q_tttt      : out std_logic_vector( 3 downto 0);
@@ -69,15 +71,14 @@ component opc_deco is
             q_we_m      : out std_logic_vector( 1 downto 0));
 end component;
 
-signal d_alu_op : std_logic_vector( 4 downto 0);
-signal d_amod   : std_logic_vector( 5 downto 0);
+signal d_alu_op : std_logic_vector( 3 downto 0);
 signal d_bit    : std_logic_vector( 3 downto 0);
 signal d_ssss   : std_logic_vector( 3 downto 0);
-signal d_imm    : std_logic_vector(15 downto 0);
+signal d_imm    : std_logic_vector(7 downto 0);
 signal d_jadr   : std_logic_vector(15 downto 0);
 signal d_opc    : std_logic_vector(15 downto 0);
 signal d_pc     : std_logic_vector(15 downto 0);
-signal d_pc_op  : std_logic_vector( 2 downto 0);
+signal d_pc_op  : std_logic_vector( 1 downto 0);
 signal d_pms    : std_logic;
 signal d_rd_m   : std_logic;
 signal d_tttt   : std_logic_vector( 3 downto 0);
@@ -89,14 +90,13 @@ signal d_we_m   : std_logic_vector( 1 downto 0);
 
 component data_path
     port(   i_clk       : in std_logic;
-            i_alu_op    : in std_logic_vector( 4 downto 0);
-            i_amod      : in std_logic_vector( 5 downto 0);
+            i_alu_op    : in std_logic_vector( 3 downto 0);
             i_bit       : in std_logic_vector( 3 downto 0);
             i_ssss      : in std_logic_vector( 3 downto 0);
             i_din       : in std_logic_vector( 7 downto 0);
-            i_imm       : in std_logic_vector(15 downto 0);
+            i_imm       : in std_logic_vector(7 downto 0);
             i_jadr      : in std_logic_vector(15 downto 0);
-            i_pc_op     : in std_logic_vector( 2 downto 0);
+            i_pc_op     : in std_logic_vector( 1 downto 0);
             i_opc       : in std_logic_vector(15 downto 0);
             i_pc        : in std_logic_vector(15 downto 0);
             i_pms       : in std_logic; -- program memory select
@@ -108,7 +108,7 @@ component data_path
             i_we_f      : in std_logic;
             i_we_m      : in std_logic_vector( 1 downto 0);
             q_adr       : out std_logic_vector(15 downto 0);
-            q_dout      : out std_logic_vector( 7 downto 0);
+            q_dout      : out std_logic_vector(7 downto 0);
             q_load_pc   : out std_logic;
             q_new_pc    : out std_logic_vector(15 downto 0);
             q_opc       : out std_logic_vector(15 downto 0);
@@ -127,7 +127,7 @@ signal l_din            : std_logic_vector( 7 downto 0);
 begin
     opcf : opc_fetch
     port map(   i_clk               => i_clk,
-                i_clr               => i_clr,
+                i_reset              => i_reset,
                 i_load_pc           => r_load_pc,
                 i_new_pc            => r_new_pc,
                 i_pm_adr            => r_adr(11 downto 0),
@@ -136,7 +136,7 @@ begin
                 q_t0                => f_t0,
                 q_pm_dout           => f_pm_dout);
 
-    opcf : opc_deco
+    opdec : opcode_decoder
     port map(   i_clk               => i_clk,
                 i_opc       => f_opc,
                 i_pc        => f_pc,

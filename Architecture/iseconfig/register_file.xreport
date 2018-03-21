@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <report-views version="2.0" >
  <header>
-  <DateModified>2018-03-07T18:46:32</DateModified>
+  <DateModified>2018-03-20T14:03:34</DateModified>
   <ModuleName>register_file</ModuleName>
   <SummaryTimeStamp>Unknown</SummaryTimeStamp>
   <SavedFilePath>/home/seth.ballance/Desktop/Architecture-Project/Architecture/iseconfig/register_file.xreport</SavedFilePath>
-  <ImplementationReportsDirectory>/home/seth.ballance/Desktop/Architecture-Project/Architecture</ImplementationReportsDirectory>
+  <ImplementationReportsDirectory>/home/seth.ballance/Desktop/Architecture-Project/Architecture/</ImplementationReportsDirectory>
   <DateInitialized>2018-03-07T18:46:32</DateInitialized>
   <EnableMessageFiltering>false</EnableMessageFiltering>
  </header>

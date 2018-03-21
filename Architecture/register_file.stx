@@ -1,0 +1,40 @@
+Release 14.7 - xst P.20131013 (lin64)
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+--> 
+Parameter TMPDIR set to /home/seth.ballance/Desktop/Architecture-Project/Architecture/xst/projnav.tmp
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.07 secs
+ 
+--> 
+Parameter xsthdpdir set to /home/seth.ballance/Desktop/Architecture-Project/Architecture/xst
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.07 secs
+ 
+--> 
+WARNING:Xst:3164 - Option "-debug" found multiple times in the command line. Only the first occurence is considered.
+
+=========================================================================
+*                          HDL Compilation                              *
+=========================================================================
+Compiling vhdl file "/home/seth.ballance/Desktop/Architecture-Project/Architecture/register_16.vhd" in Library work.
+Architecture behavioral of Entity register_16 is up to date.
+Compiling vhdl file "/home/seth.ballance/Desktop/Architecture-Project/Architecture/register_file.vhd" in Library work.
+Architecture behavioral of Entity register_file is up to date.
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.11 secs
+ 
+--> 
+
+
+Total memory usage is 473072 kilobytes
+
+Number of errors   :    0 (   0 filtered)
+Number of warnings :    1 (   0 filtered)
+Number of infos    :    0 (   0 filtered)
+

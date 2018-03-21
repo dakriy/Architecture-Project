@@ -1,0 +1,5 @@
+set -tmpdir "/home/seth.ballance/Desktop/Architecture-Project/Architecture/xst/projnav.tmp"
+set -xsthdpdir "/home/seth.ballance/Desktop/Architecture-Project/Architecture/xst"
+elaborate
+-ifn alu.prj
+-ifmt mixed

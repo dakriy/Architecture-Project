@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IMPORTANT: This is an internal file that has been generated
+     by the Xilinx ISE software.  Any direct editing or
+     changes made to this file may result in unpredictable
+     behavior or data corruption.  It is strongly advised that
+     users do not edit the contents of this file. -->
+<messages>
+<msg type="warning" file="HDLParsers" num="817" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">96</arg>. Choice <arg fmt="%s" index="3">or</arg> is not a locally static expression.
+</msg>
+
+<msg type="error" file="Xst" num="2587" delta="new" >Port &lt;<arg fmt="%s" index="1">i_imm</arg>&gt; of instance &lt;<arg fmt="%s" index="2">dpath</arg>&gt; has different type in definition &lt;<arg fmt="%s" index="3">data_path</arg>&gt;.
+</msg>
+
+</messages>
+

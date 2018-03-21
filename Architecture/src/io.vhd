@@ -19,7 +19,7 @@ entity io is
 end io;
 
 architecture Behavioral of io is
-component uart
+component uart_rx
   generic(clk_freq   : std_logic_vector(31 downto 0);
           baud_rate  : std_logic_vector(27 downto 0));
   port(   i_clk      : in  std_logic;
@@ -42,7 +42,7 @@ signal l_rx_int_enabled : std_logic;
 signal l_we_uart        : std_logic;
 
 begin
-  urt: uart
+  uart: uart_rx
   generic map(clk_freq  => std_logic_vector(conv_unsigned(25000000, 32)),
               baud_rate => std_logic_vector(conv_unsigned(  115200, 28)))
   port map( i_clk   => i_clk,
@@ -57,6 +57,14 @@ begin
   begin
     case i_adr_io is
       when x"2a" => q_dout <= -- ucsrb:
-                        '1' -- rx enabled
+								l_rx_int_enabled
+                      & '1' -- rx enabled
                       & '0' -- 8 bits/char
                       & '0'; -- rx bit 8
+							 
+		when X"2B" => q_dout <= -- ucsra:
+								  u_rx_ready -- rx complete
+								& '0' -- frame error
+								& '0' -- data overrun
+								& '0' -- parity error
+								& '0' -- double dpeed

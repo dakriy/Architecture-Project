@@ -1,0 +1,1 @@
+vhdtdtfi -prj Architecture -o /home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhi -module opcode_decoder -template /wwu/apps/xilinx/14.7/ISE_DS/ISE//data/vhdlinst.tft -deleteonerror -lib work common.vhd -lib work opcode_decoder.vhd 

@@ -1,0 +1,2 @@
+vhdtdtfi -lib work ../Architecture/common.vhd -lib work ../Architecture/data_path.vhd -prj Architecture_new -o data_path.spl -module data_path -template /wwu/apps/xilinx/14.7/ISE_DS/ISE//data/splfile.tft -deleteonerror 
+spl2sym -intstyle ise -family spartan3e data_path.spl /home/seth.ballance/Desktop/Architecture-Project/Architecture_new/data_path.sym 

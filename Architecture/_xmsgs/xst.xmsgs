@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IMPORTANT: This is an internal file that has been generated
+     by the Xilinx ISE software.  Any direct editing or
+     changes made to this file may result in unpredictable
+     behavior or data corruption.  It is strongly advised that
+     users do not edit the contents of this file. -->
+<messages>
+<msg type="error" file="HDLParsers" num="837" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">70</arg>. Width mismatch. Expected width <arg fmt="%u" index="3">2</arg>, Actual width is <arg fmt="%u" index="4">4</arg> for dimension <arg fmt="%d" index="5">1</arg> of <arg fmt="%s" index="6">alu_add</arg>.
+</msg>
+
+<msg type="error" file="HDLParsers" num="837" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">76</arg>. Width mismatch. Expected width <arg fmt="%u" index="3">2</arg>, Actual width is <arg fmt="%u" index="4">4</arg> for dimension <arg fmt="%d" index="5">1</arg> of <arg fmt="%s" index="6">alu_and</arg>.
+</msg>
+
+<msg type="error" file="HDLParsers" num="837" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">82</arg>. Width mismatch. Expected width <arg fmt="%u" index="3">2</arg>, Actual width is <arg fmt="%u" index="4">4</arg> for dimension <arg fmt="%d" index="5">1</arg> of <arg fmt="%s" index="6">alu_or</arg>.
+</msg>
+
+<msg type="error" file="HDLParsers" num="837" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">89</arg>. Width mismatch. Expected width <arg fmt="%u" index="3">2</arg>, Actual width is <arg fmt="%u" index="4">4</arg> for dimension <arg fmt="%d" index="5">1</arg> of <arg fmt="%s" index="6">alu_mov</arg>.
+</msg>
+
+<msg type="error" file="HDLParsers" num="837" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">105</arg>. Width mismatch. Expected width <arg fmt="%u" index="3">2</arg>, Actual width is <arg fmt="%u" index="4">4</arg> for dimension <arg fmt="%d" index="5">1</arg> of <arg fmt="%s" index="6">alu_srl</arg>.
+</msg>
+
+<msg type="error" file="HDLParsers" num="837" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">111</arg>. Width mismatch. Expected width <arg fmt="%u" index="3">2</arg>, Actual width is <arg fmt="%u" index="4">4</arg> for dimension <arg fmt="%d" index="5">1</arg> of <arg fmt="%s" index="6">alu_sra</arg>.
+</msg>
+
+<msg type="error" file="HDLParsers" num="837" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">117</arg>. Width mismatch. Expected width <arg fmt="%u" index="3">2</arg>, Actual width is <arg fmt="%u" index="4">4</arg> for dimension <arg fmt="%d" index="5">1</arg> of <arg fmt="%s" index="6">alu_sl</arg>.
+</msg>
+
+<msg type="error" file="HDLParsers" num="837" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">122</arg>. Width mismatch. Expected width <arg fmt="%u" index="3">2</arg>, Actual width is <arg fmt="%u" index="4">4</arg> for dimension <arg fmt="%d" index="5">1</arg> of <arg fmt="%s" index="6">alu_not</arg>.
+</msg>
+
+<msg type="error" file="HDLParsers" num="837" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">129</arg>. Width mismatch. Expected width <arg fmt="%u" index="3">2</arg>, Actual width is <arg fmt="%u" index="4">4</arg> for dimension <arg fmt="%d" index="5">1</arg> of <arg fmt="%s" index="6">alu_andi</arg>.
+</msg>
+
+<msg type="error" file="HDLParsers" num="837" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">135</arg>. Width mismatch. Expected width <arg fmt="%u" index="3">2</arg>, Actual width is <arg fmt="%u" index="4">4</arg> for dimension <arg fmt="%d" index="5">1</arg> of <arg fmt="%s" index="6">alu_addi</arg>.
+</msg>
+
+<msg type="error" file="HDLParsers" num="837" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">141</arg>. Width mismatch. Expected width <arg fmt="%u" index="3">2</arg>, Actual width is <arg fmt="%u" index="4">4</arg> for dimension <arg fmt="%d" index="5">1</arg> of <arg fmt="%s" index="6">alu_ori</arg>.
+</msg>
+
+<msg type="error" file="HDLParsers" num="837" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">147</arg>. Width mismatch. Expected width <arg fmt="%u" index="3">2</arg>, Actual width is <arg fmt="%u" index="4">4</arg> for dimension <arg fmt="%d" index="5">1</arg> of <arg fmt="%s" index="6">alu_loadi</arg>.
+</msg>
+
+<msg type="error" file="HDLParsers" num="837" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">159</arg>. Width mismatch. Expected width <arg fmt="%u" index="3">2</arg>, Actual width is <arg fmt="%u" index="4">4</arg> for dimension <arg fmt="%d" index="5">1</arg> of <arg fmt="%s" index="6">alu_jz</arg>.
+</msg>
+
+<msg type="error" file="HDLParsers" num="837" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">164</arg>. Width mismatch. Expected width <arg fmt="%u" index="3">2</arg>, Actual width is <arg fmt="%u" index="4">4</arg> for dimension <arg fmt="%d" index="5">1</arg> of <arg fmt="%s" index="6">alu_j</arg>.
+</msg>
+
+<msg type="warning" file="HDLParsers" num="817" delta="old" >&quot;<arg fmt="%s" index="1">/home/seth.ballance/Desktop/Architecture-Project/Architecture/opcode_decoder.vhd</arg>&quot; Line <arg fmt="%d" index="2">94</arg>. Choice <arg fmt="%s" index="3">or</arg> is not a locally static expression.
+</msg>
+
+</messages>
+

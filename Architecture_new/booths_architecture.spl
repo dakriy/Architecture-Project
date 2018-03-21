@@ -1,0 +1,8 @@
+[Inputs]
+i_clk_100
+i_rx
+=i_switch[7:0]=
+[Outputs]
+=q_7_segment[6:0]=
+=q_leds[3:0]=
+[BiDir]

@@ -1,20 +1,20 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    18:40:34 03/20/2018 
--- Design Name: 
--- Module Name:    ramb4_s4_s4 - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Create Date:    18:40:34 03/20/2018
+-- Design Name:
+-- Module Name:    ramb4_s4_s4 - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
 --
--- Revision: 
+-- Dependencies:
+--
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -49,7 +49,7 @@ entity ramb4_s4_s4 is
 				init_0d : bit_vector := x"00000000000000000000000000000000" & x"00000000000000000000000000000000";
 				init_0e : bit_vector := x"00000000000000000000000000000000" & x"00000000000000000000000000000000";
 				init_0f : bit_vector := x"00000000000000000000000000000000" & x"00000000000000000000000000000000");
-	
+
 	port( addra :in std_logic_vector(9 downto 0);
 			addrb :in std_logic_vector(9 downto 0);
 			clka :in std_logic;
@@ -62,7 +62,7 @@ entity ramb4_s4_s4 is
 			rstb :in std_logic;
 			wea :in std_logic;
 			web :in std_logic;
-			
+
 			doa :out std_logic_vector(3 downto 0);
 			dob :out std_logic_vector(3 downto 0));
 end ramb4_s4_s4;
@@ -119,5 +119,4 @@ begin
 		end if;
 	end process;
 
-end behavioral;
-
+end Behavioral;
